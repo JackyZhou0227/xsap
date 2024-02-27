@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>X+约课系统 - 会员列表</title>
+    <meta name="keywords" content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}"
+          rel="stylesheet">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}"
+          rel="stylesheet">
+    <link href="../../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
+
+    <!-- bootstrap-datepicker -->
+    <link href="../../static/css/plugins/datapicker/bootstrap-datepicker.css"
+          th:href="@{/static/css/plugins/datapicker/bootstrap-datepicker.css}" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+
+                    <a class="btn btn-primary J_menuItem" href="x_member_add.html" th:href="@{/member/x_member_add.do}">添加会员</a>
+                    <a class="btn btn-default J_menuItem" href="x_member_import.html"
+                       th:href="@{/member/x_member_import.do}">批量导入会员</a>
+                    <a class="btn btn-default J_menuItem" href="x_member_bind.html"
+                       th:href="@{/cardBind/x_member_bind.do}">批量绑卡</a>
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                        <tr>
+                            <th>会员姓名(手机号)</th>
+                            <th>性别</th>
+                            <th>会员卡</th>
+                            <th>入会日期</th>
+                             <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                    </table>
+                </div>
+
+                <!--编辑会员-->
+                <div class="modal inmodal fade" id="edit_model" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                        class="sr-only">Close</span></button>
+                                <h4 class="modal-title">编辑会员</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form id="updateForm" name="updateForm" method="post" class="form-horizontal">
+                                    <div class="form-group">
+                                        <!-- 隐藏域 id -->
+                                        <input type="hidden" name="id"/>
+
+                                        <label class="col-sm-2 control-label">
+                                            <span class="text-danger">*</span>
+                                            会员姓名</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" placeholder="会员姓名" name="name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            <span class="text-danger">*</span>
+                                            手机号</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" name="phone" class="form-control" placeholder="手机号">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            <span class="text-danger">*</span>
+                                            性别</label>
+                                        <div class="col-sm-8">
+                                            <label class="control-label">
+                                                <input id="man" type="radio" name="sex" value="男">
+                                                <span>男</span>
+                                            </label>&nbsp;&nbsp;
+
+                                            <label class="control-label">
+                                                <input id="woman" type="radio" name="sex" value="女">
+                                                <span>女</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            出生日期</label>
+                                        <div class="col-sm-3">
+                                            <input name="birthday" id="myDate" class="form-control"
+                                                   value="1998-12-12"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            备注</label>
+                                        <div class="col-sm-8">
+                                            <textarea name="note" class="col-sm-12 form-control" rows="5"
+                                                      placeholder="会员备注信息..."></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                                <button onclick="saveEdit()" type="submit" id="edit_btn" class="btn btn-primary">保存
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js"
+        th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+<!-- Sweet alert -->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        //加载窗体数据
+        $.post("[[${#request.getContextPath()}]]/member/memberList.do", function (memberList) {
+            console.log(memberList);
+            $('.dataTables-example').dataTable({
+                //注： 后面开发时，url的位置写 服务端控制器的 mapping值,服务端返回的将是json数据
+                "data": memberList,
+                //行的定义
+                "columns": [
+                    // {"data": "namePhone",bAutoWidth: "false", sWidth: "20%"},
+                    {"data": "memberName", bAutoWidth: "false", sWidth: "15%"},
+                    {"data": "gender", sWidth: "10%"},
+                    {"data": "cardHold", sWidth: "15%"},
+                    {"data": "joiningDate", sWidth: "15%"},
+                    {"data": "note", sWidth: "20%"},
+                    {
+                        "data": null, "orderable": false, "render": function (data, type, row) {
+                            var id = row.id;
+                            var html = "<a href='#?id=" + id + "' onclick='saveID(" + id + ")' class='btn btn-success btn-xs edit'  data-toggle='modal' data-target='#edit_model'> 编辑 <i class='fa fa-edit'></i></a>&nbsp &nbsp"
+                            html += "<a href='/member/x_member_list_details.do?id=" + id + "'  class='btn btn-primary btn-xs'> 详情 <i class='fa fa-eye'></i></a>&nbsp &nbsp"
+                            html += "<a href='#?id=" + id + "' onclick='deteleConfirm(" + id + ")'  class='delete btn btn-danger btn-xs' > 注销会员 <i class='fa fa-times'></i></a>"
+                            return html;
+                        }
+                    }],
+                //去掉搜索
+                "bSort": false,
+                searching: true,
+                "bPaginage": true,
+                "bAutoWidth": true,
+                lengthChange: false,
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+        });
+
+        /*时间选择器配置*/
+        $('#myDate').datepicker({
+            language: "zh-CN",
+            clearBtn: true,//清除
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy-mm-dd',
+            todayBtn: false,//今日按钮
+            startDate: '1970-1-1', //与你自己设置的格式一致yyyy-mm-dd，未设置的话与默认格式一致mm/dd/yyyy
+            endDate: '2070-1-1'
+        });
+    });
+
+    /* 删除提示 */
+    function deteleConfirm(tid) {
+        console.log(tid);
+        swal({
+            title: "注销确认",
+            text: "确认注销此会员信息吗? 注销后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "注销",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: "[[${#request.getContextPath()}]]/member/deleteOne.do",
+                type: "post",
+                data: {id: tid},
+                success: function () {
+                    swal("注销成功！", "您已经永久注销了这条信息。", "success");
+                    //刷新界面
+                    setTimeout(function () {
+                        window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                    }, 1000);
+                },
+                error: function () {
+                    swal("注销失败！", "未知错误。。。", "info");
+                }
+            });
+        });
+    }
+
+    /* 编辑框传参数id */
+    function saveID(mid) {
+        /* 编辑窗口数据填充 */
+        $.ajax({
+            url: "[[${#request.getContextPath()}]]/member/x_member_edit.do",
+            type: "post",
+            data: {id: mid},
+            dataType: "json",
+            success: function (data) {
+                var memberData = data.data;
+                var birthdayStr = "";
+                if (memberData.birthday != null) {
+                    birthdayStr = memberData.birthday.toString();
+                }
+                console.log(memberData.id);
+                $("input[name='id']").val(memberData.id);
+                $("input[name='name']").val(memberData.name);
+                $("input[name='phone']").val(memberData.phone);
+                if (memberData.sex === "男") {
+                    $("#man").prop("checked", true);
+                } else if (memberData.sex === "女") {
+                    $("#woman").prop("checked", true);
+                }
+                $("input[name='birthday']").val(birthdayStr);
+                $("textarea[name='note']").val(memberData.note);
+            }, error: function () {
+                alert("获取数据失败");
+                //重新加载页面
+                window.location.reload();
+            }
+        });
+    }
+
+    //获取表单数据
+    var form = "";
+    $("#edit_btn").on("mouseenter", function () {
+        form = $("#updateForm").serialize();
+        console.log(form);
+    });
+
+    /* 编辑保存操作 */
+    function saveEdit() {
+
+        swal({
+            title: "更新确认",
+            text: "确认更新此会员信息吗?！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#53ae12",
+            confirmButtonText: "确认",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: "[[${#request.getContextPath()}]]/member/memberEdit.do",
+                type: "post",
+                data: form,
+                success: function (data) {
+                    if (data.code === 0) {
+                        swal(data.msg, "您已经更新了这条信息。", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                        }, 1000);
+                    } else {
+                        swal(data.msg, "未知原因,请稍后再试！", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                        }, 1000);
+                    }
+                },
+                error: function () {
+                    swal("更新失败！", "未知错误,请联系管理员。。。", "info");
+                }
+            });
+        });
+    }
+
+
+</script>
+</body>
+
+</html>

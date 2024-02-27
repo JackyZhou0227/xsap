@@ -1,0 +1,37 @@
+{
+	"message": "",
+	"value":[
+	  {
+		"id":1,
+		"name": "现金",
+		"shortAccount": "xianjin"
+	  },
+	  {
+		"id":2,
+		"name": "支付宝",
+		"shortAccount": "zhifubao"
+	  },
+	  {
+		"id":3,
+		"name": "微信",
+		"shortAccount": "weixin"
+	  },
+	  {
+		"id":4,
+		"name": "银行卡",
+		"shortAccount": "yinhangka"
+	  },
+	  {
+		"id":5,
+		"name": "银卡",
+		"shortAccount": "yinka"
+	  },
+	  {
+		"id":6,
+		"name": "行卡",
+		"shortAccount": "hangka"
+	  }
+	],
+	"code": 200,
+	"redirect": ""
+}

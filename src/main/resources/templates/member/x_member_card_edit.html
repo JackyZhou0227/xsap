@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>X+约课系统 - 更新会员卡</title>
+    <meta name="keywords" content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}"
+          rel="stylesheet">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}"
+          rel="stylesheet">
+    <link href="../../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+    <link href="../../static/css/plugins/iCheck/custom.css" th:href="@{/static/css/plugins/iCheck/custom.css}"
+          rel="stylesheet">
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
+
+
+    <style type="text/css">
+        .margin_top {
+            margin-top: 35px;
+        }
+
+        .margin_buttom {
+            margin-bottom: 35px;
+        }
+
+        .input_margin_top {
+            margin-top: 20px;
+        }
+
+        .input_width {
+            width: 50px;
+            display: inline;
+        }
+
+        .btn_margin_top {
+            margin-top: -25px;
+        }
+
+        table.dataTable thead .sorting,
+        table.dataTable thead .sorting_asc,
+        table.dataTable thead .sorting_desc {
+            background-image: none;
+        }
+
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+
+            -webkit-appearance: none !important;
+
+        }
+
+        /* chrome */
+
+        input[type="number"] {
+
+            -moz-appearance: textfield; /* firefox */
+
+        }
+
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <!--<form class="form-horizontal" name="editForm" method="post" id="editForm" th:action="@{/card/cardEdit.do}">-->
+            <form class="form-horizontal" name="editCardForm" method="post" id="editCardForm">
+                <div style="background-color: #FFFFFF;">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label margin_top"><span
+                                style="color: red">*&nbsp;</span>会员卡名称</label>
+                        <div class="col-sm-8">
+                            <!-- 隐藏域，id -->
+                            <input type="hidden" name="id" value="1" th:value="${cardMsg.id}"/>
+
+                            <input type="text" class="form-control margin_top" name="name" placeholder="会员卡名称"
+                                   value="12次大课" th:value="${cardMsg.name}" required>
+                            <span class="text-danger">[[${NAME_EXIST}]]</span>
+                        </div>
+                    </div>
+                    <!--价格-->
+                    <div class="form-group">
+                        <label for="inputCardPrice" class="col-sm-2 control-label input_margin_top"><span
+                                style="color: red">*&nbsp;</span>价格</label>
+                        <div class="col-md-2">
+                            <div class="input-group input_margin_top">
+                                <div class="input-group-addon">￥</div>
+                                <input type="number" name="price" step="0.01" th:value="${cardMsg.price}" class="form-control"
+                                       placeholder="价格" id="inputCardPrice" min="0.0">
+                                <div class="input-group-addon">元</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--描述信息-->
+                    <div class="form-group">
+                        <label for="inputCardDescribe" class="col-sm-2 control-label input_margin_top">描述信息</label>
+                        <div class="col-sm-8">
+                            <textarea name="description" class="form-control input_margin_top"
+                                      id="inputCardDescribe" th:text="${cardMsg.description}">多人上的课</textarea>
+                        </div>
+                    </div>
+                    <!--备注信息-->
+                    <div class="form-group">
+                        <label for="inputCardRemark" class="col-sm-2 control-label input_margin_top">备注信息</label>
+                        <div class="col-sm-8">
+                            <textarea name="note" class="form-control input_margin_top margin_buttom"
+                                      id="inputCardRemark" th:text="${cardMsg.note}"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div style="background-color: #FFFFFF;">
+                    <!--会员卡类型-->
+                    <div class="form-group">
+                        <label for="member_card_type" class="col-sm-2 control-label margin_top">会员卡类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control m-b margin_top disabled" disabled name="type"
+                                    id="member_card_type">
+                                <!--<option th:attr="selected=${cardMsg.type== '0' ? selected :''}">&#45;&#45;空&#45;&#45;</option>
+                                <option th:attr="selected=${cardMsg.type== '1' ? selected : ''}">次卡(有期限)</option>
+                                <option th:attr="selected=${cardMsg.type== '2' ? selected : ''}">次卡(无期限)</option>-->
+                                <option selected="selected" th:text="${cardMsg.type}"></option>
+                                -->
+                            </select>
+                        </div>
+                    </div>
+                    <!--可用次数-->
+                    <div class="form-group">
+                        <label for="useTimes" class="col-sm-2 control-label input_margin_top"><span
+                                style="color: red">*&nbsp;</span>可用次数</label>
+                        <div class="col-sm-2">
+                            <input type="number" name="totalCount" class="form-control input_margin_top" id="useTimes"
+                                   placeholder="可用次数" min="0" value="60" th:value="${cardMsg.totalCount}" required>
+                        </div>
+                    </div>
+                    <!--可用天数-->
+                    <div class="form-group">
+                        <label for="useDays" class="col-sm-2 control-label input_margin_top"><span
+                                style="color: red">*&nbsp;</span>可用天数</label>
+                        <div class="col-sm-2">
+                            <input type="number" name="totalDay" class="form-control input_margin_top" id="useDays"
+                                   placeholder="可用天数" min="0" value="30" th:value="${cardMsg.totalDay}" required>
+                        </div>
+                    </div>
+                    <!--支持的课程-->
+                    <div class="form-group">
+                        <label for="support_program" class="col-sm-2 control-label input_margin_top">支持课程</label>
+                        <div class="col-sm-8 input_margin_top">
+                            <table class="table table-striped table-bordered table-hover dataTables-example"
+                                   id="support_program">
+                                <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="check_all" class="i-checks"></th>
+                                    <th class="col-sm-7">课程</th>
+                                    <th>收费情况(次卡)</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <!--提交、取消-->
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10 margin_buttom btn_margin_top">
+                            <button type="submit" class="btn btn-success" id="saveBtn">保存</button>
+                            <a href="x_member_card.do" type="button" class="btn btn-default ">取消</a>
+                            <!--<button onclick="window.location.href='[[${#request.getContextPath()}]]/card/x_member_card.do'" type="button" class="btn btn-default ">取消</button>-->
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+<!-- iCheck -->
+<script src="../../static/js/plugins/iCheck/icheck.min.js" th:src="@{/static/js/plugins/iCheck/icheck.min.js}"></script>
+<!-- Sweet alert -->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+<script>
+    $(function () {
+        var editForm = "";
+        $("#saveBtn").on("mouseenter", function () {
+            editForm = $("#editCardForm").serialize();
+            console.log(editForm);
+        });
+
+        /*获取所有的课程数据*/
+        $.post("/course/courseList.do", function (courseData) {
+            console.log(courseData);
+            $('.dataTables-example').dataTable({
+                //获取数据
+                "data": courseData,
+                //行的定义
+                "columns": [
+                    {
+                        "data": "id", "render": function (data, type, row) {
+                            let id = data;
+                            let html = "<input type='checkbox' name='courseListStr' class='i-checks' value='" + id + "' >";
+                            return html;
+                        }, bAutoWidth: "false", sWidth: "1%"
+                    },
+                    {"data": "name", sWidth: "15%"},
+                    {
+                        "data": "timesCost", "render": function (data, type, row) {
+                            let html = "<span class='pie'>每节课收取&nbsp;<input type='text' disabled class='form-control input_width' value='" + data + "'>次/人</span>";
+                            return html;
+                        }, sWidth: "15%"
+                    }
+                ],
+                language: {
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "sInfo": "" // 这样就可以隐藏了
+                },
+                searching: false,//是否开始本地搜索
+                paging: false,
+                lengthChange: false,//是否允许用户改变表格每页显示的记录数
+                columnDefs: [{
+                    targets: 0,//编辑取消排序
+                    "orderable": false
+                }]
+            });
+            var course = [[${courseCarry}]]
+            console.log("course:==>")
+            console.log(course);
+            if (course != null) {
+                for (var i = 0; i < course.length; i++) {
+                    $("input[name='courseListStr'][value='" + course[i] + "']").prop("checked", true);
+                }
+            }
+        });
+
+        //--异步保存编辑操作
+        $('#editCardForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+
+            swal({
+                title: "更新确认",
+                text: "确认更新此会员卡信息吗？您正在更新会员卡信息！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#15ced8",
+                confirmButtonText: "更新",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    url: '[[${#request.getContextPath()}]]/card/cardEdit.do',
+                    type: 'post',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code === 0) {
+                            swal(data.msg, "您已经更新了这张会员卡信息!", "success");
+                            //刷新界面
+                            setTimeout(function(){
+                                window.location.href='[[${#request.getContextPath()}]]/card/x_member_card.do'
+                            },1000);
+                        } else {
+                            swal("更新失败！", "未知错误。。。请联系管理员", "info");
+                        }
+                    },
+                    error:function(){
+                        swal("更新失败！", "未知错误。。。请联系管理员", "info");
+                    }
+                });
+            });
+
+
+
+            /*$.ajax({
+                url: '[[${#request.getContextPath()}]]/card/cardEdit.do',
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                success: function (data) {
+                    // alert(data);
+                    if (data.code === 0) {
+                        //刷新界面
+                        alert(data.msg)
+                        // window.location.reload();
+                        window.location.href='[[${#request.getContextPath()}]]/card/x_member_card.do'
+                    }
+                },
+                error: function (jqXHR) {
+                    alert("更新失败, 请重新再试!");
+                }
+            });*/
+        })
+
+
+        /*function saveCardEdit() {
+            //提交表单
+            $.ajax({
+                url: "[[${#request.getContextPath()}]]/card/cardEdit.do",
+                type: "post",
+                data: editForm,
+                success: function (data) {
+                    if (data.version === 4) {
+                        //刷新界面
+                        window.location.reload();
+                    } else {
+                        $("input[name='phone']").after("<span class='text-danger'>" + data.note + "</span>");/!*??干嘛*!/
+                        window.location.reload();
+                    }
+                },
+                error: function (jqXHR) {
+                    alert("更新失败, 请重新再试!");
+                }
+
+            });
+        }*/
+
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        //复选框 全选
+        $('#check_all').on('ifChecked', function (event) {
+            $('input').iCheck('check');
+        });
+        //复选框 反选
+        $('#check_all').on('ifUnchecked', function (event) {
+            $('input').iCheck('uncheck');
+        });
+    });
+</script>
+</body>
+</html>

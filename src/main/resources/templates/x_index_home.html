@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>X+约课系统 - 首页面</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../static/css/plugins/datapicker/bootstrap-datepicker.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/datapicker/bootstrap-datepicker.css}">
+    <link href="favicon.ico" rel="shortcut icon" th:href="@{/static/ico/favicon.ico}">
+    <link href="../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../static/css/font-awesome.min.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.min.css(v='4.4.0')}">
+    <link href="../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../static/css/style.css?v=5.0" rel="stylesheet" th:href="@{/static/css/style.css(v='5.0')}">
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+    <!-- ECharts -->
+    <script src="../static/js/plugins/echarts/echarts-all.js"
+            th:src="@{/static/js/plugins/echarts/echarts-all.js}"></script>
+    <!-- 全局js -->
+    <script src="../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+    <script src="../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+    <!-- Sweet alert -->
+    <script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+            th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+    <style type="text/css">
+        .box {
+            background-color: white;
+            width: 330px;
+            height: 70px;
+            border: 1px solid pink;
+            float: left;
+            margin-top: 15px;
+        }
+
+        .selecttime {
+            width: 270px;
+            height: 30px;
+            float: left;
+            margin-top: 15px;
+            margin-left: 17px;
+            cursor: pointer;
+        }
+
+        .left {
+            margin-left: 12px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+
+<!--查询某一时间段内的约课用户信息-->
+<div class="wrapper wrapper-content">
+    <div class="box" style="margin-left: 10px; width: 300px">
+        <span class="left" id="totalMembers" style="font-size: 25px;"><strong>34</strong></span>
+        <p class="left">会员总数</p>
+    </div>
+    <div class="box " style="margin-left: 10px ;width: 300px">
+        <span class="left" id="activeMembers" style="font-size: 25px"><strong>2</strong></span>
+        <p class="left">活跃用户(近一个月有过约课的用户)</p>
+    </div>
+    <div class="box " style="margin-left: 10px; width: 300px">
+        <span class="left" id="totalReservations" style="font-size: 25px"><strong>78</strong></span>
+        <p class="left">预约总数</p>
+    </div>
+
+    <div class="box " style="margin-left: 50px; height: 10px; width: 80px">
+        <a class="btn btn-primary block full-width m-b" href="javascript:void(0)" onclick="location.reload()">刷新数据</a>
+    </div>
+
+
+    <!--<div  class="box " >
+        <button  class="btn btn-primary">刷新数据</button>
+    </div>-->
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <!--第一幅图，堆叠柱状图 当前月每天新增与流失人数-->
+    <div style="background-color: white;width: 1050px;margin-top: 130px;text-align: center;margin-left: 18px">
+        <div id="broken_line" style="width: 1000px;height:400px;"></div>
+        <script type="text/javascript">
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChartLine = echarts.init(document.getElementById('broken_line'));
+            //图表参数设置
+            var option;
+
+
+            //首页统计数据 新增与流失人数统计 statisticsOfNewAndLostPeople
+            $(function () {
+                $.get("[[${#request.getContextPath()}]]/index/homePageInfo/statisticsOfNewAndLostPeople.do", {}, function (data) {
+                    var infoVo = data.data;
+                    if (data.code === 0 && infoVo != null) {
+
+                        option = {
+                            legend: {
+                                data: ['流失', '新增'],
+                                left: '10%'
+                            },
+                            tooltip: {},
+                            xAxis: {
+                                data: infoVo.time,
+                                name: infoVo.xname,
+                                axisLine: {onZero: true},
+                                splitLine: {show: false},
+                                splitArea: {show: false}
+                            },
+                            yAxis: {
+                                name: '/人次'
+                            },
+                            grid: {
+                                bottom: 100
+                            },
+                            series: [
+                                {
+                                    name: '流失',
+                                    color: 'DarkGray',
+                                    type: 'bar',
+                                    stack: 'one',
+                                    data: infoVo.data2
+                                },
+                                {
+                                    name: '新增',
+                                    color: 'PaleGreen',
+                                    type: 'bar',
+                                    stack: 'one',
+                                    data: infoVo.data
+                                }
+                            ]
+                        };
+
+                    } else {
+                        swal(data.msg, "", "info");
+                        // setTimeout(function () {
+                        // }, 1200)
+                    }
+
+                    // 隐藏气泡
+                    myChartLine.hideLoading();
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChartLine.setOption(option);
+                });
+            })
+        </script>
+    </div>
+
+    <!--        第二幅图，填充颜色的折线图  当前月每日收费统计statisticsOfDailyCharge-->
+    <div style="background-color: white;width: 1050px;margin-top: 30px;text-align: center;margin-left: 18px">
+        <div id="ChartLine2" style="width: 1000px;height:400px;"></div>
+        <script type="text/javascript">
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChartLine2 = echarts.init(document.getElementById('ChartLine2'));
+            //图表参数设置
+            var option;
+
+            //首页统计数据
+            $(function () {
+                $.get("[[${#request.getContextPath()}]]/index/homePageInfo/statisticsOfDailyCharge.do", {}, function (data) {
+
+                    var info = data.data;
+                    if (data.code === 0 && null != info) {
+                        option = {
+                            title: {
+                                text: info.title
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data: ['收费']
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            toolbox: {
+                                feature: {
+                                    saveAsImage: {}
+                                }
+                            },
+                            xAxis: {
+                                name: info.xname,
+                                type: 'category',
+                                boundaryGap: false,
+                                data: info.time
+                            },
+                            yAxis: {
+                                name: '收费金额',
+                                type: 'value'
+                            },
+                            series: [
+                                {
+                                    name: '收费',
+                                    type: 'line',
+                                    stack: 'Total',
+                                    data: info.data,
+
+                                    areaStyle: {
+                                        color: 'LightPink'
+                                    }
+                                }
+                            ]
+                        };
+                    } else {
+                        setTimeout(function () {
+                            swal(data.msg, "", "info");
+                        }, 1200)
+                    }
+                    myChartLine2.hideLoading();
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChartLine2.setOption(option);
+
+                });
+            })
+        </script>
+    </div>
+
+
+    <!--        第三幅图,南丁格尔玫瑰图【饼图】 会员卡统计Membership card statistics-->
+    <div style="background-color: white;width: 1050px;text-align: center;margin-left: 18px;margin-top: 30px">
+        <div id="pie" style="width: 1000px;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChartPie = echarts.init(document.getElementById('pie'));
+            $(function () {
+                $.post("[[${#request.getContextPath()}]]/index/homePageInfo/statisticsOfMemberCard.do", function (data) {
+
+                    console.log(data);
+
+                    var info = data.data;
+                    console.log(info);
+
+                    var nameList = [];
+                    for (var i = 0; i < info.length; i++) {
+                        var key = info[i].name;
+                        //存放name到数组中
+                        nameList.push(key);
+                    }
+
+                    if (data.code === 0) {
+
+
+                        option = {
+                            title: {
+                                text: '会员卡统计',
+                                subtext: '绑定会员卡数量',
+                                left: 'center'
+                            },
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: '{a} <br/>{b} : {c} ({d}%)'
+                            },
+                            legend: {
+                                top: 'bottom'
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    mark: {show: true},
+                                    dataView: {show: true, readOnly: false},
+                                    restore: {show: true},
+                                    saveAsImage: {show: true}
+                                }
+                            },
+                            series: [
+                                {
+                                    name: 'Nightingale Chart',
+                                    type: 'pie',
+                                    radius: [50, 200],
+                                    center: ['50%', '50%'],
+                                    roseType: 'area',
+                                    itemStyle: {
+                                        borderRadius: 10
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '20',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    data: info
+                                }
+                            ]
+                        };
+                    } else {
+                        setTimeout(function () {
+                            swal(data.msg, "", "info");
+                        }, 1200)
+                    }
+
+                    myChartPie.setOption(option);
+                });
+            });
+
+        </script>
+    </div>
+
+
+</div>
+
+<!--    bookstrap-->
+<script src="../static/js/plugins/datapicker/bootstrap-datepicker.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+
+
+<!-- 自定义js -->
+<script src="../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Peity -->
+<script src="../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+<script>
+    /* 日期控件属性设置 */
+    $('.myDate').datepicker({
+        language: "zh-CN",//中文版
+        clearBtn: true,//清除
+        autoclose: true,
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        todayBtn: false,//今日按钮
+        startDate: '1970-01-01', //与你自己设置的格式一致yyyy-mm-dd，未设置的话与默认格式一致mm/dd/yyyy
+        endDate: '2070-01-01'
+    });
+
+    $(function () {
+        $.post("[[${#request.getContextPath()}]]/index/homePageInfo.do", function (data) {
+            var indexData = data.data;
+            $("#totalMembers").html(indexData.totalMembers);
+            $("#activeMembers").html(indexData.activeMembers);
+            $("#totalReservations").html(indexData.totalReservations);
+        });
+    });
+
+</script>
+
+</body>
+
+</html>

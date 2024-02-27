@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.dao.EmployeeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.kclm.xsap.entity.EmployeeEntity" id="employeeMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="introduce" column="introduce"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="note" column="note"/>
+        <result property="roleName" column="role_name"/>
+        <result property="rolePassword" column="role_password"/>
+        <result property="roleType" column="role_type"/>
+        <result property="roleEmail" column="role_email"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastModifyTime" column="last_modify_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <select id="selectTeacherNameListByIds" resultType="com.kclm.xsap.entity.EmployeeEntity">
+        select `name`, `is_deleted`
+        from t_employee
+        where `id`
+        in
+        <foreach collection="teacherIdList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

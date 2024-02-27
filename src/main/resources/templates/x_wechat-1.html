@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--360浏览器优先以webkit内核解析-->
+
+    <title>H+ 后台主题UI框架 - 主页示例</title>
+
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}" rel="stylesheet">
+    <link href="../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}" rel="stylesheet">
+    <link href="../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="row  border-bottom white-bg dashboard-header">
+        <div class="col-sm-12">
+          <h2><b>如果您有已认证的微信公众号</b></h2>
+          <small><b>复制下方URL，去微信公众号设置菜单，会员关注公众号，验证身份即可自助约课</b></small>
+		  <br><b>会员客户端：</b><a href="https://www.kclmedu.com/">https://www.kclmedu.com/</a></br>
+		  <h2><b>如果您有个人微信公众号</b></h2>
+		  <small><b>保存约课二维码照片，在公众号->自定义菜单中配置该图片，会员点击该菜单即可扫描约课二维码预约</b></small>
+		  <br>
+		  <img src="../static/img/x_wechat-1.jpg" th:src="@{/static/img/x_wechat-1.jpg}">
+		  <br>
+        </div>
+        
+    <!-- 全局js -->
+    <script src="../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+    <script src="../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+	<script src="../static/js/plugins/layer/layer.min.js" th:src="@{/static/js/plugins/layer/layer.min.js}"></script>
+
+    <!-- 自定义js -->
+    <script src="../static/js/content.js" th:src="@{/static/js/content.js}"></script>
+
+    <!-- 欢迎信息 -->
+    <script src="../static/js/welcome.js" th:src="@{/static/js/welcome.js}"></script>
+</body>
+
+</html>

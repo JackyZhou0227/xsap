@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+培训机构约课系统 - 添加会员</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+
+    <!-- bootstrap-datepicker -->
+    <link href="../../static/css/plugins/datapicker/bootstrap-datepicker.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/datapicker/bootstrap-datepicker.css}">
+
+    <style type="text/css">
+        .img-circle {
+            height: 30px;
+            width: 30px;
+        }
+
+        .img_line {
+            width: 20%;
+        }
+
+        .input_style {
+            background-color: #FFFFFF;
+            border: 1px solid #e5e6e7;
+            border-radius: 1px;
+            padding: 6px 12px;
+            font-size: 14px;
+            transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+        }
+
+        .input_style:focus {
+            border-color: #1ab394 !important;
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="height: 120px">
+                    <div class="col-md-12 col-md-offset-2" style="padding: 30px">
+                        <img alt="会员信息" class="img-circle"
+                             src="../../static/img/x_member_add_1.png" th:src="@{/static/img/x_member_add_1.png}">
+                        <label>会员信息</label>
+                        <img alt="线条" class="img_line"
+                             src="../../static/img/x_member_add_4_1.png" th:src="@{/static/img/x_member_add_4_1.png}">
+
+                        <img alt="绑定会员卡" class="img-circle"
+                             src="../../static/img/x_member_add_2_1.png" th:src="@{/static/img/x_member_add_2_1.png}">
+                        <label>绑定会员卡</label>
+                        <img alt="线条" class="img_line"
+                             src="../../static/img/x_member_add_4_1.png" th:src="@{/static/img/x_member_add_4_1.png}">
+
+                        <img alt="完成" class="img-circle"
+                             src="../../static/img/x_member_add_3_1.png" th:src="@{/static/img/x_member_add_3_1.png}">
+                        <label>完成</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--添加会员-加- 绑定会员卡-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content add" style="">
+
+                    <!--添加会员表单-->
+                    <form class="form-horizontal" id="addForm" method="post">
+                        <!--会员姓名-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                会员姓名</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="name" placeholder="会员姓名" type="text">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="name"></label>
+                            </div>
+                        </div>
+                        <!--手机号-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                手机号</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="phone" placeholder="手机号" type="text">
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="phone"></label>
+                            </div>
+                        </div>
+                        <!--性别-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                性别</label>
+                            <div class="col-sm-6">
+                                <label class="control-label">
+                                    <input checked="checked" name="sex" type="radio" value="男">
+                                    <span>男</span>
+                                </label>&nbsp;&nbsp;
+
+                                <label class="control-label">
+                                    <input name="sex" type="radio" value="女">
+                                    <span>女</span>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="sex"></label>
+                            </div>
+                        </div>
+                        <!--出生日期-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                出生日期</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="myDate" name="birthday" placeholder="yyyy-mm-dd"/>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="birthday"></label>
+                            </div>
+                        </div>
+
+                        <!--备注-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                备注</label>
+                            <div class="col-sm-6">
+                                <textarea class="col-sm-12 form-control" name="note" placeholder="会员备注信息..."
+                                          rows="5"></textarea>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="note"></label>
+                            </div>
+                        </div>
+                        <!--保存模式-->
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                <p class="btn btn-success" id="saveEmpWithBinding" name="save_info">保存,为该会员绑定会员卡</p>
+                                <p class="btn btn-white" id="saveEmpWithNull" name="save_info">保存会员信息,暂不绑定会员卡</p>
+                                <p class="btn btn-white" id="cancelSaveBtn" type="reset">取消</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!--保存会员同时绑定表单-->
+                <div class="ibox-content binding" style="display: none">
+                    <!--绑定会员表单-->
+                    <form class="form-horizontal" id="bindForm">
+                        <!-- 隐藏域，保存会员id -->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label" style="margin-bottom: 30px">选择会员卡</label>
+                            <!-- 隐藏域，保存会员id -->
+                            <input name="memberId" type="hidden"/>
+                            <!-- 隐藏域，管理员名 -->
+                            <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+                            <div class="col-md-8">
+                                <select class="form-control" id="selectList" name="cardId">
+                                    <option value="">--请选择绑定的会员卡--</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label" tip="cardId"></label>
+                            </div>
+                        </div>
+                        <hr>
+                        <!--充值次数-->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">充值次数</label>
+                            <div class="col-md-6">
+                                <input class="input_style" min="0" name="validCount" type="number" value="50">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label" tip="validCount"></label>
+                            </div>
+                        </div>
+
+                        <!--有效期-->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">有效期</label>
+                            <div class="col-md-6">
+                                <input class="input_style" min="0" name="validDay" type="number" value="30">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label" tip="validDay"></label>
+                            </div>
+                        </div>
+
+                        <!--实收金额-->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">实收金额</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <div class="input-group-addon">￥</div>
+                                    <input class="form-control" min="0" name="receivedMoney" placeholder="金额"
+                                           type="text">
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label" tip="receivedMoney"></label>
+                            </div>
+                        </div>
+
+                        <!--支付方式-->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">选择支付方式</label>
+                            <div class="col-md-6">
+                                <select class="form-control" id="payList" name="payMode">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label" tip="payMode"></label>
+                            </div>
+                        </div>
+
+                        <!--备注-->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">备注</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" name="note" rows="3"></textarea>
+                            </div>
+                        </div>
+
+
+                        <button class="btn btn-danger col-md-offset-2 control-label" id="bind_confirm" type="button">
+                            确认
+                        </button>
+                        <button class="btn btn-primary" id="cancelBindingBtn" type="button">取消</button>
+
+                    </form>
+                </div>
+
+
+                <div class="ibox-content complete" style="display: none">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="jumbotron">
+                                    <h1>会员注册成功！</h1>
+                                    <p></p>
+                                    <p><a class="btn btn-primary btn-lg" href="#" th:href="@{/member/x_member_list.do}">点我回到会员页</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+
+<!-- Data picker -->
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+<script>
+    $(function () {
+        /*时间控件配置*/
+        $('#myDate').datepicker({
+            language: "zh-CN",
+            clearBtn: true,//清除
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy-mm-dd',
+            todayBtn: false,//今日按钮
+            startDate: '1970-1-1', //与你自己设置的格式一致yyyy-mm-dd，未设置的话与默认格式一致mm/dd/yyyy
+            endDate: '2070-1-1'
+        });
+
+        /*======== 获取表单数据  =========*/
+
+        /* 获取表单数据 - 添加会员 */
+        var formAdd = "";
+        $("p[name='save_info']").on("mouseenter", function () {
+            formAdd = $("#addForm").serialize();
+            console.log(formAdd);
+        });
+
+
+        /* 获取表单数据 - 会员绑卡 */
+        var formBind = "";
+        $("#bind_confirm").on("mouseenter", function () {
+            formBind = $("#bindForm").serialize();
+            console.log(formBind);
+        });
+
+
+        /*======== 下拉列表填充数据  =========*/
+
+        /* 填充下拉列表 - 会员卡 */
+        var cardListSave = "";
+        $.post("[[${#request.getContextPath()}]]/card/cardList.do", function (data) {
+            cardListSave = data.data;
+            for (var i = 0; i < cardListSave.length; i++) {
+                $("#selectList").append("<option  value='" + cardListSave[i].id + "'>" + cardListSave[i].name + "</option>");
+            }
+
+        });
+
+        /* 选中的列表项 - 会员卡 */
+        $("#selectList").change(function () {
+            let selectOne = $(this).val();
+            for (let i = 0; i < cardListSave.length; i++) {
+                $("option[value='" + cardListSave[i].id + "']").attr("selected", "");
+                if (selectOne === cardListSave[i].id) {
+                    $("option[value='" + selectOne + "']").attr("selected", "selected");
+                }
+            }
+        });
+
+        /* 填充下拉列表 - 支付方式 */
+        var payListSave = [
+            {"id": 1, "name": "现金"},
+            {"id": 2, "name": "支付宝"},
+            {"id": 3, "name": "微信"},
+            {"id": 4, "name": "银行卡"}
+        ];
+        const payList = payListSave;
+        for (let i = 0; i < payList.length; i++) {
+            $("#payList").append("<option  value='" + payList[i].name + "'>" + payList[i].name + "</option>");
+        }
+
+        /* 选中的列表项 - 支付方式 */
+        $('#payList').change(function () {
+            const selectOne = $(this).val();
+            for (let i = 0; i < payListSave.length; i++) {
+                $("option[value='" + payListSave[i].name + "']").attr("selected", "");
+                if (selectOne === payListSave[i].name) {
+                    $("option[value='" + selectOne + "']").attr("selected", "selected");
+                }
+            }
+            console.log("pay: " + selectOne);
+        });
+
+
+        /*===========表单数据提交===========*/
+
+        /* 保存会员信息,绑定会员卡 */
+        $('.btn.btn-success').click(function () {
+            //添加会员检验
+            $.post("[[${#request.getContextPath()}]]/member/memberAdd.do", formAdd, function (data) {
+
+                if (data.code === 0) {
+                    console.log($("input[name='memberId']").val(data.data.id));
+                    $('.ibox-content.add').css('display', 'none');
+                    $('.ibox-content.binding').css('display', 'block');
+                    $('.img_line:first').attr('src', '../static/img/x_member_add_4_2.png');
+                    $('img:nth-child(4)').attr('src', '../static/img/x_member_add_2_2.png');
+
+                    /* 绑定会员卡确认 */
+                    $('.btn.btn-danger.col-md-offset-2.control-label').click(function () {
+                        $.post("[[${#request.getContextPath()}]]/cardBind/memberBind.do", formBind, function (data) {
+                            //移除重复提示 - 绑卡
+                            if (data.code === 0) {
+                                //页面跳转
+                                $('.ibox-content.binding').css('display', 'none');
+                                $('.ibox-content.complete').css('display', 'block');
+                                $('img:nth-child(6)').attr('src', '../static/img/x_member_add_4_2.png');
+                                $('img:nth-child(7)').attr('src', '../static/img/x_member_add_3_2.png');
+                            } else if (data.code === 400) {
+                                let errors = data.errorMap;
+                                for (const key in errors) {
+                                    $('[tip=${key}]').html("");
+                                    //错误提示回显
+                                    $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                                }
+                                // $("#selectList").after("<span class='text-danger'>"+ bindMsg.note +"</span>");
+                            } else {
+                                alert("绑定未知错误！");
+                            }
+                        });
+                    });
+
+                } else if (data.code === 400) {
+                    //参数校验错误回显
+                    let errors = data.errorMap;
+                    for (const key in errors) {
+                        //移除重复提示 - 会员添加
+                        $(`[tip=${key}]`).html("");
+                        //错误提示回显
+                        $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                    }
+                } else {
+                    alert("注册会员未知错误！");
+                }
+            });
+
+        });
+        /* 保存会员信息,暂不绑定会员卡 */
+        $('.btn.btn-white:nth-child(2)').click(function () {
+            //请求数据
+            $.ajax({
+                url: "[[${#request.getContextPath()}]]/member/memberAdd.do",
+                type: "post",
+                data: formAdd,
+                success: function (data) {
+                    if (data.code === 0) {
+                        //页面跳转
+                        $('.ibox-content.add').css('display', 'none');
+                        $('.ibox-content.complete').css('display', 'block');
+                        $('.img_line:first').attr('src', '../static/img/x_member_add_4_2.png');
+                        $('img:nth-child(4)').attr('src', '../static/img/x_member_add_2_2.png');
+                        $('img:nth-child(6)').attr('src', '../static/img/x_member_add_4_2.png');
+                        $('img:nth-child(7)').attr('src', '../static/img/x_member_add_3_2.png');
+                    } else if (data.code === 400) {
+                        //参数校验错误回显
+                        let errors = data.errorMap;
+                        for (const key in errors) {
+                            //移除重复提示 - 会员添加
+                            $(`[tip=${key}]`).html("");
+                            //错误提示回显
+                            $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                        }
+                    } else {
+                        alert("注册会员未知错误！");
+                    }
+
+
+                    // else{
+                    //    	$("input[name='phone']").after("<span class='text-danger'>"+ memberMsg.note +"</span>");
+                    // }
+                },
+                error: function () {
+                    alert("添加失败");
+                    window.location.reload();
+                }
+            });
+
+        });
+
+
+        $('#cancelSaveBtn').click(function () {
+            window.location.href="/member/x_member_list.do"
+        });
+        $('#cancelBindingBtn').click(function () {
+            window.location.href="/member/x_member_list.do"
+        });
+    });
+</script>
+
+<!-- Image cropper -->
+<script src="../../static/js/plugins/cropper/cropper.min.js"
+        th:src="@{/static/js/plugins/cropper/cropper.min.js}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>X+约课系统 - 课程预约详情</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}">
+    <!-- Morris -->
+    <link href="../../static/css/plugins/morris/morris-0.4.3.min.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/morris/morris-0.4.3.min.css}">
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+    <style>
+        /*样式重写*/
+        .ibox-content-2 {
+            background-color: #ffffff;
+            color: inherit;
+            padding: 15px 20px 20px 20px;
+            border-color: #e7eaec;
+            -webkit-border-image: none;
+            -o-border-image: none;
+            border-image: none;
+            border-style: solid solid none;
+            border-width: 1px 0px;
+            height: 270px;
+        }
+
+        .inmodal .modal-body {
+            background: none;
+        }
+
+        .inmodal .modal-title {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .inmodal .modal-header {
+            padding: 15px 15px;
+            text-align: left;
+        }
+
+        hr.style-one { /*内嵌水平线*/
+            width: 100%;
+            margin: 0 auto;
+            border: 0;
+            height: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        hr.style-two { /*透明渐变水平线*/
+            width: 100%;
+            margin: 0 auto;
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+        }
+
+        hr.style-three { /*渐变*/
+            width: 100%;
+            margin: 0 auto;
+            border: 0;
+            height: 1px;
+            background: #333;
+            background-image: linear-gradient(to right, #ccc, #333, #ccc);
+        }
+    </style>
+</head>
+<!--排课详情页面  by qikran-->
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!--上面内容-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content-2 p-md">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-sm12">
+                                <h3><label class="col-sm-3 text-navy">课程名:</label></h3>
+                                <h2><strong>钢琴专业课</strong></h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <hr class="style-three">
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">开始时间:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="startTime">2020-05-31 15:32:05</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">结束时间:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="endTime">2020-06-31 15:32:05</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">时长:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="duration">45<span>分钟</span></span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">限制性别:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="limitSex">全部</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">限制年龄:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="limitAge">不限</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">支持会员卡:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="supportCards">12课时一对一 96课时 24课时 48课时 12课时</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">上课老师:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="teacherName">上课老师</span>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-navy">上课人数:</label>
+                            <span class="col-sm-8 col-sm-pull-1" id="classNumbers">1/1</span>
+                            <!-- <a data-toggle="modal" data-target="#updateNum" class="text-info">修改</a> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-md-push-1 text-right">
+                        <button class="btn btn-primary" data-target="#addReservation" data-toggle="modal">添加会员预约</button>
+                        <button class="btn btn-success" id="exportData">导出预约数据</button>
+                        <button class="btn btn-danger  demo3" id="delCourse">删除课程</button>
+                        <button class="btn btn-default " onclick="window.history.go(-1)" id="cancel">返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--上面内容结束-->
+    <!--标签栏-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content p-md">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a aria-expanded="true" data-toggle="tab" href="#tab-1">已预约</a>
+                            </li>
+                            <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-2">预约记录</a>
+                            </li>
+                            <!-- add by yejf: 这里统计出当前计划时间的课 有哪些学员完成了上课 -->
+                            <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-3">上课数据</a>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab-1">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                                        <thead>
+                                        <tr>
+                                            <th>会员</th>
+                                            <th>手机号</th>
+                                            <th>使用会员卡</th>
+                                            <th>预约人数</th>
+                                            <th>使用次数</th>
+                                            <th>操作时间</th>
+                                            <th>操作人</th>
+                                            <!--<th>预约来源</th>-->
+                                            <th>预约备注</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab-2">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example-2">
+                                        <thead>
+                                        <tr>
+                                            <th>会员</th>
+                                            <th>手机号</th>
+                                            <th>会员卡</th>
+                                            <th>预约人数</th>
+                                            <th>使用次数</th>
+                                            <th>操作时间</th>
+                                            <th>操作人</th>
+                                            <!--<th>预约来源</th>-->
+                                            <th>预约结果</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--  end of tab2 -->
+
+                            <div class="tab-pane" id="tab-3">
+                                <div class="panel-body">
+                                    <!-- 添加一个批理确认扣费按钮 -->
+                                    <button class="btn btn-primary" id="ensureAll">一键确认扣费</button>
+                                    <table class="table table-striped table-bordered table-hover dataTables-example-3">
+                                        <thead>
+                                        <tr>
+                                            <!-- <th><input type="checkbox" class="checkbox" id="selectAll"/> </th> -->
+                                            <th>会员</th>
+                                            <th>手机号</th>
+                                            <th>会员卡</th>
+                                            <th>性别</th>
+                                            <th>出生日期</th>
+                                            <th>课程消费次数(单人)</th>
+                                            <th>听课人数</th>
+                                            <th>操作时间</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <!--标签栏结束-->
+</div>
+
+<!--模态窗-->
+
+<!--修改人数模态窗-->
+<div aria-hidden="true" class="modal inmodal" id="updateNum" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <p class="modal-title">修改上课人数</p>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" name="updateNumForm" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">上课人数</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" name="number" type="number" value="1">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                <button class="btn btn-primary" name="btnUpdate" type="button">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--添加会员预约窗-->
+<div aria-hidden="true" class="modal inmodal" id="addReservation" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <p class="modal-title">添加会员预约</p>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="addReserveForm" method="get">
+                    <!-- 隐藏域，id -->
+                    <input name="scheduleId" th:value="${ID}" type="hidden" value="1"/>
+                    <!-- 隐藏域，管理员名 -->
+                    <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+
+                    <div align="center" class="form-group">
+                        <span class="text-danger" id="reserve_tip"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">选择会员</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <!-- 隐藏域，id -->
+                                <input id="member" name="memberId" type="hidden"/>
+
+                                <input class="form-control" id="chooseMember" placeholder="输入手机号或名字搜索" type="text">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" type="button">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">可用会员卡</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="cardList" name="cardName">
+                                <option id="default" value="">--请选择--</option>
+                            </select>
+                            <input type="hidden" name="cardId" id="cardId">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">该会员的该会员卡</label>
+                        <p class="col-sm-3 text-danger" id="p_tip" style="margin-top:7px">剩余<span id="remained">0</span>次
+                        </p>
+                        <label class="col-sm-3 control-label">每节课每人收取<span class="text-danger"
+                                                                           id="cost">0</span>次</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">预约人数</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" name="reserveNums" required type="number" value="1">
+                        </div>
+                        <!-- <span class="col-sm-3 text-left" style="margin-top:7px">总共使用<span id="spent">1</span>次</span> -->
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">备注</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="note" placeholder="备注" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                <button class="btn btn-primary" id="reserveAdd_btn" type="button">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 上课扣费弹出框 -->
+<div aria-hidden="true" class="modal inmodal fade" id="details_deduction" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">扣费</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="consumeForm" method="post">
+                    <div class="form-group">
+                        <!-- 隐藏域，会员id，卡id -->
+                        <input id="classId" name="classId" type="hidden"/>
+                        <input id="consume_memberId" name="memberId" type="hidden"/>
+                        <input id="consume_cardId" name="cardBindId" type="hidden"/>
+                        <!--<input id="scheduleId" name="scheduleId" type="hidden"/>-->
+                        <input id="scheduleId" name="scheduleId" th:value="${ID}" type="hidden"/>
+                        <!-- 隐藏域，管理员名 -->
+                        <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+
+                        <label class="col-sm-2 control-label">
+                            扣除次数</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="cardCountChange" name="cardCountChange" placeholder="1" type="number" value="1">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="control-label" tip="cardCountChange"></label>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            应扣金额</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="amountOfConsumption" name="amountOfConsumption" placeholder="0" type="number" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            扣除有效期</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" name="cardDayChange" placeholder="0" type="number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">
+                            备注</label>
+                        <div class="col-sm-6">
+                            <textarea class="col-sm-12 form-control" name="note" placeholder="备注支付信息..."
+                                      rows="5"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                <button class="btn btn-primary" id="consume_btn" type="button">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模态窗结束-->
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js}"></script>
+<!-- 自定义js -->
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js"
+        th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/suggest/bootstrap-suggest.min.js"
+        th:src="@{/static/js/plugins/suggest/bootstrap-suggest.min.js}"></script>
+
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+<!--事件监听-->
+<script>
+    /*-------------确认扣费------------*/
+    //后台传来的id
+    var schedule_id = [[${ID}]]
+
+    var consumeForm = "";
+    $("#consume_btn").on("mouseenter", function () {
+        consumeForm = $("#consumeForm").serialize();
+        console.log(consumeForm);
+    });
+
+    function toConsume(member_id, card_id, class_id, timesCost, reserveNums, schedule_id) {
+
+        let amounts_payable
+        /*获取单次所使用的会员卡默认单人单节课单次消耗金额*/
+        $.post("/schedule/queryAmountsPayable.do", {bindCardId: card_id}, function (data) {
+            if (data.code === 0) {
+                amounts_payable = data.data;
+                console.log('后台传入的金金额=' + amounts_payable);
+
+                $("#consume_memberId").val(member_id);
+                $("#consume_cardId").val(card_id);
+                $("#classId").val(class_id);
+                $("#cardCountChange").val(timesCost * reserveNums);
+
+                let money = amounts_payable * timesCost * reserveNums;
+                console.log('money=' + money);
+                $("#amountOfConsumption").val(money);
+
+            } else {
+                //打印失败信息
+                swal("无法扣费" , data.msg, info);
+            }
+        });
+
+
+
+        var reserve_id = "";
+        $("#consume_btn").on("mouseenter", function () {
+            $.post("/reserve/getReserveId.do", {memberId: member_id, scheduleId: schedule_id}, function (result) {
+                reserve_id = result.id;
+                console.log(reserve_id);
+            });
+        });
+        $("#consume_btn").click(function () {
+            swal({
+                title: "您确定要确认扣费吗？",
+                text: "注意:一旦扣费成功，将无法取消！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确认",
+                closeOnConfirm: false
+            }, function () {
+                $.post("/schedule/consumeEnsure.do", consumeForm, function (data) {
+                    if (data.code == 0) {
+                        console.log("确认上课ok");
+                        swal(data.msg, "", "success");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else if (data.code === 400) {
+                        // swal("确认上课失败！", data.msg, "info");
+                        setTimeout(function () {
+                            $(`[tip=cardCountChange]`).html("");
+                            $("<span class='text-danger'>" + data.errorMap['cardCountChange'] + "</span>").appendTo($("[tip=cardCountChange]"));
+                        },1000);
+                    }else {
+                        swal("确认上课失败！", data.msg, "info");
+                        setTimeout(function () {
+                            $("button[name='cancel_btn'][value='" + reserve_id + "']")
+                                .removeClass("btn-warning").addClass("btn-default").attr("disabled", true);
+                            window.location.reload();
+                        },1000);
+                    }
+                });
+            });
+        });
+    }
+
+    $(function () {
+        /*-------一键确认  按钮添加 单击事件---------*/
+        $("#ensureAll").click(function () {
+            swal({
+                title: "您确定要一键确认已上课么",
+                text: "注意:一键确认操作不可逆",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "一键确认",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    url: "/schedule/consumeEnsureAll.do",
+                    method: "post",
+                    data: {scheduleId: [[${ID}]], operator: '[[${session.LOGIN_USER.name}]]'},
+                    success: function (data) {
+                        //成功
+                        if (data.code === 0) {
+                            swal("一键确认扣费成功！", "", "success");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            swal("一键扣费失败！", data.msg, "info");
+                        }
+                    },
+                    error: function (jqXHR) {
+                        // 失败
+                        alert("一件确认无效");
+                    }
+                });
+            });
+        });
+    });
+
+    /*----------预约取消请求----------*/
+    function cancel_btn(reserve_id) {
+        swal({
+            title: "您确定要取消本次预约吗？",
+            text: "注意:如果对这堂课取消预约超过3次，则不能再次预约了",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            closeOnConfirm: false
+        }, function () {
+            $.post("/reserve/cancelReserve.do", {reserveId: reserve_id}, function (data) {
+                // var result = data.data;
+                // var tip = result.comment;
+                if (data.code == 0) {
+                    swal("取消预约成功！", "", "success");
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    swal("取消预约失败！", data.msg, "info");
+                }
+            });
+        });
+
+    }
+
+    /*预约添加*/
+    $(function () {
+        //获取表单数据
+        var addReservationForm = "";
+        $("#reserveAdd_btn").on("mouseenter", function () {
+            addReservationForm = $("#addReserveForm").serialize();
+            console.log("----------addReserveForm--------");
+            console.log(addReservationForm);
+        });
+        //添加会员预约
+        $("#reserveAdd_btn").click(function () {
+
+            swal({
+                title: "您确定要预约该课程么？",
+                text: "预约成功后需要完成学习哦",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#68d70d",
+                confirmButtonText: "添加",
+                closeOnConfirm: false
+            }, function () {
+                $.post("/reserve/addReserve.do", addReservationForm, function (data) {
+                    if (data.code === 0) {
+                        swal("添加预约成功！", data.msg, "success");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        swal("添加失败！", data.msg, "info");
+                        etTimeout(function () {
+                            window.location.reload();
+                        }, 1200);
+                    }
+                });
+
+            });
+        });
+
+
+        /*-----------删除事件-----------*/
+        $('.demo3').click(function () {
+            swal({
+                title: "您确定要删除该课程么",
+                text: "注意:若有过会员预约记录，则无法删除此课",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                closeOnConfirm: false
+            }, function () {
+                $.post("/schedule/deleteOne.do", {id: schedule_id}, function (data) {
+                    if (data.code === 0) {
+                        swal("删除成功！", "", "success");
+                        setTimeout(function () {
+                            window.location.href = "/schedule/x_course_schedule.do";
+                        }, 1000);
+                    } else {
+                        swal("删除失败！", "当前课程已有预约", "info");
+                    }
+                });
+
+            });
+
+        });
+
+
+
+        /*------------导出数据----------*/
+        $("#exportData").click(function () {
+            $.post("/reserve/exportReserve.do", {scheduleId: [[${ID}]]}, function (result) {
+                if (result == "yes") {
+                    alert("导出数据成功")
+                } else {
+                    alert("导出数据，暂未实现");
+                }
+            });
+        });
+
+        /*------会员搜索------*/
+        $("#chooseMember").bsSuggest({
+            url: "[[${#request.getContextPath()}]]/member/toSearch.do",
+            effectiveFieldsAlias: {id: "ID", name: "会员名", sex: "性别", phone: "手机号"},
+            effectiveFields: ["id", "name", "sex", "phone"],
+            ignorecase: true,
+            showHeader: true,
+            showBtn: false, //不显示下拉按钮
+            delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+            idField: "id",
+            keyField: "name",
+            clearable: true
+        })
+            .on("onDataRequestSuccess", function (e, result) {
+                console.log("onDataRequestSuccess: ", result);
+            })
+            .on("onSetSelectValue", function (e, keyword) {
+                $("#member").val(keyword.id);
+                var member_id = $("#member").val();
+                /*---------会员卡搜索，根据选择的会员----------*/
+                var cardListSave = "";
+                $.post("/card/toSearchByMemberId.do", {memberId: member_id}, function (data) {
+                    //移除重复
+                    var cardList = data.value;
+                    $("#default").nextAll().remove();
+                    cardListSave = cardList;
+                    console.log(cardList);
+                    if (cardList == null || cardList.length < 1) {
+                        $("#default").nextAll().remove();
+                        $("#remained").html(0);
+                    }
+
+                    for (var i = 0; i < cardList.length; i++) {
+                        if (cardList[i] != null) {
+                            $("#cardList").append("<option  value='" + cardList[i].name + "'>" + cardList[i].name + "</option>");
+                        }
+                    }
+                });
+                /* 选中的列表项 - 会员卡 */
+                $("#cardList").change(function () {
+                    var selectOne = $(this).val();
+                    for (var i = 0; i < cardListSave.length; i++) {
+                        if (cardListSave[i] != null) {
+                            $("option[value='" + cardListSave[i].name + "']").attr("selected", "");
+                            if (selectOne === cardListSave[i].name) {
+                                let id = cardListSave[i].id;
+                                $('#cardId').attr("value",id);
+                                console.log(id);
+                                $("option[value='" + selectOne + "']").attr("selected", "selected");
+                                //---------显示某会员的某会员卡的提示信息---------
+                                $.post("/card/cardTip.do", {cardId: id, scheduleId: schedule_id}, function (data) {
+                                    //会员对应的卡剩余的次数
+                                    var result = data.data;
+                                    if (result.cardTotalCount > 0) {
+                                        $("#remained").html(result.cardTotalCount);
+                                        $("#cost").html(result.courseTimesCost);
+                                    } else {
+                                        $("#p_tip").html('此卡可用次数不足！请更换或充值次数');
+                                        $("#reserveAdd_btn").attr("disabled","disabled");
+                                    }
+
+                                });
+                            }
+                        } else {
+                            $("#remained").html(0);
+                        }
+                    }
+                });
+                console.log("onSetSelectValue: ", keyword);
+            })
+            .on("onUnsetSelectValue", function () {
+                console.log("onUnsetSelectValue");
+            });
+
+    })
+</script>
+<script>
+
+
+    /*课程详情页头部显示信息*/
+    //后台传来的id
+    var schedule_id = [[${ID}]]
+    /*---------基本信息-----------*/
+    $(function () {
+        $.post("/schedule/scheduleDetail.do", {id: schedule_id}, function (baseInfo) {
+            console.log(baseInfo);
+            $("div h2 strong").html(baseInfo.data.courseName);
+            $("#startTime").html(baseInfo.data.startTime);
+            $("#endTime").html(baseInfo.data.endTime);
+            $("#duration").html(baseInfo.data.duration + "分钟");
+            $("#limitSex").html(baseInfo.data.limitSex);
+            $("#limitAge").html(baseInfo.data.limitAge === -1 ? "无限制" : baseInfo.data.limitAge);
+            $("#supportCards").html(baseInfo.data.supportCards);
+            $("#teacherName").html(baseInfo.data.teacherName);
+            $("#classNumbers").html(baseInfo.data.orderNums + "/" + baseInfo.data.classNumbers);
+            $("#cost").html(baseInfo.data.timesCost);
+        });
+    });
+
+    /*-------已预约--------*/
+    $(function () {
+        $.post("/schedule/reservedList.do", {id: schedule_id}, function (reservedInfo) {
+            $('.dataTables-example').dataTable({
+                "data": reservedInfo.data,
+                "columns": [
+                    {"data": "memberName"},
+                    {"data": "phone"},
+                    {"data": "cardName"},
+                    {"data": "reserveNumbers"},
+                    {"data": "timesCost"},
+                    {"data": "operateTime"},
+                    {"data": "operator"},
+                    /*{"data": "comment"},*/
+                    {"data": "reserveNote"},
+                    {
+                        "data": "reserveId", "render": function (data, type, row) {
+                            var html = "<button name='cancel_btn' onclick='cancel_btn(" + data + ")' value='" + data + "' class='btn btn-warning '>取消预约</button>&nbsp &nbsp";
+                            if (row.classCheck === 1) {
+                                html = "<button name='cancel_btn' class='btn btn-default' disabled >取消预约</button>&nbsp &nbsp";
+                            }
+                            return html;
+                        }
+                    }
+                ],
+                "fnDrawCallback": function () {
+                    console.log("绘制完表格后...");
+                },
+                "bSort": false,
+                "searching": true,
+                "pagingType": "full_numbers",
+                "bLengthChange": false,
+                "info": false,
+            });
+        });
+    });
+
+
+    /*-------预约记录--------*/
+    $(document).ready(function () {
+        $.post("/schedule/reserveRecord.do", {id: schedule_id}, function (reserveRecord) {
+            $('.dataTables-example-2').dataTable({
+                "data": reserveRecord.data,
+                "columns": [
+                    {"data": "memberName"},
+                    {"data": "phone"},
+                    {"data": "cardName"},
+                    {"data": "reserveNumbers"},
+                    {"data": "timesCost"},
+                    {"data": "operateTime"},
+                    {"data": "operator"},
+                   /* {"data": "comment"},*/
+                    {
+                        "data": "reserveStatus",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var status = data;
+                            if (status === 1) {
+                                status = "已预约";
+                            } else {
+                                status = "已取消";
+                            }
+                            let html = "<td>" + status + "</td>";
+                            return html;
+                        }
+                    },
+                ],
+                "autoWidth": false,  //禁用自动宽度
+                "bSort": false,
+                "searching": true,
+                "pagingType": "full_numbers",
+                "bLengthChange": false,
+                "info": false
+            });
+        });
+    });
+
+    /*-------上课数据-------*/
+    $(document).ready(function () {
+        $.post("/schedule/classRecord.do", {id: schedule_id}, function (classRecord) {
+            $('.dataTables-example-3').dataTable({
+                "data": classRecord.data,
+                "columns": [
+                    {"data": "memberName"},
+                    {"data": "memberPhone"},
+                    {"data": "cardName"},
+                    {"data": "memberSex"},
+                    {"data": "memberBirthday"},
+                    {"data": "timesCost"},
+                    {"data": "reserveNums"},
+                    {"data": "operateTime"},
+                    {
+                        "data": "checkStatus", "render": function (data, type, row) {
+                            //此处要使用 row 来获取当前被渲染的行的数据
+                            if (data == '1') {
+                                return "<span class='label label-success'>已确认</span>";
+                            } else {
+                                return "<span class='label label-warning'>未确认</span>"
+                            }
+                        }
+                    },
+                    {
+                        "data": "checkStatus", "render": function (data, type, row) {
+                            //此处进行判断后，再决定是否要激按钮
+                            if (data == '1') {
+                                return "<button  class='btn btn-default btn-xs' disabled>确认扣费</button>";
+                            } else {
+                                return "<button  class='btn btn-primary btn-xs' onclick='toConsume(" + row.memberId + "," + row.cardId + "," + row.classRecordId + "," + row.timesCost + "," + row.reserveNums + "," + schedule_id + ")' data-toggle='modal' data-target='#details_deduction'>确认扣费</button>";
+                            }
+                        }
+                    }
+                ],
+                "autoWidth": false,  //禁用自动宽度
+                "bSort": false,
+                "searching": false,
+                "pagingType": "full_numbers",
+                "bLengthChange": false,
+                "info": false
+            });
+
+        });
+    });
+
+</script>
+
+</body>
+
+</html>

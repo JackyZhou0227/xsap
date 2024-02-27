@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>X+约课系统 - 编辑课程</title>
+    <meta name="keywords" content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}" rel="stylesheet">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}" rel="stylesheet">
+    <link href="../../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+    <link href="../../static/css/plugins/iCheck/custom.css" th:href="@{/static/css/plugins/iCheck/custom.css}" rel="stylesheet">
+    <link href="../../static/css/plugins/colorpicker/css/bootstrap-colorpicker.min.css"
+     th:href="@{/static/css/plugins/colorpicker/css/bootstrap-colorpicker.min.css}" rel="stylesheet">
+    <link href="../../static/css/plugins/cropper/cropper.min.css" th:href="@{/static/css/plugins/cropper/cropper.min.css}" rel="stylesheet">
+    <link href="../../static/css/plugins/datapicker/datepicker3.css" th:href="@{/static/css/plugins/datapicker/datepicker3.css}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../static/css/plugins/simditor/simditor.css" th:href="@{/static/css/plugins/simditor/simditor.css}"/>
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+ 
+     <style type="text/css">
+        .input_width {
+            width: 50px;
+            height: 25px;
+            display: inline;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><i class="glyphicon glyphicon-arrow-right"></i> 编辑课程</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <!--表单-->
+                    <!--<form method="post" class="form-horizontal" th:action="@{/course/courseEdit.do}">-->
+                    <form id="editForm" name="editForm" method="post" class="form-horizontal" >
+                        <!-- 隐藏域，课程 id -->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><i class="red">*</i>课程名称</label>
+                            <div class="col-sm-10">
+                            	<input type="hidden" name="id" value="1" th:value="${courseInfo.id}"/>
+                            	
+                                <input type="text" class="form-control" id="course_name" placeholder="请输入课程名称" value="钢琴课"  th:value="${courseInfo.name}" name="name">
+                           		<span class="text-danger">[[${NAME_EXIST}]]</span>
+                            </div>
+                        </div>
+                        <!--课程时长-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">时长(分钟)</label>
+                            <div class="col-sm-3 col-md-2">
+                                <input type="number" class="form-control" name="duration" value="45" min="0" th:value="${courseInfo.duration}">
+                            </div>
+                        </div>
+
+                        <!--课程容纳人数-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">课堂容纳人数</label>
+                            <div class="col-sm-3 col-md-2">
+                                <input type="number" class="form-control" name="contains" value="1"  min="0" th:value="${courseInfo.contains}">
+                            </div>
+                        </div>
+
+                        <!--每节消耗次数-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">消耗次数/节</label>
+                            <div class="col-sm-3 col-md-2">
+                                <input type="number" class="form-control" name="timesCost" value="0" min="0" max="5"  th:value="${courseInfo.timesCost}">
+                            </div>
+                        </div>
+
+                        <!--课程颜色-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">课程颜色</label>
+                            <div class="col-sm-3 col-md-2">
+                                <div class="input-group">
+                                    <input type="text" name="color" value=""  th:value="${courseInfo.color}" class="form-control" readonly id="color_picker_kc"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--支持的会员卡-->
+                        <div class="form-group">
+                            <label for="support_program" class="col-sm-2 control-label input_margin_top">支持会员卡</label>
+                            <div class="col-sm-8 input_margin_top">
+
+                                <table class="table table-striped table-bordered table-hover supportMemberCardTable"
+                                       id="support_program">
+                                    <thead>
+                                    <tr>
+                                        <th><label for="check_all"></label><input type="checkbox" name="cardListStr" id="check_all" class="i-checks"></th>
+                                        <th>会员卡</th>
+                                        <th>会员类型</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--课程介绍-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">课程介绍</label>
+                            <div class="col-sm-10">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-content">
+                                        <textarea id="editor" placeholder="这里输入内容" autofocus name="introduce"  th:text="${courseInfo.introduce}"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--高级功能-->
+                        <div class="form-group">
+                            <h2 class="text-left" style="margin-left: 10%">高级功能(对预约会员的条件限制)</h2>
+                            <hr/>
+                            <label class="col-sm-2 control-label">限制性别</label>
+                            <div class="col-sm-3 col-md-2">
+                                <select class="form-control" name="limitSex">
+                                    <option th:attr="selected=${courseInfo.limitSex == '无限制' ? true : false}" value="无限制" >无限制</option>
+                                    <option th:attr="selected=${courseInfo.limitSex == '男' ? true : false}" value="男">男</option>
+                                    <option th:attr="selected=${courseInfo.limitSex == '女' ? true : false}" value="女">女</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--限制年龄-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">限制年龄</label>
+                            <div class="col-sm-6">
+                                <label>
+                                    <input type="radio" name="limitAgeRadio" value="-1" checked>&nbsp;&nbsp;<span class="font-noraml">不限制</span>
+                                </label>
+                                <br/>
+                                <label>
+                                    <input type="radio" name="limitAgeRadio" style="float: left" value="0"> &nbsp;&nbsp;
+                                    <span class="input-daterange input-group right" style="float: right">
+                                        <span class="input-group-addon">大于</span>
+                                        <input type="text" class="input-sm form-control" name="limitAge" value="5" th:value="${courseInfo.limitAge}" style="width: 50px;"/>
+                                        <span class="input-group-addon">岁</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!--限制预约次数-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">限制预约次数</label>
+                            <div class="col-sm-6">
+                                <label>
+                                    <input type="radio" name="limitCountsRadio" checked value="-1">&nbsp;&nbsp;<span class="font-noraml">不限制</span>
+                                </label>
+                                <br/>
+                                <label>
+                                    <input type="radio" name="limitCountsRadio" style="float: left" value="0"> &nbsp;&nbsp;
+                                    <span class="input-daterange input-group right" style="float: right" >
+                                        <span class="input-group-addon">每名会员最多可以预约本课程</span>
+                                        <input type="text" class="input-sm form-control" name="limitCounts" value="2" th:value="${courseInfo.limitCounts}" style="width: 50px;"/>
+                                        <span class="input-group-addon">次</span>
+                                    </span>
+
+                                </label>
+                            </div>
+                        </div>
+
+                        <!--保存、取消-->
+                        <div class="form-group">
+                            <div class="col-sm-2 col-sm-offset-2">
+                                <button type="submit" class="btn btn-success" id="saveBtn">保存</button>
+                                <button type="reset" id="cancelEditBtn" class="btn btn-white">取消</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js" th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+<!-- Input Mask-->
+<script src="../../static/js/plugins/jasny/jasny-bootstrap.min.js" th:src="@{/static/js/plugins/jasny/jasny-bootstrap.min.js}"></script>
+<!-- Data picker -->
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js" th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js" th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js" th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+<!-- Switchery -->
+<script src="../../static/js/plugins/switchery/switchery.js" th:src="@{/static/js/plugins/switchery/switchery.js}"></script>
+<!-- simditor -->
+<script type="text/javascript" src="../../static/js/plugins/simditor/module.js" th:src="@{/static/js/plugins/simditor/module.js}"></script>
+<script type="text/javascript" src="../../static/js/plugins/simditor/uploader.js" th:src="@{/static/js/plugins/simditor/uploader.js}"></script>
+<script type="text/javascript" src="../../static/js/plugins/simditor/hotkeys.js" th:src="@{/static/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="../../static/js/plugins/simditor/simditor.js" th:src="@{/static/js/plugins/simditor/simditor.js}"></script>
+<!-- Color picker -->
+<script src="../../static/js/plugins/colorpicker/bootstrap-colorpicker.min.js" th:src="@{/static/js/plugins/colorpicker/bootstrap-colorpicker.min.js}"></script>
+<!-- Prettyfile -->
+<script src="../../static/js/plugins/prettyfile/bootstrap-prettyfile.js" th:src="@{/static/js/plugins/prettyfile/bootstrap-prettyfile.js}"></script>
+<!-- iCheck -->
+<script src="../../static/js/plugins/iCheck/icheck.min.js" th:src="@{/static/js/plugins/iCheck/icheck.min.js}"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+
+<script>
+    $(document).ready(function () {
+    	 //加载卡片信息
+        $.post("/card/cardList.do",function(data){
+            var cardList = data.data;
+        	console.log(cardList);
+        	$('.supportMemberCardTable').dataTable({
+                //获取数据
+                "data": cardList,
+                //行的定义
+                "columns": [
+                    {
+                        "data": "id", "render": function (data, type, row) {
+                            const id = data;
+                            const html = "<input type='checkbox' name='cardListStr' id='check_all' class='i-checks' value='" + id + "'>";
+                            return html;
+                        }
+                    },
+                    {"data": "name"},
+                    {"data": "type"}
+                ],
+                language: {
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "sInfo": ""
+                },
+                searching: false,//是否开始本地搜索
+                lengthChange: false,//是否允许用户改变表格每页显示的记录数
+                paging: false,
+                columnDefs: [{
+                    targets: 0,//编辑取消排序
+                    "orderable": false
+                }]
+            });
+
+            const card = [[${cardCarry}]];
+            console.log(card);
+ 	   		if(card !== null){
+ 	    		for(let i = 0; i < card.length; i++){
+ 	    			$("input[name='cardListStr'][value='"+ card[i] +"']").prop("checked",true);
+ 	    		}
+ 	   		}
+        });
+
+
+        /*取消按钮*/
+        $('#cancelEditBtn').click(function () {
+            window.location.href="/course/x_course_list.do";
+        });
+        
+    });
+</script>
+
+<script>
+
+    /*异步提交编辑修改*/
+    $('#editForm').on('submit', function (e) {
+        e.preventDefault();
+        const serializeForm = $(this).serialize();
+
+        swal({
+            title: "您确定要更新该课程信息么？",
+            text: "注意:您正在更新课程信息！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#0c63c0",
+            confirmButtonText: "更新",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: '[[${#request.getContextPath()}]]/course/courseEdit.do',
+                type: 'post',
+                data: serializeForm,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code === 0) {
+                        swal(data.msg, "", "success");
+                        setTimeout(function () {
+                            window.location.href='[[${#request.getContextPath()}]]/course/x_course_list.do';
+                        }, 1000);
+                    } else {
+                        swal("更新失败！", data.msg, "info");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                },
+                error: function (data) {
+                    swal("未知错误", data.msg, "info")
+                }
+            });
+        });
+
+
+
+
+
+        /*$.ajax({
+            url: '[[${#request.getContextPath()}]]/course/courseEdit.do',
+            type: 'post',
+            data: serializeForm,
+            dataType: 'json',
+            success: function (data) {
+                if (data.code === 0) {
+                    alert(data.msg)
+                    window.location.href='[[${#request.getContextPath()}]]/course/x_course_list.do'
+                }
+            },
+            error: function (jqXHR) {
+                alert("更新失败, 请重新再试!");
+            }
+        })*/
+    })
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        var editor = new Simditor({
+            textarea: $('#editor'),
+            defaultImage: '../../static/img/a9.jpg'
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#datepicker").datepicker({
+            language: "zh-CN"
+        });
+        $("#color_picker_kc").colorpicker({
+            fillcolor: true,
+            success: function (o,color) {
+                $(o).css("color",color);
+            }
+
+        });
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        //复选框 全选
+        $('#check_all').on('ifChecked', function (event) {
+            $('input').iCheck('check');
+        });
+        //复选框 反选
+        $('#check_all').on('ifUnchecked', function (event) {
+            $('input').iCheck('uncheck');
+        });
+    });
+</script>
+
+</body>
+
+</html>

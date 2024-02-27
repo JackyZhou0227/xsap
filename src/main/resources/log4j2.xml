@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--mybatis  打印sql语句信息-->
+<Configuration status="INFO" monitorInterval="1800">
+    <appenders>
+        <Console name="consolePrint" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+    </appenders>
+
+    <loggers>
+        <!-- 将dao接口填写进去-->
+        <logger name="com.kclm.xsap" level="DEBUG" additivity="false">
+            <appender-ref ref="consolePrint"/>
+        </logger>
+
+        <logger name="org.apache.ibatis" level="info" additivity="false">
+            <appender-ref ref="consolePrint"/>
+        </logger>
+
+        <logger name="org.springframework" level="info" additivity="false">
+            <appender-ref ref="consolePrint"/>
+        </logger>
+
+        <root level="warn">
+            <appender-ref ref="consolePrint" />
+        </root>
+    </loggers>
+</Configuration>

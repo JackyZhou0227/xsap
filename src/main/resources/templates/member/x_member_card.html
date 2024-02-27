@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>X+约课系统 - 会员卡列表</title>
+    <meta name="keywords" content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+	<link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}" rel="stylesheet">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}" rel="stylesheet">
+    <link href="../../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a class="btn btn-success" href="x_member_add_card.html" th:href="@{/card/x_member_add_card.do}">添加会员卡</a>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                        <tr>
+                            <th>会员卡名称</th>
+                            <th>价格</th>
+                            <th>类型</th>
+                            <th>可用次数</th>
+                            <th>有效天数</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js" th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js" th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js" th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+<!-- Sweet alert -->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+<script>
+    $(document).ready(function () {
+
+    	$.post("[[${#request.getContextPath()}]]/card/cardList.do",function(data){
+    	    var cardList = data.data;
+	        $('.dataTables-example').dataTable({
+	            //获取数据
+	            "data": cardList,
+	            //行的定义
+	            "columns":[
+	                {"data":"name"},
+	                {"data":"price"},
+	                {"data":"type"},
+	                {"data":"totalCount"},
+	                {"data":"totalDay"},
+	                {"data":null,"render":function (data,type,row) {
+	                        var id = row.id;
+	                        var html = "<a href='[[${#request.getContextPath()}]]/card/x_member_card_edit.do?id="+ id +"'  class='btn btn-xs btn-success' type='button' > 编辑</a> &nbsp;"
+	                        html += "<a href='#?id="+id+"' onclick='deteleConfirm("+ id +")' class='btn btn-xs btn-danger detele_btn' type='button'> 删除 </a>"
+	                        return html;
+	                    }}
+	            ],
+	            language: {
+	                "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+	                "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+	                "processing": "处理中..."//用来描述加载进度的字符串
+	            },
+	            searching: false,//是否开始本地搜索
+	            lengthChange: false,//是否允许用户改变表格每页显示的记录数
+	            columnDefs: [{
+	                targets: 5,//编辑取消排序
+	                "orderable": false
+	            }]
+	        });
+    	});
+    });
+</script>
+<script>  
+    /* ======删除确认======= */
+    function deteleConfirm(mcid){
+		console.log(mcid);
+        swal({
+            title: "删除确认",
+            text: "确认删除此会员卡信息吗? 删除后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+            	url: "[[${#request.getContextPath()}]]/card/deleteOne.do",
+            	type: "post",
+            	data: {id:mcid},
+            	success:function(){
+            		swal("删除成功！", "您已经永久删除了这条信息。", "success");
+            		//刷新界面
+            		setTimeout(function(){
+	            		window.location.href="[[${#request.getContextPath()}]]/card/x_member_card.do";
+            		},1*1000);
+            	},
+            	error:function(){
+            		swal("删除失败！", "未知错误。。。", "info");
+            	}
+            });
+        });
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+约课系统 - 会员列表详情</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}">
+
+    <link href="../../static/css/plugins/switchery/switchery.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/switchery/switchery.css}">
+
+    <!-- bootstrap-datepicker -->
+    <link href="../../static/css/plugins/datapicker/bootstrap-datepicker.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/datapicker/bootstrap-datepicker.css}">
+
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+    <!-- 导入magicsuggest样式 -->
+    <link href="../../static/css/plugins/magicsuggest/magicsuggest-min.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/magicsuggest/magicsuggest-min.css}">
+
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="height: 190px;">
+                    <div class="col-md-8">
+                        <img alt="会员信息" class="img-circle" id="avatar_img" src="../../static/img/个性头像.png"
+                             style="height: 150px;width: 150px; float: left; " th:src="@{/static/img/个性头像.png}">
+                        <input accept="image/jpg,image/png,image/gif" id="avatar_file" name="avatar_file"
+                               style="width: 100%;height:100%;opacity: 0;position: absolute;left:0;top: 0;"
+                               type="file"/>
+                        <div style="float: left; padding-left: 15px">
+                            <label>
+                                <h2><strong>原始数据</strong></h2>
+                                <p><span style="margin-right: 15px;">性别:</span>原始数据</p>
+                                <p><span style="margin-right: 5px;">手机号:</span>原始数据</p>
+                                <p><span style="margin-right: 5px;">出生日期:</span>原始数据</p>
+                                <p><span style="margin-right: 5px;">备注:</span>'原始数据'</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <a class="btn btn-success" data-target='#details' data-toggle='modal' onclick="saveID()"
+                                type="button">编辑信息</a>
+                        </div>
+                        <div>
+                            <a href="/member/x_member_list.do" class="btn btn-default" type="button"> 返回</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a aria-expanded="true" data-toggle="tab" href="#tab-1"> 会员卡信息</a>
+                            </li>
+                            <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-3">预约记录</a>
+                            </li>
+                            <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-2">上课记录</a>
+                            </li>
+                            <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-4">消费记录</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!--  会员卡信息  Begin： -->
+                            <div class="tab-pane active" id="tab-1">
+                                <div class="panel-body">
+                                    <!--table table-striped table-bordered table-hover dataTables-example-->
+                                    <table class="table table-striped table-bordered table-hover dataTables-example t1"
+                                           style="margin-top: 15px;">
+                                        <thead>
+                                        <tr>
+                                            <th>会员卡</th>
+                                            <th>卡类型</th>
+                                            <th>可用次数</th>
+                                            <th>到期时间</th>
+                                            <th>状态</th>
+                                            <th>停用/激活</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>12次大课</td>
+                                            <td>次卡(有限期)</td>
+                                            <td>125</td>
+                                            <td>2020-08-26 00:00:00</td>
+                                            <td>激活</td>
+                                            <td><input checked class='js-switch' type='checkbox'/></td>
+                                            <td>
+                                                <a class="btn btn-md btn-success" href="#" type="button">编辑</a>
+                                                <a class="btn btn-xs btn-primary" href="x_member_list_details.html"
+                                                   type="button">查看详情</a>
+                                                <a class="btn btn-xs btn-danger" href="#" type="button">删除</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- 会员卡信息 End-->
+
+                            <!--  预约记录  Begin： -->
+                            <div class="tab-pane" id="tab-3">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example t3"
+                                           style="margin-top: 15px;">
+                                        <thead>
+                                        <tr>
+                                            <th>课程</th>
+                                            <th>预约时间</th>
+                                            <th>会员卡</th>
+                                            <th>预约人数</th>
+                                            <th>使用次数</th>
+                                            <th>操作时间</th>
+                                            <th>操作人</th>
+                                            <th>预约备注</th>
+                                            <th>预约类型</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- 预约记录 End-->
+
+                            <!--  上课记录  Begin： -->
+                            <div class="tab-pane" id="tab-2">
+                                <div class="panel-body">
+                                    <div class="ibox-content">
+                                        <table class="table table-striped table-bordered table-hover dataTables-example t2"
+                                               style="margin-top: 15px;">
+                                            <thead>
+                                            <tr>
+                                                <th>课程</th>
+                                                <th>上课时间</th>
+                                                <th>授课老师</th>
+                                                <th>会员卡</th>
+                                                <th>上课人数</th>
+                                                <th>使用次数</th>
+
+                                                <th>老师评价</th>
+                                                <th>确认状态</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--  上课记录  End： -->
+
+                            <!--  消费记录  Begin： -->
+                            <div class="tab-pane" id="tab-4">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example t4"
+                                           style="margin-top: 15px;">
+                                        <thead>
+                                        <tr>
+                                            <th>会员卡</th>
+                                            <th>操作时间</th>
+                                            <th>消费次数</th>
+                                            <th>剩下次数</th>
+                                            <th>消费金额</th>
+                                            <th>操作类型</th>
+                                            <th>操作人</th>
+                                            <th>备注</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--  消费记录  End： -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 会员信息编辑模态框 -->
+    <div aria-hidden="true" class="modal inmodal fade" id="details" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">编辑会员</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="updateForm" method="post">
+                        <div class="form-group">
+                            <!--会员姓名-->
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                会员姓名</label>
+                            <div class="col-sm-8">
+                                <!-- 隐藏域 id -->
+                                <input name="id" type="hidden"/>
+
+                                <input class="form-control" name="name" placeholder="会员姓名" type="text">
+                            </div>
+                        </div>
+                        <!--手机号-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                手机号</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="phone" placeholder="手机号" type="text">
+                            </div>
+                        </div>
+                        <!--性别-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <span class="text-danger">*</span>
+                                性别</label>
+                            <div class="col-sm-8">
+                                <label class="control-label">
+                                    <input id="man" name="sex" type="radio" value="男">
+                                    <span>男</span>
+                                </label>&nbsp;&nbsp;
+
+                                <label class="control-label">
+                                    <input id="woman" name="sex" type="radio" value="女">
+                                    <span>女</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!--生日-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                出生日期</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" id="myDate" name="birthday" type="text"/>
+                            </div>
+                        </div>
+                        <!--备注-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                备注</label>
+                            <div class="col-sm-8">
+                                <textarea class="col-sm-12 form-control" name="note" placeholder="会员备注信息..."
+                                          rows="5"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!--保存、取消-->
+                <div class="modal-footer">
+                    <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                    <button class="btn btn-primary" id="edit_btn" onclick="saveEdit()" type="button">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 充值模态框 -->
+    <div aria-hidden="true" class="modal inmodal fade" id="details_recharge" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title">充值</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="rechargeForm" method="post">
+                        <!-- 隐藏域，管理员名 -->
+                        <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+
+                        <div align="center" class="form-group">
+                            <span class="text-danger" id="recharge_tip"></span>
+                        </div>
+                        <!-- 隐藏域，会员id，卡id -->
+                        <div class="form-group">
+                            <input id="recharge_memberId" name="memberId" type="hidden"/>
+                            <input id="recharge_cardId" name="memberBindId" type="hidden"/>
+                            <!--                            <input id="recharge_cardId" name="cardId" type="hidden"/>-->
+
+                            <label class="col-sm-2 control-label">
+                                充值次数</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" min=0 name="addCount" placeholder="必须大于0" type="number">
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="addCount"></label>
+                            </div>
+                        </div>
+                        <!--延长有效期-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                延长有效期</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" min=0 name="addDay" placeholder="必须大于0" type="number">
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="addDay"></label>
+                            </div>
+                        </div>
+                        <!--实收金额-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                实收金额(元)</label>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-addon">￥</div>
+                                    <input class="form-control" min=0 name="receivedMoney" placeholder="必须大于0"
+                                           type="number">
+                                    <div class="input-group-addon">元</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="receivedMoney"></label>
+                            </div>
+                        </div>
+                        <!--支付方式-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                支付方式</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="payList" name="payMode">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label class="control-label" tip="payMode"></label>
+                            </div>
+                        </div>
+                        <!--备注-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                备注</label>
+                            <div class="col-sm-8">
+                                <textarea class="col-sm-12 form-control" name="note" placeholder="备注支付信息..."
+                                          rows="5"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                    <button class="btn btn-primary" id="recharge_btn" type="button">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div aria-hidden="true" class="modal inmodal fade" id="details_deduction" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title">扣费</h4>
+                </div>
+                <!--扣费模态框-->
+                <div class="modal-body">
+                    <form class="form-horizontal" id="consumeForm" method="post">
+
+                        <!--隐藏域--sid-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label right">课程：</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <!-- 隐藏域，scheduleId -->
+                                    <input id="schedule" name="scheduleId" type="hidden">
+
+                                    <input class="form-control" id="scheduleSearch" placeholder="请选择课程" type="text">
+                                    <div class="input-group-btn" style="z-index:99999!important;">
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" type="button">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        </ul>
+                                    </div>
+                                    <!-- /btn-group -->
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3" >
+                                <label class="control-label" tip="scheduleId"></label>
+                            </div>
+
+                        </div>
+
+
+                        <!-- 隐藏域，管理员名 -->
+                        <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+
+                        <div align="center" class="form-group">
+                            <span class="text-danger" id="consume_tip"></span>
+                        </div>
+                        <!-- 隐藏域，会员id，卡id 扣除次数-->
+                        <div class="form-group">
+                            <input id="consume_memberId" name="memberId" type="hidden"/>
+                            <input id="consume_cardId" name="cardBindId" type="hidden"/>
+
+                            <label class="col-sm-2 control-label">
+                                扣除次数</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" min=0 name="cardCountChange" placeholder="必须大于0"
+                                       type="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                消费金额</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" min=0 name="amountOfConsumption" placeholder="必须大于0"
+                                       type="number">
+                            </div>
+                        </div>
+                        <!--备注-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                备注</label>
+                            <div class="col-sm-8">
+                                <textarea class="col-sm-12 form-control" name="note" placeholder="备注支付信息..."
+                                          rows="5"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                    <button class="btn btn-primary" id="consume_btn" type="button">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div aria-hidden="true" class="modal inmodal fade" id="details_operating" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title">操作记录</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-bordered table-hover dataTables-example t5">
+                        <thead>
+                        <tr>
+                            <th>操作时间</th>
+                            <th>操作类型</th>
+                            <!--                            <th>可用次数</th>-->
+                            <th>次数变化</th>
+                            <!--                            <th>卡到期日</th>-->
+                            <th>金额变化</th>
+                            <th>操作人</th>
+                            <th>备注</th>
+                            <th>状态</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <!--                            <td></td>-->
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-white" data-dismiss="modal" type="button">关闭</button>
+                    <!--                    <button class="btn btn-primary" type="button">保存</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js"
+        th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+
+<!--ios按钮风格按键，缺一不可-->
+<!-- Switchery -->
+<script src="../../static/js/plugins/switchery/switchery.js"
+        th:src="@{/static/js/plugins/switchery/switchery.js}"></script>
+
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+<!-- Sweet alert -->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+<!--动态搜索-->
+<script src="../../static/js/plugins/suggest/bootstrap-suggest.min.js" th:src="@{/static/js/plugins/suggest/bootstrap-suggest.min.js}"
+        type="text/javascript"></script>
+
+<!--margicSuggest-->
+<script src="../../static/js/plugins/magicsuggest/magicsuggest-min.js" th:src="@{/static/js/plugins/magicsuggest/magicsuggest-min.js}"
+        type="text/javascript"></script>
+
+<script>
+
+
+    $(function () {
+
+        /* 排课搜索 */
+        $("#scheduleSearch").bsSuggest({
+            url: "[[${#request.getContextPath()}]]/schedule/toSearch.do",
+            // effectiveFieldsAlias: {id: "ID", name: "课程名称", contains: "可容纳人数"},
+            title: 'kk',
+            effectiveFieldsAlias: {scheduleId: "ID", courseName: "课程名称", teacherName: "老师", classDateTime: "上课时间"},
+            effectiveFields: ["scheduleId", "courseName", "teacherName", "classDateTime"],
+            ignorecase: true,
+            showHeader: true,
+            showBtn: false, //不显示下拉按钮
+            delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+            idField: "scheduleId",
+            keyField: "courseName",
+            clearable: true
+        })
+            .on("onDataRequestSuccess", function (e, result) {
+                console.log("onDataRequestSuccess: ", result);
+            })
+            .on("onSetSelectValue", function (e, keyword) {
+               var scheduleId = keyword.id;
+                $("#schedule").val(scheduleId);
+                console.log("onSetSelectValue: ", keyword);
+            })
+            .on("onUnsetSelectValue", function () {
+                console.log("onUnsetSelectValue");
+            });
+
+
+        /*---------头像更换---------*/
+        $("#avatar_file").change(function () {
+            // 获取上传文件对象
+            var file = $(this)[0].files[0];
+            // 读取文件URL
+            var formData = new FormData();
+            formData.append('avatarFile', file);
+            formData.append('id', [[${ID}]]);
+            console.log(formData);
+
+            $.ajax({
+                url: "/member/modifyMemberImg.do",
+                method: "post",
+                data: formData,
+                dataType: "json",	//接收服务器传输的数据格式
+                contentType: false,	//必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
+                processData: false,
+                success: function (userData) {
+                    console.log(userData);
+                    // var userData = data.data;
+                    if (userData.code === 0) {
+                        console.log("之后的图片信息：" + userData.avatarUrl);
+                        swal(userData.msg, "", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            $("#avatar_img").attr("src", "/images/member_img/" + userData.avatarUrl);
+                        }, 1000);
+                    } else {
+                        swal(userData.msg, "请联系管理", "info");
+                    }
+                },
+                error: function () {
+                    swal("更新失败！", "请联系管理员", "info")
+                }
+            });
+        });
+    });
+
+    /*	支付方式	*/
+    var payListSave = [
+        {"id": 1, "name": "现金"},
+        {"id": 2, "name": "支付宝"},
+        {"id": 3, "name": "微信"},
+        {"id": 4, "name": "银行卡"}
+    ];
+    var payList = payListSave;
+    for (var i = 0; i < payList.length; i++) {
+        $("#payList").append("<option  value='" + payList[i].name + "'>" + payList[i].name + "</option>");
+    }
+
+    /* 选中的列表项 - 支付方式 */
+    $("#payList").change(function () {
+        var selectOne = $(this).val();
+        for (var i = 0; i < payListSave.length; i++) {
+            $("option[value='" + payListSave[i].name + "']").prop("selected", false);
+            if (selectOne == payListSave[i].name) {
+                $("option[value='" + selectOne + "']").prop("selected", true);
+            }
+        }
+        console.log("pay: " + selectOne);
+    });
+
+    /* ------ 充值 ------- */
+    //获取表单数据
+    var rechargeForm = "";
+
+    function toRecharge(memberId, cardId) {
+        $("#recharge_btn").on("mouseenter", function () {
+            $("#recharge_memberId").val(memberId);
+            $("#recharge_cardId").val(cardId);
+            rechargeForm = $("#rechargeForm").serialize();
+            console.log(rechargeForm);
+        });
+    }
+
+    /*充值*/
+    $("#recharge_btn").click(function () {
+
+        swal({
+            title: "确认充值",
+            text: "确认充值吗？充值后无法取消，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#0fec7a",
+            confirmButtonText: "确认",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: "/card/rechargeOpt.do",
+                type: "post",
+                data: rechargeForm,
+                success: function (data) {
+                    if (data.code === 0) {
+                        swal(data.msg, "您已经充值成功。", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else if (data.code === 400) {
+                        let errors = data.errorMap;
+                        for (const key in errors) {
+                            $(`[tip=${key}]`).html("");
+                            //错误提示回显
+                            $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                        }
+                    } else {
+                        swal(data.msg, "请重试", "info")
+                    }
+                },
+                error: function () {
+                    swal("充值失败！", "未知错误。。。", "info");
+                }
+            });
+        });
+    });
+
+    /* ------ 扣费 ------- */
+    var consumeForm = "";
+
+    function toConsume(memberId, cardId) {
+        $("#consume_btn").on("mouseenter", function () {
+            $("#consume_memberId").val(memberId);
+            $("#consume_cardId").val(cardId);
+            consumeForm = $("#consumeForm").serialize();
+            console.log(consumeForm);
+        });
+    }
+
+    $("#consume_btn").click(function () {
+
+        swal({
+            title: "确认扣费",
+            text: "确认扣费吗？扣费后无法取消，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#ace311",
+            confirmButtonText: "确认",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                url: "/card/consumeOpt.do",
+                type: "post",
+                data: consumeForm,
+                success: function (data) {
+                    if (data.code === 0) {
+                        swal(data.msg, "您已经扣费成功。", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        swal(data.msg, "请重试", "info");
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                },
+                error: function () {
+                    swal("扣费失败！", "未知错误。。。", "info");
+                }
+            });
+        });
+    });
+
+
+    /* 编辑框传参数id */
+    function saveID() {
+        /* 编辑窗口数据填充 */
+        var mid = [[${ID}]]
+        $.ajax({
+            url: "[[${#request.getContextPath()}]]/member/x_member_edit.do",
+            type: "post",
+            data: {id: mid},
+            dataType: "json",
+            success: function (data) {
+                var memberData = data.data;
+                var birthdayStr = "";
+                if (memberData.birthday != null) {
+                    birthdayStr = memberData.birthday.toString();
+                }
+                $("input[name='id']").val(memberData.id);
+                $("input[name='name']").val(memberData.name);
+                $("input[name='phone']").val(memberData.phone);
+                if (memberData.sex == "男") {
+                    $("#man").prop("checked", true);
+                } else if (memberData.sex == "女") {
+                    $("#woman").prop("checked", true);
+                }
+                $("input[name='birthday']").val(birthdayStr);
+                $("textarea[name='note']").text(memberData.note);
+            }, error: function () {
+                alert("获取数据失败");
+                //重新加载页面
+                window.location.reload();
+            }
+        });
+    }
+
+    //获取表单数据
+    var form = "";
+    $("#edit_btn").on("mouseenter", function () {
+        form = $("#updateForm").serialize();
+        console.log(form);
+    });
+
+    /* 编辑保存操作 */
+    function saveEdit() {
+        //移除重复提示
+        $("input[name='phone']").nextAll().remove();
+        //提交表单
+        $.ajax({
+            url: "[[${#request.getContextPath()}]]/member/memberEdit.do",
+            type: "post",
+            data: form,
+            success: function (data) {
+                if (data.version == 4) {
+                    //刷新界面
+                    window.location.reload();
+                } else {
+                    $("input[name='phone']").after("<span class='text-danger'>" + data.note + "</span>");
+                }
+            },
+            error: function (jqXHR) {
+                alert("更新失败, 请重新再试!");
+            }
+
+        });
+    }
+
+    /*会员基本信息预加载*/
+    $(function () {
+        //会员基本信息 - 预加载
+        $.post("/member/memberDetail.do", {id: [[${ID}]]}, function (data) {
+            var baseInfo = data.data;
+            if (baseInfo.birthday == null) {
+                baseInfo.birthday = "";
+            }
+            if (baseInfo.avatarUrl == null) {
+                baseInfo.avatarUrl = "user.png";
+            }
+            $("#avatar_img").attr("src", "/images/member_img/" + baseInfo.avatarUrl);
+
+            $("label h2").html('<strong>' + baseInfo.name + '</strong>');
+            $("label p:nth-child(2)").html('<span style="margin-right: 15px;">性别:</span>' + baseInfo.sex);
+            $("label p:nth-child(3)").html('<span style="margin-right: 5px;">手机号:</span>' + baseInfo.phone);
+            $("label p:nth-child(4)").html('<span style="margin-right: 5px;">出生日期:</span>' + baseInfo.birthday);
+            $("label p:nth-child(5)").html('<span style="margin-right: 5px;">备注:</span>' + baseInfo.note);
+        });
+
+        //会员卡信息 - 预加载
+        $.post("/member/cardInfo.do", {id: [[${ID}]]}, function (data) {
+            let cardInfo = data.data;
+            if (cardInfo.length < 1) {
+                cardInfo = [];
+            }
+            $('.dataTables-example.t1').on('init.dt', function () {
+                console.log("datatable初始化完成....");
+                /*多个滑动按钮同时存在不可少代码*/
+                var elems = Array.prototype.slice.call($('.js-switch'));
+
+                console.log(cardInfo.cardId);
+
+                elems.forEach(function (html) {
+                    var switchery = new Switchery(html);
+                    //给这个 元素添加事件
+                    $(html).on("change", function (event) {
+                        //通过event.target 来获取原 元素
+                        var index = $(html).parents("tr").attr("data-index");
+                        var statusVal = event.target.checked;
+                        if (statusVal == false) {
+                            statusVal = 0;
+                        } else {
+                            statusVal = 1;
+                        }
+
+                        // var operator = [[${session.LOGIN_USER.name}]]
+                        // console.log('operator' + operator)
+
+                        //发送AJAX请求到服务端
+                        $.ajax({
+                            url: "/card/activeOpt.do",  //此处要把 event.target.checked 的值传递回去, 设计一个请求参数，其值为  event.target.checked
+                            method: "post",
+                            // data: {memberId: [[${ID}]], cardId: cardInfo[index].bindCardId, status:statusVal},
+                            data: {memberId: [[${ID}]], bindId: cardInfo[index].bindId, status: statusVal},
+                            // data: {memberId: [[${ID}]], cardId: cardInfo[index].id, status:statusVal},
+                            success: function (data) {
+                                var activeStatus = data.data;
+                                console.log('修改status=>' + activeStatus)
+                                //1. 更新 状态列的 文字信息, 这个 data 是由服务端传递回来的，如果改为 true, 则 data为 激活，否则为 停用
+                                // $(html).parent("td").prev().text(result.type);
+                                // if (result.type === "未激活") {
+                                if (activeStatus === 0) {
+                                    $(html).parent("td").prev().text("未激活");
+                                    /*未激活时充值和扣费无法点击*/
+                                    $("#recharge_btn_of_operation")
+                                        .removeClass("btn-primary").addClass("btn-default").attr("disabled", true);
+                                    $("#consume_btn_of_operation")
+                                        .removeClass("btn-info").addClass("btn-default").attr("disabled", true);
+                                    /*$("button[name='recharge'][value='" + cardInfo[index].bindCardId + "']")
+                                        .removeClass("btn-primary").addClass("btn-default").attr("disabled", true);
+                                    $("button[name='consume'][value='" + cardInfo[index].bindCardId + "']")
+                                        .removeClass("btn-info").addClass("btn-default").attr("disabled", true);*/
+                                } else {
+                                    $(html).parent("td").prev().text("激活");
+                                    $("#recharge_btn_of_operation")
+                                        .removeClass("btn-default").addClass("btn-primary").attr("disabled", false);
+                                    $("#consume_btn_of_operation")
+                                        .removeClass("btn-default").addClass("btn-info").attr("disabled", false);
+                                    /*$("button[name='recharge'][value='" + cardInfo[index].bindCardId + "']")
+                                        .removeClass("btn-default").addClass("btn-primary").attr("disabled", false);
+                                    $("button[name='consume'][value='" + cardInfo[index].bindCardId + "']")
+                                        .removeClass("btn-default").addClass("btn-info").attr("disabled", false);*/
+                                }
+                            },
+                            error: function (jqXHR) {
+                                //出错了：
+                                console.log(jqXHR.status + " : " + jqXHR.responseText);
+                            }
+                        });
+                    });
+
+                });
+
+            }).dataTable({
+                //注： 后面开发时，url的位置写 服务端控制器的 mapping值,服务端返回的将是json数据
+                "data": cardInfo,
+                "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                    $(nRow).attr("data-index", iDataIndex);
+                },
+                //行的定义
+                "columns": [
+                    {"data": "name"},
+                    {"data": "type"},
+                    {"data": "totalCount"},
+                    {"data": "dueTime"},
+                    {
+                        "data": "activeStatus",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var status = data;
+                            if (status === 0) {
+                                status = "未激活";
+                            } else {
+                                status = "激活";
+                            }
+                            let html = "<td>" + status + "</td>";
+                            return html;
+                        }
+                    },
+                    {
+                        "data": "activeStatus",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            let id = row.id;//value='"+ id +"'
+                            let html = " <input type='checkbox' class='js-switch' />";
+                            if (data === 1) {
+                                html = " <input type='checkbox' checked class='js-switch' />";
+                            }
+                            return html;
+                        }
+                    },
+                    {
+                        "data": null, "orderable": false,
+                        "render": function (data, type, row) {
+                            // var id =  row.bindCardId ;//
+                            var id = row.bindId;//
+                            // var operator = ${session.LOGIN_USER.name}
+
+                            var html = "<button name='recharge' value='" + id + "' onclick='toRecharge(" + [[${ID}]] + "," + id + ")' id='recharge_btn_of_operation' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#details_recharge'>充值<i class='fa fa-re'></i></button>&nbsp &nbsp"
+                            html += "<button name='consume' value='" + id + "' onclick='toConsume(" + [[${ID}]] + "," + id + ")' id='consume_btn_of_operation' class='btn btn-info btn-xs' data-toggle='modal' data-target='#details_deduction'> 扣费</button>&nbsp &nbsp"
+                            html += "<a href='#?id=" + id + "' onclick='operateShow(" + [[${ID}]] + "," + id + ")' class='delete btn btn-danger btn-xs' data-toggle='modal' data-target='#details_operating'> 操作记录</i></a>"
+                            return html;
+                        }
+                    }
+                ],
+                //去掉搜索
+                searching: false,
+                lengthChange: false,
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+
+        });
+
+        //预约记录
+        $.post("/member/reserveInfo.do", {id: [[${ID}]]}, function (data) {
+            var reserveInfo = data.data;
+            if (reserveInfo.length < 1) {
+                reserveInfo = [];
+            }
+            $('.dataTables-example.t3').dataTable({
+                //通过 ajax 来指定服务端的数据URL
+                "data": reserveInfo,
+                //行的定义
+                "columns": [
+                    {"data": "courseName"},
+                    {"data": "reserveTime"},
+                    {"data": "cardName"},
+                    {"data": "reserveNumbers"},
+                    {"data": "timesCost"},
+                    {"data": "operateTime"},
+                    {"data": "operator"},
+                    {"data": "reserveNote"},
+                    {
+                        "data": "reserveStatus",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var status = data;
+                            if (status === 1) {
+                                status = "已预约";
+                            } else {
+                                status = "未预约";
+                            }
+                            let html = "<td>" + status + "</td>";
+                            return html;
+                        }
+                    }
+                ],
+                //去掉搜索
+                searching: true,
+                lengthChange: false,
+                "autoWidth": false,  //禁用自动宽度
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+
+        });
+
+        //上课记录
+        $.post("/member/classInfo.do", {id: [[${ID}]]}, function (data) {
+            let classInfo = data.data;
+            if (classInfo.length < 1) {
+                classInfo = [];
+            }
+            $('.dataTables-example.t2').dataTable({
+                "data": classInfo,
+                //行的定义
+                "columns": [
+                    {"data": "courseName"},
+                    {"data": "classTime"},
+                    {"data": "teacherName"},
+                    {"data": "cardName"},
+                    {"data": "classNumbers"},
+                    {"data": "timesCost"},
+                    {"data": "comment"},
+                    {
+                        "data": "checkStatus", "render": function (data, type, row) {
+                            //console.log(data + " -> "+type+" -> "+row);
+                            if (data == '1') {
+                                return '<span class="label label-success">已确认</span>';
+                            } else if (data == '0') {
+                                return '<span class="label label-danger">未确认</span>';
+                            }
+                        }
+                    }
+                ],
+                //去掉搜索
+                searching: true,
+                lengthChange: false,
+                "autoWidth": false,  //禁用自动宽度
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+
+        });
+
+        //消费记录
+        $.post("/member/consumeInfo.do", {id: [[${ID}]]}, function (data) {
+            var consumeInfo = data.data;
+            if (consumeInfo.length < 1) {
+                consumeInfo = [];
+            }
+            $('.dataTables-example.t4').dataTable({
+                "data": consumeInfo,
+                //行的定义
+                "columns": [
+                    {"data": "cardName"},
+                    {"data": "operateTime"},
+                    {"data": "cardCountChange"},
+                    {"data": "timesRemainder"},
+                    {"data": "moneyCost"},
+                    {"data": "operateType"},
+                    {"data": "operator"},
+                    {"data": "note"}
+                ],
+                //去掉搜索
+                searching: true,
+                lengthChange: false,
+                "autoWidth": false,  //禁用自动宽度
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+
+        });
+
+        /*时间选择器配置*/
+        $('#myDate').datepicker({
+            language: "zh-CN",
+            clearBtn: true,//清除
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy-mm-dd',
+            todayBtn: false,//今日按钮
+            startDate: '1970-1-1', //与你自己设置的格式一致yyyy-mm-dd，未设置的话与默认格式一致mm/dd/yyyy
+            endDate: '2070-1-1'
+        });
+
+    });
+
+
+    /*操作记录*/
+    function operateShow(member_id, card_id) {
+        console.log(member_id + " - " + card_id);
+        //操作记录
+        $.post("/card/operateRecord.do", {memberId: member_id, cardId: card_id}, function (data) {
+            var operateInfo = data.data;
+            if (operateInfo.length < 1) {
+                operateInfo = [];
+            }
+
+            $('.dataTables-example.t5').dataTable({
+                "data": operateInfo,
+                //行的定义
+                "columns": [
+                    {"data": "operateTime"},
+                    {"data": "operateType"},
+                    // {"data": "validTimes"},
+                    {"data": "changeCount"},
+                    // {"data": "endToDate"},
+                    // {"data": "involveMoney"},
+                    {"data": "changeMoney"},
+                    {"data": "operator"},
+                    {"data": "cardNote"},
+                    {
+                        "data": "status",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var status = data;
+                            if (status === 0) {
+                                status = "停用";
+                            } else {
+                                status = "已激活";
+                            }
+                            let html = "<td>" + status + "</td>";
+                            return html;
+                        }
+                    }
+                ],
+                //去掉搜索
+                searching: true,
+                lengthChange: false,
+                paging: true,
+                'iDisplayLength':5,
+                destroy: true,
+                // "PaginationType" : "full_numbers",
+
+                language: {
+                    "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                    "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                    "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                    "infoEmpty": "无记录",//当没有数据时，左下角的信息
+                    "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                    "infoPostFix": "",//在摘要信息后继续追加的字符串
+                    "thousands": ",",//千分位分隔符
+                    "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                    "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                    "processing": "处理中...",//用来描述加载进度的字符串
+                    "search": "搜索",//用来描述搜索输入框的字符串
+                    "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                    "paginate": {
+                        "first": "首页",
+                        "previous": "上一页",
+                        "next": "下一页",
+                        "last": "尾页"
+                    }
+                }
+            });
+
+            // $('.dataTables-example.t5').dataTable().destroy();
+            //获取到datatable实例并将其破坏
+            // $("#tbody").html(text);
+            //替换内容
+            // UiTables.init();
+            //重新部署
+
+        });
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+ 约课系统 - 老师资料</title>
+    <meta content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}">
+    <style type="text/css">
+
+        .margin-bottom {
+            margin-bottom: 30px;
+        }
+
+        .padding {
+            padding: 20px 10px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="col-md-12 white-bg margin-bottom padding">
+
+            <div class="col-md-2 ">
+                <figure>
+                    <div style="position: relative;border: 5px solid lightblue;width: 150px;height:150px;margin: 5px auto;border-radius: 50%;">
+                        <img alt="" id="avatar_img" src="../../static/img/a8.jpg"
+                             style="width: 140px;height: 140px;left:0;top: 0;border-radius: 50%;"
+                             th:src="@{/static/img/a8.jpg}"/>
+                        <input accept="image/jpg,image/png,image/gif" id="avatar_file" name="avatar_file"
+                               style="width: 100%;height:100%;opacity: 0;position: absolute;left:0;top: 0;"
+                               type="file"/>
+                    </div>
+                    <br/>
+                    <p style="padding-left: 40px;font-size:20px">点击更换头像</p>
+                </figure>
+            </div>
+
+            <div class="col-md-7" id="detail">
+                <h2>张老师</h2>
+                <p>性别：女</p>
+                <p>手机号：14977665522</p>
+                <p>老师介绍：老师对待教学认真负责，语言生动，条例清晰，举例充分得当，对待学生严格要求，能够鼓励学生踊跃发言，
+                    使课堂气氛比较积极热烈。老师对待教学认真负责，语言生动，条例清晰，举例充分得当，对待学生严格要求，能够鼓励学生踊跃发言，使课堂气氛比较积极热烈</p>
+                <p>备注:</p>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-info margin_top pull-right" href="x_teacher_update.html"
+                   th:href="@{/user/x_teacher_update.do?id={id_val}(id_val=${ID})}">编辑信息</a>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-default pull-right" onclick="window.history.go(-1)" >返回</a>
+            </div>
+        </div>
+
+        <div class="col-md-12 white-bg padding">
+            <div class="col-sm-12 margin_top">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a aria-expanded="true" data-toggle="tab" href="#tab-1"> 老师分析</a>
+                        </li>
+                        <li class=""><a aria-expanded="false" data-toggle="tab" href="#tab-2">上课记录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-1">
+                            <div class="panel-body">
+                                <p>老师对待教学认真负责，语言生动，条例清晰，举例充分得当，对待学生严格要求，能够鼓励学生踊跃发言，使课堂气氛比较积极热烈</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-2">
+                            <div class="panel-body">
+                                <div class="ibox-content">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example t2"
+                                           style="margin-top: 15px;">
+                                        <thead>
+                                        <tr>
+                                            <th>课程名</th>
+                                            <th>上课时间</th>
+                                            <th>参加的会员</th>
+                                            <th>次数/单人单次</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+<!-- 头像上传 -->
+<script>
+    // 头像预览
+    $("#avatar_file").change(function () {
+
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+
+        console.log("pathName" + pathName);
+        console.log("projectName" + projectName);
+
+        // 获取上传文件对象
+        var file = $(this)[0].files[0];
+        // 读取文件URL
+        var formData = new FormData();
+        formData.append('avatarFile', file);
+        formData.append('id', [[${ID}]]);
+        console.log(formData);
+
+        $.ajax({
+            url: "/user/modifyUserImg.do",
+            method: "post",
+            data: formData,
+            dataType: "json",	//接收服务器传输的数据格式
+            contentType: false,	//必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
+            processData: false,
+            success: function (data) {
+                const userData = data.data;
+                console.log(userData);
+                if (userData != null) {
+                    // 读取的URL结果：this.result	@{/static/img/{avatar}(avatar=${userInfo.avatarUrl})}
+                    console.log("之后的图片信息：" + userData.avatarUrl);
+
+                    $("#avatar_img").attr("src", "/images/teacher_img/" + userData.avatarUrl);
+                }
+            },
+            error: function (jqXHR) {
+                alert("更新失败, 请重新再试!");
+            }
+        });
+    });
+
+    //老师详情
+    $(function () {
+        //基本信息
+        $.post("[[${#request.getContextPath()}]]/user/teacherDetail.do", {tid: [[${ID}]]}, function (data) {
+
+            var teacherMsg = data.data;
+            console.log([[${ID}]]);
+            console.log(teacherMsg);
+            if (teacherMsg.avatarUrl == null) {
+                teacherMsg.avatarUrl = "user.png";
+            }
+            $("#avatar_img").attr("src", "/images/teacher_img/" + teacherMsg.avatarUrl);
+            // $("#avatar_img").attr("src", "/static/img/" + teacherMsg.avatarUrl);
+            console.log("url==>" + teacherMsg.avatarUrl)
+            $("#detail h2").html(teacherMsg.name);
+            $("#detail p:eq(0)").html("性别：" + teacherMsg.sex);
+            $("#detail p:eq(1)").html("手机号：" + teacherMsg.phone);
+            $("#detail p:eq(2)").html("老师介绍：" + teacherMsg.introduce);
+            $("#detail p:eq(3)").html("备注：" + teacherMsg.note);
+
+        });
+
+        //上课记录
+        $.post("[[${#request.getContextPath()}]]/user/teacherClassRecord.do", {tid: [[${ID}]]}, function (data) {
+            let classMsg;
+            console.log("---------");
+            console.log(data);
+            classMsg = data.data;
+            if (classMsg == null) {
+                classMsg = "暂无上课记录";
+                $("tbody").append(classMsg);
+            } else {
+                //表格控件
+                $('.dataTables-example.t2').dataTable({
+                    "data": classMsg,
+                    //行的定义
+                    "columns": [
+                        {"data": "courseName"},
+                        {"data": "classTime"},
+                        {"data": "cardName"},
+                        {"data": "timesCost"}
+                    ],
+
+                    //去掉搜索
+                    searching: true,
+                    lengthChange: false,
+                    language: {
+                        "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+                        "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+                        "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+                        /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+                        "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+                        "infoPostFix": "",//在摘要信息后继续追加的字符串
+                        "thousands": ",",//千分位分隔符
+                        "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+                        "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+                        "processing": "处理中...",//用来描述加载进度的字符串
+                        "search": "搜索",//用来描述搜索输入框的字符串
+                        "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+                        "paginate": {
+                            "first": "首页",
+                            "previous": "上一页",
+                            "next": "下一页",
+                            "last": "尾页"
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+
+</html>

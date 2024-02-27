@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+约课系统 - 绑卡操作</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+    <style type="text/css">
+        .line {
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="ibox-content">
+    <form class="form-horizontal" id="bindForm" name="userForm">
+
+        <!--隐藏域会员id-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" style="margin-bottom: 20px">会员</label>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <!-- 隐藏域，id -->
+                    <input id="member" name="memberId" type="hidden">
+                    <!-- 隐藏域，管理员名 -->
+                    <input name="operator" th:value="${session.LOGIN_USER.name}" type="hidden" value="admin"/>
+
+                    <input class="form-control" id="searchText" placeholder="输入名字或者手机号搜索" type="text">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        </ul>
+                    </div>
+                    <!-- /btn-group -->
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" tip="name"></label>
+            </div>
+
+        </div>
+        <!--选择绑定的会员卡-->
+        <div class="form-group">
+            <label class="col-md-2 control-label" style="margin-bottom: 30px">选择会员卡</label>
+            <div class="col-md-6">
+                <select class="form-control" id="selectList" name="cardId">
+                    <option value="">--请选择绑定的会员卡--</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" tip="cardId"></label>
+            </div>
+        </div>
+        <hr>
+        <!--充值次数-->
+        <div class="form-group">
+            <label class="col-md-2 control-label">充值次数</label>
+            <div class="col-md-6">
+                <input class="input_style" min="0" name="validCount" type="number" value="50">
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" tip="validCount"></label>
+            </div>
+
+        </div>
+
+        <!--有效期-->
+        <div class="form-group">
+            <label class="col-md-2 control-label">有效期</label>
+            <div class="col-md-6">
+                <input class="input_style" min="0" name="validDay" type="number" value="30">
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" tip="validDay"></label>
+            </div>
+        </div>
+
+        <!--实收金额-->
+        <div class="form-group">
+            <label class="col-md-2 control-label">实收金额</label>
+            <div class="col-md-2">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-glyphicon glyphicon-yen"></i></span>
+                    <input class="form-control" min="0" name="receivedMoney" placeholder="金额" step="0.01" type="text">
+                    <div class="input-group-addon">元</div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" tip="receivedMoney"></label>
+            </div>
+        </div>
+
+        <!--支付方式-->
+        <div class="form-group">
+            <label class="col-md-2 control-label">选择支付方式</label>
+            <div class="col-md-6">
+                <select class="form-control" id="payList" name="payMode">
+                    <option value="">--请选择--</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="control-label" tip="payMode"></label>
+            </div>
+
+        </div>
+
+        <!--备注-->
+        <div class="form-group">
+            <label class="col-md-2 control-label">备注</label>
+            <div class="col-md-8">
+                <textarea class="form-control" name="note" rows="3"></textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-danger col-md-offset-2 control-label" id="bind_confirm" type="button">确认</button>
+        <a class="btn btn-primary " href="x_member_card_bind.html" th:href="@{/cardBind/x_member_card_bind.do}"
+           type="button">取消</a>
+    </form>
+
+
+</div>
+
+<!-- 提示模态窗 -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+
+                <div aria-hidden="true" class="modal inmodal fade" id="tip" role="dialog" tabindex="-1">
+                    <div class="modal-dialog model-dialog-centered modal-sm " role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style="text-align: left; background-color:lightsalmon ">
+                                <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span><span
+                                        class="sr-only">Close</span></button>
+                                <h5 class="modal-title">会员绑定</h5>
+                            </div>
+                            <div class="modal-body" style="text-align: center; background-color:lightpink ">
+                                <h2 style="color: steelblue">绑定成功</h2>
+                            </div>
+                            <div class="modal-footer" style="text-align: center; background-color:lightsalmon ">
+                                <a class="btn btn-primary" th:href="@{/member/x_member_list.do}">前往会员页</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="input-group" style="width:240px;">
+    <div class="input-group-btn" style="width:1px;">
+        <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+<!-- Peity -->
+<!-- <script src="../../static/js/demo/peity-demo.js" th:src="@{/static/js/demo/peity-demo.js}"></script> -->
+<!-- 搜索建议提示插件 -->
+<script src="../../static/js/plugins/suggest/bootstrap-suggest.min.js"
+        th:src="@{/static/js/plugins/suggest/bootstrap-suggest.min.js}"></script>
+</body>
+<script>
+    $(function () {
+
+        /* 会员搜索 */
+        $("#searchText").bsSuggest({
+            // url: "[[${#request.getContextPath()}]]/member/toSearch.do",
+            url: "[[${#request.getContextPath()}]]/member/toSearcherAll.do",
+            effectiveFieldsAlias: {id: "ID", name: "会员名称", sex: "性别", phone: "手机号"},
+            effectiveFields: ["id", "name", "sex", "phone"],
+            ignorecase: true,
+            showHeader: true,
+            showBtn: false, //不显示下拉按钮
+            delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+            idField: "id",
+            keyField: "name",
+            clearable: true
+        })
+            .on("onDataRequestSuccess", function (e, result) {
+                console.log("onDataRequestSuccess: ", result);
+            })
+            .on("onSetSelectValue", function (e, keyword) {
+                $("#member").val(keyword.id);
+                console.log("onSetSelectValue: ", keyword);
+            })
+            .on("onUnsetSelectValue", function () {
+                console.log("onUnsetSelectValue");
+            });
+
+        /* 获取表单数据 - 会员绑卡 */
+        var formBind = "";
+        $("#bind_confirm").on("mouseenter", function () {
+            formBind = $("#bindForm").serialize();
+            console.log(formBind);
+        });
+
+        /*======== 下拉列表填充数据  =========*/
+
+        /* 填充下拉列表 - 会员卡 */
+        var cardListSave = "";
+        $.post("[[${#request.getContextPath()}]]/card/cardList.do", function (data) {
+            var cardList = data.data;
+            cardListSave = cardList;
+            for (var i = 0; i < cardList.length; i++) {
+                $("#selectList").append("<option  value='" + cardList[i].id + "'>" + cardList[i].name + "</option>");
+            }
+
+        });
+
+        /* 选中的列表项 - 会员卡 */
+        $("#selectList").change(function () {
+            var selectOne = $(this).val();
+            for (var i = 0; i < cardListSave.length; i++) {
+                $("option[value='" + cardListSave[i].id + "']").prop("selected", false);
+                if (selectOne == cardListSave[i].id) {
+                    //$("option[value='" + selectOne + "']").attr("selected", "selected");
+                    $("option[value='" + selectOne + "']").prop("selected", true);
+                }
+            }
+        });
+
+        var payListSave = [
+            {"id": 1, "name": "现金"},
+            {"id": 2, "name": "支付宝"},
+            {"id": 3, "name": "微信"},
+            {"id": 4, "name": "银行卡"}
+        ];
+        var payList = payListSave;
+        for (var i = 0; i < payList.length; i++) {
+            $("#payList").append("<option  value='" + payList[i].name + "'>" + payList[i].name + "</option>");
+        }
+
+        /* 选中的列表项 - 支付方式 */
+        $("#payList").change(function () {
+            var selectOne = $(this).val();
+            for (var i = 0; i < payListSave.length; i++) {
+                $("option[value='" + payListSave[i].name + "']").prop("selected", false);
+                if (selectOne == payListSave[i].name) {
+                    $("option[value='" + selectOne + "']").prop("selected", true);
+                }
+            }
+            console.log("pay: " + selectOne);
+        });
+
+        /*===========表单数据提交===========*/
+        /* 保存会员信息,绑定会员卡 */
+        $('#bind_confirm').click(function () {
+            swal({
+                title: "绑卡确认",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确认",
+                closeOnConfirm: true
+            }, function () {
+                //数据请求
+                // $.post("[[${#request.getContextPath()}]]/cardBind/memberBindCard.do",formBind,function(bindMsg){
+                $.post("[[${#request.getContextPath()}]]/cardBind/memberBind.do", formBind, function (data) {
+                    //移除重复提示 - 绑卡
+                    $("#selectList").nextAll().remove();
+                    if (data.code === 0) {
+                        swal("绑定成功！", "", "success");
+                        setTimeout(function () {
+                            // window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                            window.location.reload();
+                        }, 1000);
+                    } else if (data.code === 400) {
+                        //参数校验错误回显
+                        let errors = data.errorMap;
+                        for (const key in errors) {
+                            //移除重复提示 - 会员添加
+                            $(`[tip=${key}]`).html("");
+                            //错误提示回显
+                            $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                        }
+                    } else {
+                        swal("绑定失败！", data.msg, "info");
+                    }
+                });
+            });
+
+        });
+    });
+
+
+</script>
+</html>

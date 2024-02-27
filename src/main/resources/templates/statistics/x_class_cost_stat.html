@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>课消统计页面2</title>
+    <meta content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <!-- bootstrap-datepicker -->
+    <link href="../../static/css/plugins/datapicker/datepicker3.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/datapicker/datepicker3.css}">
+
+    <!--sweetalert.css-->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" rel="stylesheet"
+          th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>老师课时消费统计</h5>
+
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <form class="form-horizontal" id="addForm" method="post" name="addForm">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">统计时段</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input checked name="unit" type="radio" value="1"> 月
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input name="unit" type="radio" value="2"> 季
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input name="unit" type="radio" value="3"> 年
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="div_month">
+                                <label class="col-sm-2 control-label">查询年份</label>
+                                <div class="col-sm-2">
+                                    <select class="single-line form-control" name="yearOfSelect">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="div_year" style="display: none">
+                                <label class="col-sm-2 control-label">开始年份</label>
+                                <div class="col-sm-2">
+                                    <select class="single-line form-control" name="beginYear">
+                                    </select>
+                                </div>
+                                <label class="col-sm-2 control-label">结束年份</label>
+                                <div class="col-sm-2">
+                                    <select class="single-line form-control" name="endYear">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-2 col-sm-offset-2">
+                                    <button class="btn btn-success" type="submit">统计</button>
+                                    <button class="btn btn-white" type="reset">取消</button>
+                                </div>
+                                <div class="col-sm-1 col-sm-offset-7">
+                                    <a class="btn btn-warning center-block" onclick="window.location.reload()">刷新数据</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-offset-2" id="main" style="width: 1000px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+<!-- Peity -->
+<!-- <script src="../../static/js/demo/peity-demo.js" th:src="@{/static/js/demo/peity-demo.js}"></script> -->
+
+
+<!-- Data picker -->
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js"
+        th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+<script src="../../static/js/plugins/echarts/echarts-all.js"
+        th:src="@{/static/js/plugins/echarts/echarts-all.js}"></script>
+
+<!--sweetalert-->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+
+<script type="text/javascript">
+    $(function () {
+        /*时间控件配置*/
+        $('#myDate').datepicker({
+            language: "zh-CN",
+            clearBtn: true,//清除
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy-mm-dd',
+            todayBtn: false,//今日按钮
+            startDate: '1970-1-1', //与你自己设置的格式一致yyyy-mm-dd，未设置的话与默认格式一致mm/dd/yyyy
+            endDate: '2070-1-1'
+        });
+    });
+</script>
+
+<div>
+    <div id="Chart4" style="width: 1300px; top: -10px;  height:750px;"></div>
+    <script>
+        $(function () {
+            // 基于准备好的dom，初始化echarts实例
+            var chart = echarts.init(document.getElementById('Chart4'));
+            //图表参数设置
+            var option;
+
+            var app = {};
+
+            //课消统计数据
+            $("#addForm").submit(function () {
+                var form = document.forms["addForm"];
+                $.ajax({
+                    type: 'POST',
+                    url: "/statistics/classCostMonthOrSeasonOrYear",
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.code === 0) {
+
+                            var info = data.data;
+                            let data1 = info.data;
+                            let data2 = info.data2;
+
+                            console.log('data1==' + data1);
+                            console.log('data2==' + data2);
+
+                            //创建一个数组盛放每个老师的课消次数在每所用统计时间中的最大值，以设置 次数y轴的最大高度
+                            var maxNumY1 = [];
+                            $.each(data1, function (index, value) {
+                                let max = Math.max(...value);
+                                maxNumY1.push(max);
+                            });
+                            //设置课消次数柱状图的最大高度
+                            let maxY_height1 = Math.max(...maxNumY1) + 5;
+
+                            //创建一个数组盛放每个老师的课消金额在每个统计时间中的最大值用来找出金额最大值，以设置 金额y轴的最大高度
+                            var maxNumY2 = [];
+                            $.each(data2, function (index, value) {
+                                let max = Math.max(...value);
+                                maxNumY2.push(max);
+                            });
+                            //设置课消金额柱状图的最大高度
+                            let maxY_height2 = Math.max(...maxNumY2) + 5
+
+                            console.log('金额最大高度' + maxY_height1)
+                            console.log('课次最大高度' + maxY_height2)
+
+
+                            //可放大缩小配置，设置在x轴长度大于8时生效
+                            const dataZoom = {};
+                            //x轴统计单位的个数【即是按月、按季度还是按年度查询时的长度】，以决定柱状图中文本的字体大小，避免过大或过小【labelOption/rich/name/fontSize】
+                            let xLength;
+                            if (info.time.length >= 8) {
+                                xLength = 10;
+                                dataZoom.type = 'inside';
+                            } else if (info.time.length === 4) {
+                                xLength = 13;
+                            } else {
+                                xLength = 15;
+                            }
+
+                            app.config = {
+                                rotate: 90,
+                                align: 'left',
+                                verticalAlign: 'middle',
+                                position: 'insideBottom',
+                                distance: 10,
+                            };
+                            const labelOption = {
+                                show: true,
+                                position: app.config.position,
+                                distance: app.config.distance,
+                                align: app.config.align,
+                                verticalAlign: app.config.verticalAlign,
+                                rotate: app.config.rotate,
+                                //柱状图中显示文本的格式
+                                formatter: '{name|{a}}   {c}',
+                                fontSize: 20,
+                                rich: {
+                                    name: {
+                                        fontSize: xLength
+                                    }
+                                }
+                            };
+
+                            option = {
+                                title: {
+                                    text: info.title,
+                                    subtext: '注意：在查询时间之后加入的老师信息不在统计记录中！',
+                                },
+                                //标签的位置等设置
+                                legend: {
+                                    right: '8%',
+                                    orient: 'vertical',
+                                    bottom: '15%'
+                                },
+                                //浮动提示
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        type: 'cross',
+                                        crossStyle: {
+                                            color: '#a37d7d'
+                                        }
+                                    }
+                                },
+                                //大小位置
+                                grid: {
+                                    right: '20%',
+                                    top: '15%',
+                                    width: '999px',
+                                    height: '550',
+                                    containLabel: true
+
+                                },
+                                //图表小工具
+                                toolbox: {
+                                    feature: {
+                                        dataView: {show: true, readOnly: false},
+                                        magicType: {show: true, type: ['line', 'bar']},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    },
+                                    right: '10%'
+                                },
+                                //x轴数据
+                                xAxis: {
+                                    type: 'category',
+                                    data: info.time,
+                                },
+                                //y轴配置
+                                yAxis: [
+                                    //课次y轴
+                                    {
+                                        type: 'value',
+                                        name: '课消次数',
+                                        min: 0,
+                                        max: maxY_height1,
+                                        interval: 5,
+                                        axisLabel: {
+                                            formatter: '{value} 次'
+                                        }
+                                    },
+                                    //金额y轴
+                                    {
+                                        type: 'value',
+                                        name: '课消金额',
+                                        min: 0,
+                                        max: maxY_height2,
+                                        interval: 10,
+                                        axisLabel: {
+                                            formatter: '{value}.00 ￥'
+                                        }
+                                    }
+                                ],
+
+                                //放大缩小配置
+                                // dataZoom: dataZoom,
+                                series: []
+                            };
+
+                            // Enable data zoom when user click bar.当用户单击栏时启用数据缩放。
+                            const zoomSize = 6;
+                            chart.on('click', function (params) {
+                                console.log(info.time[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+                                chart.dispatchAction({
+                                    type: 'dataZoom',
+                                    startValue: info.time[Math.max(params.dataIndex - zoomSize / 2, 0)],
+                                    endValue:
+                                        info.time[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+                                });
+                            });
+
+                            //一个图表显示缓动特效，暂无用
+                            var f = function (idx) {
+                                return idx * 100 + 100;
+                            }
+
+
+                            var legendData = [];
+
+                            $.each(info.tname, function (index, name) {
+                                let listCost = data1[index];
+                                console.log('data-' + listCost);
+                                console.log('data2-' + data2[index]);
+
+                                //定义鼠标聚焦当前位置，将其他图数据变灰
+                                let zoom = {};
+                                zoom.focus = 'series'
+
+
+                                let obj = {};
+                                obj.type = "bar";
+                                obj.data = listCost;
+                                //用于显示柱状图上的文字信息
+                                obj.label = labelOption;
+                                //用temp表示该老师的所有统计时间下的次数的list是不是都是0
+                                /*let temp = 0;
+                                $.each(listCost, function (i, v) {
+                                    temp += v;
+                                })*/
+                                /*if (temp === 0) {
+                                    obj.label = null;
+                                }*/
+                                // obj.animationDelay = f;
+                                obj.name = name + '课消次数';
+                                //聚焦当前位置的图表的配置项
+                                obj.emphasis = zoom;
+                                option.series.push(obj);
+
+
+                                //在数据位上显示值
+                                var label = {};
+                                label.show = true;
+                                label.position = 'top';
+
+                                let obj2 = {};
+                                obj2.type = "line";
+                                //
+                                obj2.label = label;
+                                obj2.name = name + '课消金额';
+                                obj2.data = data2[index];
+                                //将折线图的y轴设为使用第二个
+                                obj2.yAxisIndex = 1;
+                                //将折线图的数据位用三角形表示
+                                obj2.symbol = 'triangle';
+                                //三角形的大小设为10
+                                obj2.symbolSize = 15;
+                                //聚焦当前位置
+                                obj2.emphasis = zoom;
+                                option.series.push(obj2);
+
+
+                                legendData.push(obj.name);
+                                legendData.push(obj2.name);
+                            });
+                            option.legend.data = legendData;
+                            /*var tem = {};
+                            tem.type = 'inside';
+                            option.dataZoom = tem;*/
+
+                            chart.setOption(option, true);
+                        } else {
+                            swal("统计错误！", data.msg, "info");
+                        }
+                    }
+                });
+                return false;
+            });
+
+            // 选择不现统计单位时，改变选择框
+            $(":radio[name=unit]").click(function () {
+                if (this.value == 3) {
+                    $("#div_month").hide();
+                    $("#div_year").show();
+                } else {
+                    $("#div_month").show();
+                    $("#div_year").hide();
+                }
+
+            });
+
+
+            var yearListSave = "";
+            $.post("[[${#request.getContextPath()}]]/statistics/yearList", function (data) {
+                yearListSave = data.data;
+                for (let i = 0; i < yearListSave.length; i++) {
+                    $(".single-line.form-control").append("<option  value='" + yearListSave[i] + "'>" + yearListSave[i] + "</option>");
+                }
+            });
+        });
+    </script>
+</div>
+
+
+</body>
+
+</html>

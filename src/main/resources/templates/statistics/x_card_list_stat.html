@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+    <title>会员卡统计页面</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+
+    <!-- Data Tables -->
+    <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}">
+
+
+    <!--sweetalert.css-->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" rel="stylesheet"
+          th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>卡列表与统计</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-tools">
+                    <button class="btn btn-default pull-right" onclick="refreshCache()"  ><i aria-hidden="true" class="fa fa-refresh fa-lx" >refresh cache</i></button>
+                    <button class="btn btn-primary pull-right" onclick="window.location.reload()" ><i aria-hidden="true" class="fa fa-refresh fa-lx" >刷新数据</i></button>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                        <tr>
+                            <th>会员姓名</th>
+                            <th>卡号</th>
+                            <th>总课次</th>
+                            <th>已用课次</th>
+                            <th>剩余课次</th>
+                            <th>总额</th>
+                            <th>已用金额</th>
+                            <th>剩余金额</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-4  col-sm-offset-1" id="main" style="height: 400px;"></div>
+                        <div class="col-sm-4  col-sm-offset-1" id="main2" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js"
+        th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js"
+        th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js"
+        th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+<script src="../../static/js/plugins/echarts/echarts-all.js"></script>
+
+<!--sweetalert-->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+
+<!-- Page-Level Scripts -->
+<script>
+
+    $(function () {
+
+        $.post("[[${#request.getContextPath()}]]/statistics/cardInfo.do", function (data) {
+
+
+            var infoList = data.data;
+            if (data.code === 400) {
+                swal(data.msg, "", "info");
+                infoList = [];
+            }
+            $('.dataTables-example').dataTable({
+                "data": infoList.memberCardStatisticsVos,
+                "columns": [
+                    {"data": "memberName"},
+                    {"data": "bindCardId"},
+                    {"data": "totalClassTimes"},
+                    {"data": "usedClassTimes"},
+                    {"data": "remainingClassTimes"},
+                    {"data": "lumpSum"},
+                    {"data": "amountUsed"},
+                    {"data": "balance"}
+                ]
+            });
+
+
+            // 图表初始化
+            var chart = echarts.init(document.getElementById('main'));
+            // 指定图表的配置项和数据--【课时】
+            var option = {
+                title: {
+                    text: '课时统计图',
+                    subtext: '总课时:' + infoList.totalCourseTimeAll
+                },
+                tooltip: {},
+                legend: {
+                    orient: 'vertical',
+                    left: 'right'
+                },
+                series: [
+                    {
+                        name: '课时',
+                        type: 'pie',    // 设置图表类型为饼图
+                        radius: '55%',  // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+                        data: [          // 数据数组，name 为数据项名称，value 为数据项值
+                            {value: infoList.usedCourseTimeAll, name: '已用课时'},
+                            {value: infoList.remainCourseTimeAll, name: '剩余课时'}
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    formatter: '{b} : {c} ({d}%)'
+                                },
+                                labelLine: {show: true}
+                            }
+                        }
+                    }
+                ]
+            };
+
+            chart.setOption(option, true);
+            // 指定图表的配置项和数据--【金额】
+            var option2 = {
+                title: {
+                    text: '课消金额统计图',
+                    subtext: '总金额:' + infoList.totalMoneyAll
+                },
+                tooltip: {},
+                legend: {
+                    orient: 'vertical',
+                    left: 'right'
+                },
+                series: [
+                    {
+                        name: '金额',
+                        type: 'pie',    // 设置图表类型为饼图
+                        radius: '55%',  // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+                        data: [          // 数据数组，name 为数据项名称，value 为数据项值
+                            {value: infoList.usedMoneyAll, name: '已用金额'},
+                            {value: infoList.remainMoneyAll, name: '剩余金额'}
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    formatter: '{b} : {c} ({d}%)'
+                                },
+                                labelLine: {show: true},
+                                color: function (params) {
+                                    var colorList = [
+                                        '#3c8282', '#ea980a', '#FFFF00', '#FF8C00', '#FF0000', '#FE8463',
+                                    ];
+                                    return colorList[params.dataIndex]
+                                }
+                            },
+
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            var chart2 = echarts.init(document.getElementById('main2'));
+            chart2.setOption(option2, true);
+
+
+            /*=============*/
+        });
+
+    })
+
+</script>
+<script >
+    function refreshCache() {
+        $.get('/statistics/refreshCache.do', function (data) {
+            if (data.code === 0) {
+                swal("清除缓存成功", "", "success");
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1200);
+            } else {
+                swal("清楚失败！","请联系管理员", "info")
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

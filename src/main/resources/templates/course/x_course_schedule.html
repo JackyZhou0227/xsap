@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+约课系统 - 团课预约计划表</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet" th:href="@{/static/css/font-awesome.css}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <link href="../../static/css/plugins/iCheck/custom.css" rel="stylesheet"
+          th:href="@{/static/css/plugins/iCheck/custom.css}">
+    <link href="../../static/css/plugins/datapicker/datepicker3.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/datapicker/datepicker3.css}">
+    <link href="../../static/css/plugins/simditor/simditor.css" rel="stylesheet"
+          th:href="@{/static/css/plugins/simditor/simditor.css}"
+          type="text/css"/>
+
+    <link href="../../static/css/plugins/fullcalendar/fullcalendar.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/fullcalendar/fullcalendar.css}">
+    <link href="../../static/css/plugins/fullcalendar/fullcalendar.print.css"
+          media='print' rel="stylesheet" th:href="@{/static/css/plugins/fullcalendar/fullcalendar.print.css}">
+    <link href="../../static/css/plugins/clockpicker/clockpicker.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/clockpicker/clockpicker.css}">
+    <!-- 导入magicsuggest样式 -->
+    <link href="../../static/css/plugins/magicsuggest/magicsuggest-min.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/magicsuggest/magicsuggest-min.css}">
+
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+    <style type="text/css">
+        /*解决模态框覆盖问题*/
+        .clockpicker-popover {
+            z-index: 999999 !important;
+        }
+
+        /* 日程表字体设置 */
+        .fc-event-time,
+        .fc-event-title {
+            color: white;
+            padding: 0 1px;
+        }
+
+    </style>
+</head>
+
+<body class="gray-bg">
+<!--导航按钮-->
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInDown">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <button class="btn btn-info" data-target="#addCourse" data-toggle="modal">新增排课</button>
+                    <button class="btn btn-info" data-target="#copyCourse" data-toggle="modal">复制排课</button>
+                    <button class="btn btn-success " onclick="window.location.reload()" data-target="#refresh" data-toggle="modal">刷新课程表</button>
+                    <button class="btn btn-default " onclick="refreshCache()" data-target="#refresh_cache" data-toggle="modal">refresh cache</button>
+                    <button class="btn btn-warning pull-right" data-target="#upCourse" data-toggle="modal">批量导出预约数据</button>
+
+                </div>
+                <div class="ibox-content">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--添加排课模态框-->
+<div class="modal fade" id="addCourse" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <h3 class="modal-title">新增排课</h3>
+            </div>
+
+            <div class="modal-body" style="min-height: 400px;margin-top: 20px">
+                <form action="#" class="form-horizontal" id="addScheduleForm" method="post">
+                    <div align="center" class="form-group">
+                        <span class="text-danger" id="add_tip"></span>
+                    </div>
+
+                    <!--隐藏域--课程id-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label right">课程：</label>
+                        <div class="col-sm-7">
+                            <div class="input-group">
+                                <!-- 隐藏域，courseId -->
+                                <input id="course" name="courseId" type="hidden">
+
+                                <input class="form-control" id="courseSearch" placeholder="请选择课程" type="text">
+                                <div class="input-group-btn" style="z-index:99999!important;">
+                                    <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" type="button">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    </ul>
+                                </div>
+                                <!-- /btn-group -->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3" >
+                                <label class="control-label" tip="courseId"></label>
+                        </div>
+
+                    </div>
+
+                    <!--隐藏域--老师id-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label right">老师：</label>
+                        <div class="col-sm-7">
+                            <div class="input-group" style="z-index:99998!important;">
+                                <!-- 隐藏域，courseId -->
+                                <input id="teacher" name="teacherId" type="hidden">
+
+                                <input class="form-control" id="teacherSearch" placeholder="请选择老师" type="text">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" type="button">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    </ul>
+                                </div>
+                                <!-- /btn-group -->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3" >
+                            <label class="control-label" tip="teacherId"></label>
+                        </div>
+                    </div>
+
+                    <!--日期-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label right">日期：</label>
+                        <div class="col-sm-7" style="z-index:99997!important; margin: 0 auto">
+                            <input class="form-control data-temple" name="startDate" placeholder="yyyy-mm-dd">
+                        </div>
+
+                        <div class="col-sm-3" >
+                            <label class="control-label" tip="startDate"></label>
+                        </div>
+
+                    </div>
+
+                    <!--上课时间-->
+                    <div class="form-group" id="data_4">
+                        <label class="col-sm-2 control-label right">上课时间</label>
+                        <div class="col-sm-7 input-group clockpicker" data-autoclose="true" style="padding-left: 15px">
+                            <input class="form-control" name="classTime" placeholder="选择上课具体时间" type="text"
+                                   value="09:30">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <h3>高级设置(对预约会员的条件限制)</h3>
+
+                    <!--学生性别-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label right">学生性别：</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" disabled="disabled" name="limitSex" type="text" value="男"/>
+                        </div>
+                    </div>
+
+                    <!--学生年龄-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label right">学生年龄：</label>
+                        <div class="col-sm-7">
+                            <input class="form-control" disabled="disabled" name="limitAge" type="text" value="不限制"/>
+                        </div>
+                    </div>
+                    <!--隐藏域 课程时长-->
+                    <div class="form-group">
+                        <div class="col-sm-7">
+                            <input id="course_duration" name="courseDuration" type="hidden">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <!--关闭、确定-->
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                <button class="btn btn-primary" id="add_btn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--复制？添加排课模态框-->
+<div class="modal fade" id="copyCourse" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <h3 class="modal-title">复制课程</h3>
+            </div>
+
+            <div class="modal-body" style="min-height: 200px;margin-top: 30px">
+                <form action="#" class="form-horizontal" id="copyScheduleForm" method="post">
+                    <div align="center" class="form-group">
+                        <span class="text-danger" id="copy_tip"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label right"><span class="text-danger">* </span>将 </label>
+                        <div class="col-sm-7" style="z-index:99999!important;">
+                            <input class="form-control data-temple" name="sourceDateStr" placeholder="yyyy-mm-dd">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label right"><span class="text-danger">* </span>复制到 </label>
+                        <div class="col-sm-7" style="z-index:99999!important;">
+                            <input class="form-control data-temple" name="targetDateStr" placeholder="yyyy-mm-dd">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                <button class="btn btn-primary" id="copy_btn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--导出预约数据模态框-->
+<div class="modal fade" id="upCourse" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <h3 class="modal-title">选择日期周期，批量导出预约详情</h3>
+            </div>
+
+            <div class="modal-body" style="min-height: 80px;margin-top: 20px">
+                <form action="#" class="form-horizontal" id="exportReserveListForm" method="post">
+                    <div class="form-group " id="data_5">
+                        <div class="input-daterange input-group" id="datepickers"
+                             style="z-index:99999!important; margin: 0 auto">
+                            <input class="input-sm form-control" name="startDateStr" placeholder="yyyy-mm-dd"/>
+                            <span class="input-group-addon">到</span>
+                            <input class="input-sm form-control" name="endDateStr" placeholder="yyyy-mm-dd"/>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                <button class="btn btn-primary" id="reserveList_btn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"
+        type="text/javascript"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"
+        type="text/javascript"></script>
+
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"
+        type="text/javascript"></script>
+
+
+<script src="../../static/js/jquery-ui.custom.min.js" th:src="@{/static/js/jquery-ui.custom.min.js}"
+        type="text/javascript"></script>
+
+<!-- iCheck -->
+<script src="../../static/js/plugins/iCheck/icheck.min.js" th:src="@{/static/js/plugins/iCheck/icheck.min.js}"
+        type="text/javascript"></script>
+
+<!-- Full Calendar -->
+<script src="../../static/js/plugins/fullcalendar/moment.min.js" th:src="@{/static/js/plugins/fullcalendar/moment.min.js}"
+        type="text/javascript"></script>
+<script src="../../static/js/plugins/fullcalendar/fullcalendar.min.js" th:src="@{/static/js/plugins/fullcalendar/fullcalendar.min.js}"
+        type="text/javascript"></script>
+
+<!--动态搜索-->
+<script src="../../static/js/plugins/suggest/bootstrap-suggest.min.js" th:src="@{/static/js/plugins/suggest/bootstrap-suggest.min.js}"
+        type="text/javascript"></script>
+
+<!-- Data picker -->
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js" th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"
+        type="text/javascript"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js" th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"
+        type="text/javascript"></script>
+<!-- Clock picker -->
+<script src="../../static/js/plugins/clockpicker/clockpicker.js" th:src="@{/static/js/plugins/clockpicker/clockpicker.js}"
+        type="text/javascript"></script>
+<!--margicSuggest-->
+<script src="../../static/js/plugins/magicsuggest/magicsuggest-min.js" th:src="@{/static/js/plugins/magicsuggest/magicsuggest-min.js}"
+        type="text/javascript"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        /* initialize the calendar
+        ----------------------------------------------------------------*/
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+        $('#calendar').fullCalendar({
+            editable: true,
+            weekNumberCalculation: "ISO",
+            eventLimitClick: 'day',
+            //设置内容宽高比例
+            aspectRatio: 1.6,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                //right: 'basicWeek,month,listWeek'
+                right: 'month,agendaWeek,agendaDay'
+            },
+
+            /*设置日历的头部按钮文字*/
+            buttonText:
+                {
+                    today: '今天',
+                    month: '月',
+                    agendaWeek: '周',
+                    agendaDay: '天'
+
+                },
+            /*设置月份的名称*/
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月',
+                '八月', '九月', '十月', '十一月', '十二月'],
+            dayNames: ['星期日', '星期一', '星期二', '星期三',
+                '星期四', '星期五', '星期六'],
+
+            /*设置一周中的缩写*/
+            dayNamesShort: ['周日', '周一', '周二', '周三',
+                '周四', '周五', '周六']
+            ,
+            //自定义视图
+            events: {
+                url: '/schedule/scheduleList.do',
+                type: 'post',
+                error: function () {
+                    alert('there was an error while fetching events!');
+                },
+                textColor: 'white'
+            }
+        });
+
+
+    });
+</script>
+<script type="text/javascript">
+
+    function refreshCache() {
+        $.get('/schedule/refreshCache.do', function (data) {
+            if (data.code === 0) {
+                swal("清楚缓存成功！","即将刷新信息","success");
+                setTimeout(function (){
+                    window.location.reload();
+                }, 1200);
+            } else {
+                swal("清楚缓存失败", "请联系管理员", "info")
+            }
+        })
+    }
+
+    /* ---------排课详情-------- */
+    $(function () {
+
+        //设置字体样式
+        $("span .fc-event-title").css("color", "black");
+
+        //基本信息 - 加载
+        $.post("/schedule/scheduleList.do", function (baseInfo) {
+            console.log(baseInfo);
+        });
+
+        /* 课程搜索 */
+        $("#courseSearch").bsSuggest({
+            url: "[[${#request.getContextPath()}]]/course/toSearch.do",
+            effectiveFieldsAlias: {id: "ID", name: "课程名称", contains: "可容纳人数"},
+            effectiveFields: ["id", "name", "contains"],
+            ignorecase: true,
+            showHeader: true,
+            showBtn: false, //不显示下拉按钮
+            delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+            idField: "id",
+            keyField: "name",
+            clearable: true
+        })
+            .on("onDataRequestSuccess", function (e, result) {
+                console.log("onDataRequestSuccess: ", result);
+            })
+            .on("onSetSelectValue", function (e, keyword) {
+                var course_id = keyword.id;
+                $("#course").val(course_id);
+                //拿到课程的限制条件
+                $.post("/course/getOneCourse.do", {id: course_id}, function (result) {
+                    const limitAge = result.data.limitAge;
+                    const limitSex = result.data.limitSex;
+                    const duration = result.data.duration;
+                    console.log(limitAge);
+                    console.log(limitSex);
+                    console.log(duration);
+                    $("input[name='courseDuration']").val(duration);
+                    $("input[name='limitSex']").val(limitSex);
+                    $("input[name='limitAge']").val(limitAge);
+                });
+                console.log("onSetSelectValue: ", keyword);
+            })
+            .on("onUnsetSelectValue", function () {
+                console.log("onUnsetSelectValue");
+            });
+
+
+        /* 老师搜索 */
+        $("#teacherSearch").bsSuggest({
+            url: "[[${#request.getContextPath()}]]/user/toSearch.do",
+            effectiveFieldsAlias: {id: "ID", name: "教师名称", sex: "性别", note: "专长科目"},
+            effectiveFields: ["id", "name", "sex", "note"],
+            ignorecase: true,
+            showHeader: true,
+            showBtn: false, //不显示下拉按钮
+            delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+            idField: "id",
+            keyField: "name",
+            clearable: true
+        })
+            .on("onDataRequestSuccess", function (e, result) {
+                console.log("onDataRequestSuccess: ", result);
+            })
+            .on("onSetSelectValue", function (e, keyword) {
+                $("#teacher").val(keyword.id);
+                console.log("onSetSelectValue: ", keyword);
+            })
+            .on("onUnsetSelectValue", function () {
+                console.log("onUnsetSelectValue");
+            });
+
+
+        /* 表单数据获取 -新增排课 */
+        var addScheduleForm = "";
+        $("#add_btn").on("mouseenter", function () {
+            addScheduleForm = $("#addScheduleForm").serialize();
+            console.log("--------addScheduleForm---------");
+            console.log(addScheduleForm);
+        });
+
+        /*新增排课提交*/
+        $("#add_btn").click(function () {
+            swal({
+                title: "您确定要新增该课程么",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#55dd6c",
+                confirmButtonText: "添加",
+                closeOnConfirm: true
+            }, function () {
+                $.post("/schedule/scheduleAdd.do", addScheduleForm, function (data) {
+                    if (data.code === 0) {
+                        swal("添加成功！", "", "success");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                    } else if (data.code === 400) {
+
+                        let errors = data.errorMap;
+                        console.log(errors)
+                        for (var key in errors) {
+                            $(`[tip=${key}]`).html("");
+                            //错误提示回显
+                            $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
+                        }
+                    } else {
+                        swal("添加失败！", data.msg, "info");
+                    }
+                });
+
+            });
+
+        });
+
+        /* 表单数据获取 - 复制排课 */
+        var copyScheduleForm = "";
+        $("#copy_btn").on("mouseenter", function () {
+            copyScheduleForm = $("#copyScheduleForm").serialize();
+            console.log("-------copyScheduleForm--------");
+            console.log(copyScheduleForm);
+        });
+
+        /*复制排课提交*/
+        $("#copy_btn").click(function () {
+
+            swal({
+                title: "您确定要复制这一天的课程么",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#55dd6c",
+                confirmButtonText: "确认",
+                closeOnConfirm: false
+            }, function () {
+                $.post("/schedule/scheduleCopy.do", copyScheduleForm, function (result) {
+                    if (result.code === 0) {
+                        //刷新页面
+                        swal("复制成功！", "", "success");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        swal("复制失败！", result.msg, "info");
+                    }
+                });
+
+            });
+        });
+
+        /* 表单数据获取 - 批量导出预约计划 */
+        var exportReserveListForm = "";
+        $("#reserveList_btn").on("mouseenter", function () {
+            exportReserveListForm = $("#exportReserveListForm").serialize();
+            console.log("--------exportReserveListForm----------");
+            console.log(exportReserveListForm);
+        });
+
+        //提交表单
+        $("#reserveList_btn").click(function () {
+            $.post("/reserve/exportReserveList.do", exportReserveListForm, function (result) {
+                if (result == "yes") {
+                    alert("导出成功");
+                    window.location.reload();
+                } else {
+                    alert("尚无此功能")
+                }
+            });
+        });
+
+        //时间控件
+        $(function () {
+            $("#datepickers :input").datepicker({
+                language: "zh-CN",
+                autoclose: true,
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+            });
+            $("#datepicker :input").datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                language: "zh-CN",
+                format: "yyyy-mm",
+                startView: 1,
+                minView: 1
+            });
+            $(".data-temple").datepicker({
+                autoclose: true,
+                format: "yyyy-mm-dd",
+                language: "zh-CN",
+                todayHighlight: true
+            });
+
+            /*$('#datepickers :input').each(function() {
+                $(this).datepicker('clearDates');
+            });*/
+            $('.clockpicker').clockpicker({
+                popover: "z-index:99999"
+            });
+        })
+
+
+    });
+
+</script>
+
+</body>
+
+</html>

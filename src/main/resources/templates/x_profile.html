@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>X+ 约课系统 - 个人资料</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}" rel="stylesheet">
+    <link href="../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}" rel="stylesheet">
+    <link href="../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+
+    <style type="text/css">
+
+        .margin-bottom {
+            margin-bottom: 30px;
+        }
+
+        .padding {
+            padding: 20px 10px;
+        }
+
+        .input_margin_top {
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="col-md-12 white-bg margin-bottom padding">
+            <div class="col-md-12">
+            	<div style="margin-left: 12px">
+            	    <figure class="text-center">
+            	        <div style="position: relative;border: 5px solid lightblue;width: 150px;height:150px;margin: 5px auto;border-radius: 50%;">
+            	            <img name="avatarUrl" src="../static/img/a1.jpg"
+            				th:src="@{/images/teacher_img/{avatar}(avatar=${userInfo.avatarUrl})}"
+            				 alt="" id="avatar_img" style="width: 140px;height: 140px;left:0;top: 0;border-radius: 50%;"/>
+            	            <input type="file" id="avatar_file" name="avatar_file"
+            	                   accept="image/jpg,image/jpeg,image/png,image/gif"
+            	                   style="width: 100%;height:100%;opacity: 0;position: absolute;left:0;top: 0;"/>
+            	        </div>
+            	        <br/>
+            	        <p style="font-size: 20px">点击更换头像</p>
+            	    </figure>
+            	</div>
+
+            <form action="#" th:action="@{/user/modifyUser.do}" name="updateUserForm" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <div class="modal-dialog">
+                    <div>
+                        <!--体部定义-->
+                        <div class="modal-body">
+                            <!-- 表单定义 -->
+                            <center>
+								<span th:if="${CHECK_PHONE_EXIST}" class="text-danger">手机号跟其它用户撞名了</span>
+                            </center>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">用户名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="roleName" th:value="${userInfo.roleName}" class="form-control" placeholder="超级管理员" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">真实姓名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="name" th:value="${userInfo.name}" class="form-control" placeholder="admin">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">手机号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="phone" th:value="${userInfo.phone}" class="form-control" placeholder="13778899110">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">性别</label>
+                                    <div class="col-sm-8">
+                                        <label class="checkbox-inline">
+                                            <input type="radio" name="sex" th:attr ="checked=${userInfo.sex=='男'?true:false}" value="男"> 男
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="radio" name="sex" th:attr ="checked=${userInfo.sex=='女'?true:false}" value="女"> 女
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">注册时间</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="createTime" th:value="${userInfo.createTime}" class="form-control" value="2020-06-01 " disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">上次登陆时间</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="lastModifyTime" th:value="${session.LOGIN_USER.lastModifyTime}" class="form-control" value="2020-05-31 08:08:08" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-offset-4 col-md-4 input_margin_top" style="text-align: center">
+                                    <button type="submit" class="btn btn-primary" id="update_teacher_btn" style="margin-right: 10px">保存</button>
+                                    <button type="button" class="btn btn-primary pull-right" onclick="window.history.go(-1)" data-dismiss="modal">取消</button>
+                                </div>
+
+                        </div>
+                    </div>
+                 </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑老师信息模态框（Modal） -->
+
+
+<!-- 全局js -->
+<script src="../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.1.0')}"></script>
+
+<!-- Peity -->
+<script src="../static/js/plugins/peity/jquery.peity.min.js" th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+
+
+
+<!--头像上传 -->
+<script>
+    // 头像预览
+    $("#avatar_file").change(function () {
+        // 获取上传文件对象
+       console.log($(this));
+        var file = $(this)[0].files[0];
+		console.log(file);
+		console.log("更新之前的图片信息："+"[[${userInfo.avatarUrl}]]");
+		//获取应用名
+       // var appName = [[${#request.getContextPath()}]];
+		//console.log("appName: "+appName);
+		//
+		var formData = new FormData();
+		formData.append('avatarFile',file);
+		// 追加登录用户的id   -》 by yejf 【注：在thymeleaf中，从session范围中取出对象，要以session开头】
+        formData.append('id',[[${session.LOGIN_USER.id}]]);
+		console.log(formData);
+
+        $.ajax({
+            url: "/user/modifyUserImg.do",
+            method: "post",
+            data: formData,
+            dataType: "json",	//接收服务器传输的数据格式
+            contentType: false,	//必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
+            processData: false,
+            success: function (data) {
+                const userData = data.data;
+                console.log(userData);
+                if (userData != null) {
+                    // 读取的URL结果：this.result	@{/static/img/{avatar}(avatar=${userInfo.avatarUrl})}
+                    console.log("之后的图片信息：" + userData.avatarUrl);
+
+                    $("#avatar_img").attr("src", "/images/teacher_img/" + userData.avatarUrl);
+                }
+            },
+            error: function (jqXHR) {
+                alert("更新失败, 请重新再试!");
+            }
+        });
+
+    });
+</script>
+
+</body>
+
+</html>

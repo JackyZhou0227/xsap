@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>X+约课系统 - 老师管理</title>
+    <meta name="keywords" content="老师、约课">
+    <meta name="description" content="是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}" rel="stylesheet">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" th:href="@{/static/css/font-awesome.css(v='4.4.0')}" rel="stylesheet">
+    <link href="../../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+    <link href="../../static/css/style.css?v=4.1.0" th:href="@{/static/css/style.css(v='4.1.0')}" rel="stylesheet">
+    <!-- bootstrap-datepicker -->
+    <link href="../../static/css/plugins/datapicker/datepicker3.css" th:href="@{/static/css/plugins/datapicker/datepicker3.css}" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a class="btn btn-success J_menuItem"  href="x_teacher_add.html" th:href="@{/user/x_teacher_add.do}">添加老师</a>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <table class="table table-striped table-bordered table-hover teacherTable">
+                        <thead>
+                        <tr>
+                            <th>老师</th>
+                            <th>性别</th>
+                            <th>手机号</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+						
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<script src="../../static/js/plugins/jeditable/jquery.jeditable.js" th:src="@{/static/js/plugins/jeditable/jquery.jeditable.js}"></script>
+
+<!-- Data Tables -->
+<script src="../../static/js/plugins/dataTables/jquery.dataTables.js" th:src="@{/static/js/plugins/dataTables/jquery.dataTables.js}"></script>
+<script src="../../static/js/plugins/dataTables/dataTables.bootstrap.js" th:src="@{/static/js/plugins/dataTables/dataTables.bootstrap.js}"></script>
+
+<!-- Data picker -->
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.js" th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.js}"></script>
+<script src="../../static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js" th:src="@{/static/js/plugins/datapicker/bootstrap-datepicker.zh-CN.min.js}"></script>
+
+<!-- Sweet alert -->
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	$.post("[[${#request.getContextPath()}]]/user/teacherList.do",function(teacherList){
+		console.log(teacherList);
+		console.log("---------");
+		$('.teacherTable').dataTable({
+	        "data": teacherList.data,
+	        //行的定义
+	        "columns": [
+	            {"data": "name", bAutoWidth: "false", sWidth: "15%"},
+	            {"data": "sex", sWidth: "10%"},
+	            {"data": "phone", sWidth: "15%"},
+	            {"data": "introduce", sWidth: "30%"},
+	            {
+	                "data": null, "orderable": false, "render": function (data, type, row) {
+	                    var id = row.id;
+	                    var html = "<a href='[[${#request.getContextPath()}]]/user/x_teacher_update.do?id="+ id +"'  class='btn btn-success btn-xs'> 编辑 <i class='fa fa-edit'></i></a>&nbsp &nbsp"
+	                    html += "<a href='[[${#request.getContextPath()}]]/user/x_teacher_list_data.do?id="+ id +"'  class='btn btn-info btn-xs'> 查看详情 <i class='fa fa-check-square'></i></a>&nbsp &nbsp"
+	                    html += "<a href='#?id="+ id +"' onclick='deteleConfirm("+ id +")' class='btn btn-xs btn-danger detele_btn' >删除 <i class='fa fa-times'></i></a>"
+	                    return html;  
+	                }
+	            }],
+	        //去掉搜索
+	        searching: false,
+	        lengthChange: false,
+	        language: {
+	            "decimal": "",//小数的小数位符号  比如“，”作为数字的小数位符号
+	            "emptyTable": "没有数据哟~~",//没有数据时要显示的字符串
+	            "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",//左下角的信息，变量可以自定义，到官网详细查看
+	            /*  "infoEmpty": "无记录",//当没有数据时，左下角的信息*/
+	            "infoFiltered": "(从 _MAX_ 条记录过滤)",//当表格过滤的时候，将此字符串附加到主要信息
+	            "infoPostFix": "",//在摘要信息后继续追加的字符串
+	            "thousands": ",",//千分位分隔符
+	            "lengthMenu": "每页 _MENU_ 条记录",//用来描述分页长度选项的字符串
+	            "loadingRecords": "加载中...",//用来描述数据在加载中等待的提示字符串 - 当异步读取数据的时候显示
+	            "processing": "处理中...",//用来描述加载进度的字符串
+	            "search": "搜索",//用来描述搜索输入框的字符串
+	            "zeroRecords": "没有找到",//当没有搜索到结果时，显示
+	            "paginate": {
+	                "first": "首页",
+	                "previous": "上一页",
+	                "next": "下一页",
+	                "last": "尾页"
+	            }
+	        }
+	    });
+		
+	}); 
+});
+</script>
+
+<!-- Page-Level Scripts -->
+<script type="text/javascript">
+    $(document).ready(function () {
+		<!-- datepicker -->
+        $(".datepicker").datepicker({
+            language: "zh-CN",
+            autoclose: true,//选中之后自动隐藏日期选择框
+            clearBtn: true,//清除按钮
+            todayBtn: true,//今日按钮
+            format: "yyyy-mm-dd"//日期格式
+        });
+       
+    });
+    
+    
+    function deteleConfirm(tid){
+		console.log(tid);
+        swal({
+            title: "删除确认",
+            text: "确认删除此老师信息吗? 删除成功后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+            	url: "[[${#request.getContextPath()}]]/user/deleteOne.do",
+            	type: "post",
+            	data: {id:tid},
+            	success:function(data){
+            	    if (data.code === 0) {
+                        swal("删除成功！", data.msg, "success");
+                        //刷新界面
+                        setTimeout(function(){
+                            window.location.href="[[${#request.getContextPath()}]]/user/x_teacher_list.do";
+                        },2000);
+                    } else {
+            	        swal("删除失败",data.msg, "info")
+                    }
+
+            	},
+            	error:function(){
+            		swal("删除失败！", "未知错误！请联系管理员！", "info");
+            	}
+            });
+        });
+	}
+    
+</script>
+
+</body>
+
+</html>

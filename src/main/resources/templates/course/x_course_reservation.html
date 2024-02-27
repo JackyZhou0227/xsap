@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>X+约课系统 - 预约课程</title>
+    <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+
+    <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
+    <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
+          th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}">
+    <link href="../../static/css/font-awesome.css?v=4.4.0" rel="stylesheet"
+          th:href="@{/static/css/font-awesome.css(v='4.4.0')}">
+    <link href="../../static/css/animate.css" rel="stylesheet" th:href="@{/static/css/animate.css}">
+    <link href="../../static/css/style.css?v=4.1.0" rel="stylesheet" th:href="@{/static/css/style.css(v='4.1.0')}">
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          rel="stylesheet" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <!--                <h1>团课预约操作 - 敬请期待...</h1>-->
+        <!--                <h5>补充选中回显...已完成</h5>-->
+        <form action="#" class="form-horizontal " id="editForm" method="post">
+            <!--                    预约开始时间-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约开始时间</label>
+                <div class="col-sm-9">
+                    <!--                            <div class="radio">-->
+                    <label>
+                        <!-- 隐藏域，id -->
+                        <input name="id" th:value="${GLOBAL_SET.id}" type="hidden" value="1">
+
+                        <input name="version" th:value="${GLOBAL_SET.version}" type="hidden" value="1">
+
+                        <input id="startMode_1" name="appointmentStartMode"
+                               th:field="${GLOBAL_SET.appointmentStartMode}" type="radio"
+                               value="1">
+                        不限制会员可提前预约课程的天数！
+
+                        <!--                                    <input type="radio" name="start" value="-1" id="start-0" th:attr="checked=${GLOBAL_SET.startDay == '-1' ? 'checked': ''}"  checked>-->
+                        <!--                                    不限制会员可提前预约课程的天数-->
+                    </label>
+                    <!--                            </div>-->
+                    <br>
+                    <label>
+                        <input id="startMode_2" name="appointmentStartMode"
+                               th:field="${GLOBAL_SET.appointmentStartMode}" type="radio"
+                               value="2">
+                        <!--                                    <input type="radio" name="start" value="0" id="start-1" th:attr="checked=${GLOBAL_SET.startDay != '-1' ? 'checked': ''}">-->
+                        会员最多可以提前预约<input name="startDay" th:value="${GLOBAL_SET.startDay}" type="text" value="10"/>天内的课程
+                    </label>
+                </div>
+            </div>
+            <!--                    预约截止时间-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约截止时间</label>
+                <div class="col-sm-9">
+                    <label>
+                        <input id="deadlineMode_1" name="appointmentDeadlineMode"
+                               th:field="${GLOBAL_SET.appointmentDeadlineMode}" type="radio"
+                               value="1">
+                        <!--                                    <input type="radio" name="end"  value="-1" id="end-0" th:attr="checked=${(GLOBAL_SET.endHour == '-1' && GLOBAL_SET.endDay =='-1') ? 'checked': ''}" checked>-->
+                        任意时间，均可预约
+                    </label>
+                    <br>
+                    <label>
+
+                        <input id="deadlineMode_2" name="appointmentDeadlineMode"
+                               th:field="${GLOBAL_SET.appointmentDeadlineMode}" type="radio"
+                               value="2">
+                        <!--                                <input type="radio" name="end"  value="endHour"  id="end-1" th:attr="checked=${GLOBAL_SET.endHour != '-1' ? 'checked': ''}">-->
+                        预约截止时间:上课前<input name="endHour" th:value="${GLOBAL_SET.endHour}" type="text" value="2">小时
+                    </label>
+                    <br>
+                    <label>
+                        <input id="deadlineMode_3" name="appointmentDeadlineMode"
+                               th:field="${GLOBAL_SET.appointmentDeadlineMode}" type="radio"
+                               value="3">
+                        <!--                                <input type="radio" name="end" value="endDay"  id="end-2"  th:attr="checked=${GLOBAL_SET.endDay != '-1' ? 'checked': ''}">-->
+                        预约截止时间:上课前<input name="endDay" th:value="${GLOBAL_SET.endDay}" type="text" value="3">天的
+                        <input name="endTime" th:value="${endTimeStr}" type="time" value="19:00:00">
+                    </label>
+                </div>
+            </div>
+            <!--                    取消预约时间-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">取消预约时间</label>
+                <div class="col-sm-9">
+                    <label>
+                        <input id="cancelMode_1" name="appointmentCancelMode"
+                               th:field="${GLOBAL_SET.appointmentCancelMode}" type="radio"
+                               value="1">
+                        <!--                                    <input type="radio" name="cancel" id="cancel-0" value="-1" checked>-->
+                        在上课前任意时间，均可取消预约
+                    </label>
+                    <br>
+                    <label>
+                        <input id="cancelMode_2" name="appointmentCancelMode"
+                               th:field="${GLOBAL_SET.appointmentCancelMode}" type="radio"
+                               value="2">
+                        <!--                                <input type="radio" name="cancel"  value="cancelHour" id="cancel-1">-->
+                        取消预约截止时间:上课前<input name="cancelHour" th:value="${GLOBAL_SET.cancelHour}" type="text" value="2">小时
+                    </label>
+                    <br>
+                    <label>
+                        <input id="cancelMode_3" name="appointmentCancelMode"
+                               th:field="${GLOBAL_SET.appointmentCancelMode}" type="radio"
+                               value="3">
+                        <!--                                <input type="radio" name="cancel" value="cancelDay" id="cancel-2">-->
+                        取消预约截止时间:上课前<input name="cancelDay" th:value="${GLOBAL_SET.cancelDay}" type="text" value="1">天的
+                        <input name="cancelTime" th:value="${cancelTimeStr}" type="time" value="21:00:00">
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-9">
+                    <button class="btn btn-success" id="save" type="submit">保存</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<!-- 提示模态窗 -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+
+                <div aria-hidden="true" class="modal inmodal fade" id="tip" role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span><span
+                                        class="sr-only">Close</span></button>
+                                <h4 class="modal-title">全局预约设置更改</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div style="text-align: center; ">
+                                    <h1 style="color: blue">修改成功</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="../../static/js/jquery.min.js?v=2.1.4" th:src="@{/static/js/jquery.min.js(v='2.1.4')}"></script>
+<script src="../../static/js/bootstrap.min.js?v=3.3.6" th:src="@{/static/js/bootstrap.min.js(v='3.3.6')}"></script>
+
+<!-- 自定义js -->
+<script src="../../static/js/content.js?v=1.0.0" th:src="@{/static/js/content.js(v='1.0.0')}"></script>
+
+<!-- Peity -->
+<script src="../../static/js/plugins/peity/jquery.peity.min.js"
+        th:src="@{/static/js/plugins/peity/jquery.peity.min.js}"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+
+<script type="text/javascript">
+    $(function () {
+
+
+        $('#editForm').on('submit', function (e) {
+            e.preventDefault();
+            var serializeForm = $(this).serialize();
+            swal({
+                title: "您确定要修改全局预约设置么",
+                text: "注意:此设置将影响所有课程预约",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0de9cf",
+                confirmButtonText: "确认",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    url: '[[${#request.getContextPath()}]]/globalSet/globalSetUpdate.do',
+                    type: 'post',
+                    data: serializeForm,
+                    datatype: 'json',
+                    success: function (data) {
+                        if (data.code === 0) {
+                            swal(data.msg, "", "success");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            swal(data.msg, "", "info");
+                        }
+                    },
+                    error: function () {
+                        swal("修改失败！！！", "请联系管理员", "info");
+                    }
+                });
+            });
+
+        })
+
+    });
+</script>
+
+</body>
+
+</html>

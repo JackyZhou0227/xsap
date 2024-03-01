@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @ServletComponentScan
 @EnableTransactionManagement
-@MapperScan("com.kclm.xsap.dao")
+@MapperScan("com.kclm.xsap.mapper")
 public class XsapApplication {
 
     public static void main(String[] args) {

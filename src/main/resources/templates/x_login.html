@@ -38,17 +38,17 @@
 
             <form class="m-t form-horizontal" role="form" th:action="@{/user/login}" method="post">
                 <span th:if="${USER_NOT_EXIST}" class="text-danger">
-                       	 用户不存在
+                    请输入正确的用户名或密码
                 </span>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="username" value="张老师" placeholder="用户名" required="true" style="color:black">
+                    <input type="text" class="form-control" name="username" value="admin" placeholder="用户名" required="true" style="color:black">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" value="567" placeholder="密码" required="true" style="color:black">
                 </div>
 
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="验证码" value="dd" required="true" style="width:200px;color:black">
+                    <input type="text" class="form-control" name="checkcode" placeholder="验证码" value="123" required="true" style="width:200px;color:black">
                 </div>
 
                 <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>

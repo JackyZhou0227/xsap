@@ -1,4 +1,4 @@
-package com.kclm.xsap.dao;
+package com.kclm.xsap.mapper;
 
 import com.kclm.xsap.entity.EmployeeEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2021-12-04 16:18:21
  */
 @Mapper
-public interface EmployeeDao extends BaseMapper<EmployeeEntity> {
+public interface EmployeeMapper extends BaseMapper<EmployeeEntity> {
 
     /*这应该是一个通用方法，应该查完整信息，但这里只是查老师名字，---以后少用mybatis plus*/
     @Select("select `name`, `is_deleted` from t_employee where `id` = #{teacherId}")

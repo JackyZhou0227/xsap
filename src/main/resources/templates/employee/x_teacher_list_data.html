@@ -63,7 +63,7 @@
             </div>
             <div class="col-md-2">
                 <a class="btn btn-info margin_top pull-right" href="x_teacher_update.html"
-                   th:href="@{/user/x_teacher_update.do?id={id_val}(id_val=${ID})}">编辑信息</a>
+                   th:href="@{/teacher/x_teacher_update.do?id={id_val}(id_val=${ID})}">编辑信息</a>
             </div>
             <div class="col-md-1">
                 <a class="btn btn-default pull-right" onclick="window.history.go(-1)" >返回</a>
@@ -148,7 +148,7 @@
         console.log(formData);
 
         $.ajax({
-            url: "/user/modifyUserImg.do",
+            url: "/teacher/modifyUserImg.do",
             method: "post",
             data: formData,
             dataType: "json",	//接收服务器传输的数据格式
@@ -173,7 +173,7 @@
     //老师详情
     $(function () {
         //基本信息
-        $.post("[[${#request.getContextPath()}]]/user/teacherDetail.do", {tid: [[${ID}]]}, function (data) {
+        $.post("[[${#request.getContextPath()}]]/teacher/teacherDetail.do", {tid: [[${ID}]]}, function (data) {
 
             var teacherMsg = data.data;
             console.log([[${ID}]]);
@@ -193,7 +193,7 @@
         });
 
         //上课记录
-        $.post("[[${#request.getContextPath()}]]/user/teacherClassRecord.do", {tid: [[${ID}]]}, function (data) {
+        $.post("[[${#request.getContextPath()}]]/teacher/teacherClassRecord.do", {tid: [[${ID}]]}, function (data) {
             let classMsg;
             console.log("---------");
             console.log(data);

@@ -1,5 +1,6 @@
 package com.kclm.xsap.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kclm.xsap.entity.EmployeeEntity;
 
@@ -19,6 +20,8 @@ public interface EmployeeService extends IService<EmployeeEntity> {
 
     EmployeeEntity isExistEmp(String username, String password);
 
+    boolean isUsernameExists(String username);
+
     /**
      * 根据老师Id查询老师名字【包括已经删除的老师】
      * @param teacherId
@@ -32,5 +35,6 @@ public interface EmployeeService extends IService<EmployeeEntity> {
      * @return
      */
     List<String> getTeacherNameListByIds(List<Long> teacherIdList);
+
 }
 

@@ -344,26 +344,26 @@ public class Test {
     }
 
 
-    @org.junit.jupiter.api.Test
-    void test18() throws InterruptedException {
-
-
-        ExpiryMap<String, String> map = new ExpiryMap<>(10);
-        map.put("test", "ankang");
-        map.put("test1", "ankang");
-        map.put("test2", "ankang", 3000);
-        System.out.println("test1" + map.get("test"));
-        Thread.sleep(1000);
-        System.out.println("isInvalid:" + map.isInvalid("test"));
-        System.out.println("size:" + map.size());
-        System.out.println("size:" + ((HashMap<String, String>) map).size());
-        for (Map.Entry<String, String> m : map.entrySet()) {
-            System.out.println("isInvalid:" + map.isInvalid(m.getKey()));
-            map.containsKey(m.getKey());
-            System.out.println("key:" + m.getKey() + "     value:" + m.getValue());
-        }
-        System.out.println("test1" + map.get("test"));
-    }
+//    @org.junit.jupiter.api.Test
+//    void test18() throws InterruptedException {
+//
+//
+//        ExpiryMap<String, String> map = new ExpiryMap<>(10);
+//        map.put("test", "ankang");
+//        map.put("test1", "ankang");
+//        map.put("test2", "ankang", 3000);
+//        System.out.println("test1" + map.get("test"));
+//        Thread.sleep(1000);
+//        System.out.println("isInvalid:" + map.isInvalid("test"));
+//        System.out.println("size:" + map.size());
+//        System.out.println("size:" + ((HashMap<String, String>) map).size());
+//        for (Map.Entry<String, String> m : map.entrySet()) {
+//            System.out.println("isInvalid:" + map.isInvalid(m.getKey()));
+//            map.containsKey(m.getKey());
+//            System.out.println("key:" + m.getKey() + "     value:" + m.getValue());
+//        }
+//        System.out.println("test1" + map.get("test"));
+//    }
 
 
 

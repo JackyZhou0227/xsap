@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form method="post" id="editForm" class="form-horizontal" th:action="@{/user/teacherEdit.do}">
+                        <form method="post" id="editForm" class="form-horizontal" th:action="@{/teacher/teacherEdit.do}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><i class="red">*</i>老师姓名</label>
                                 <div class="col-sm-10">
@@ -141,7 +141,7 @@
                 closeOnConfirm: false
             }, function () {
                 $.ajax({
-                    url: '[[${#request.getContextPath()}]]/user/teacherEdit.do',
+                    url: '[[${#request.getContextPath()}]]/teacher/teacherEdit.do',
                     type: 'post',
                     data: serializeFormUpdate,
                     dataType: 'json',
@@ -149,7 +149,7 @@
                         if (data.code === 0) {
                             swal(data.msg, "", "success");
                             setTimeout(function () {
-                                window.location.href='[[${#request.getContextPath()}]]/user/x_teacher_list.do'
+                                window.location.href='[[${#request.getContextPath()}]]/teacher/x_teacher_list.do'
                             }, 1000);
                         } else {
                             swal(data.msg, "", "info");
@@ -166,7 +166,7 @@
         })
 
         $('#reset').click(function () {
-            window.location.href='[[${#request.getContextPath()}]]/user/x_teacher_list.do'
+            window.location.href='[[${#request.getContextPath()}]]/teacher/x_teacher_list.do'
         });
 
 

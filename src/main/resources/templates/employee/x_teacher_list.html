@@ -82,7 +82,7 @@ $(document).ready(function () {
 		console.log(teacherList);
 		console.log("---------");
 		$('.teacherTable').dataTable({
-	        "data": teacherList,
+	        "data": teacherList.data,
 	        //行的定义
 	        "columns": [
 	            {"data": "name", bAutoWidth: "false", sWidth: "15%"},

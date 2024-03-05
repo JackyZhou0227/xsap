@@ -87,8 +87,8 @@ public class UserController {
                 return "x_ensure_user";
             }
             if (isAEmail){
-
                 //todo 发送邮件
+
                 return "send_mail_ok";
             }
 
@@ -111,11 +111,5 @@ public class UserController {
     public String resetPassword(@RequestParam("newPwd") String newPwd, @RequestParam("pwd2") String pwd2, Model model) {
 
         return null;
-    }
-    @PostMapping("/teacherList.do")
-    @ResponseBody
-    public List<EmployeeEntity> teacherList() {
-        log.info("执行teacherList方法");
-        return employeeService.list();
     }
 }

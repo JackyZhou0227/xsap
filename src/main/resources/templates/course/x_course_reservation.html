@@ -86,7 +86,7 @@
                                value="3">
                         <!--                                <input type="radio" name="end" value="endDay"  id="end-2"  th:attr="checked=${GLOBAL_SET.endDay != '-1' ? 'checked': ''}">-->
                         预约截止时间:上课前<input name="endDay" th:value="${GLOBAL_SET.endDay}" type="text" value="3">天的
-                        <input name="endTime" th:value="${endTimeStr}" type="time" value="19:00:00">
+                        <input name="endTime" th:value="${GLOBAL_SET.endTime}" type="time" value="19:00:00">
                     </label>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                                value="3">
                         <!--                                <input type="radio" name="cancel" value="cancelDay" id="cancel-2">-->
                         取消预约截止时间:上课前<input name="cancelDay" th:value="${GLOBAL_SET.cancelDay}" type="text" value="1">天的
-                        <input name="cancelTime" th:value="${cancelTimeStr}" type="time" value="21:00:00">
+                        <input name="cancelTime" th:value="${GLOBAL_SET.cancelTime}" type="time" value="21:00:00">
                     </label>
                 </div>
             </div>

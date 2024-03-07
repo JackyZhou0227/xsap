@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.kclm.xsap.mapper.EmployeeMapper;
-import com.kclm.xsap.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.service.EmployeeService;
 
 import javax.annotation.Resource;
@@ -22,6 +22,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
 
     @Resource
     private EmployeeMapper employeeMapper;
+
     /*
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -33,6 +34,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
         return new PageUtils(page);
     }
     */
+
     @Override
     public EmployeeEntity isExistEmp(String username, String password) {
         EmployeeEntity selectOneForLogin = this.baseMapper.selectOne(new QueryWrapper<EmployeeEntity>().eq("role_name", username).eq("role_password", password));
@@ -70,5 +72,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean isPhoneExists(String phone) {
+        return baseMapper.selectCount(new QueryWrapper<EmployeeEntity>().eq("phone", phone)) > 0;
+    }
+
+    @Override
+    public boolean isEmailExists(String email) {
+        return baseMapper.selectCount(new QueryWrapper<EmployeeEntity>().eq("role_email", email)) > 0;
+    }
 
 }

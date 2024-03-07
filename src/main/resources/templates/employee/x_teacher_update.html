@@ -42,17 +42,18 @@
                         <form method="post" id="editForm" class="form-horizontal" th:action="@{/teacher/teacherEdit.do}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><i class="red">*</i>老师姓名</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-10" th:classappend="${#fields.hasErrors('teacherMsg.name')} ? 'error' : ''">
                                 	<!-- 隐藏字段 - 存放id -->
                                 	<input type="hidden" name="id" value="1" th:value="${teacherMsg.id}" class="form-control">
                                     <input type="text" th:value="${teacherMsg.name}" class="form-control" value="张老师" name="name">
+                                    <span th:if="${#fields.hasErrors('teacherMsg.name')}" th:errors="*{teacherMsg.name}"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><i class="red">*</i>手机号</label>
                                 <div class="col-sm-10">
                                     <input type="text" th:value="${teacherMsg.phone}" class="form-control" value="13877996655" name="phone">
-                               		<span th:if="${CHECK_PHONE_EXIST}" class="text-danger">手机号跟其它用户撞名了</span>
+                               		<span th:if="${CHECK_PHONE_EXIST}" class="text-danger">手机号已经被注册</span>
                                 </div>
                             </div>
 
@@ -60,6 +61,7 @@
                                 <label class="col-sm-2 control-label"><i class="red">*</i>邮  箱</label>
                                 <div class="col-sm-10">
                                     <input type="email" th:value="${teacherMsg.roleEmail}" class="form-control" value="misszhang@126.com" name="roleEmail">
+                                    <span th:if="${CHECK_EMAIL_EXIST}" class="text-danger">邮箱已经被注册</span>
                                 </div>
                             </div>
 
@@ -78,7 +80,7 @@
                                 <label class="col-sm-2 control-label">
                                     出生日期</label>
                                 <div class="col-sm-3">
-                                    <input id="myDate" th:value="${birthdayStr}" name="birthday" class="form-control" value="1998-12-12"/>
+                                    <input id="myDate" th:value="${teacherMsg.birthday}" name="birthday" class="form-control" value="1998-12-12"/>
                                 </div>
                             </div>
                             <div class="form-group">

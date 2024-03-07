@@ -1,6 +1,6 @@
 package com.kclm.xsap.web.controller;
 
-import com.kclm.xsap.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +22,11 @@ public class IndexController {
     @Resource
     private EmployeeService employeeService;
 
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
+    private final static Logger log = LoggerFactory.getLogger(IndexController.class);
 
     @GetMapping
     public String index() {
+
         return "index";
     }
 
@@ -44,7 +45,7 @@ public class IndexController {
     public String logout(HttpSession session) {
         log.debug("用户退出登录");
         session.removeAttribute("LOGIN_USER");
-        return "x_login";
+        return "redirect:/user/toLogin";
     }
 
     /**

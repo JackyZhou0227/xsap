@@ -1,12 +1,12 @@
 package com.kclm.xsap.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.kclm.xsap.entity.MemberEntity;
-import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.kclm.xsap.model.entity.MemberEntity;
+import com.kclm.xsap.model.vo.MemberVo;
 
-import java.util.Arrays;
+import java.util.List;
 
-@Service
-public interface MemberService {
-    Arrays list(QueryWrapper<MemberEntity> in);
+public interface MemberService extends IService<MemberEntity> {
+
+    List<MemberVo> getMemberVoList();
 }

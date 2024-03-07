@@ -1,6 +1,6 @@
 package com.kclm.xsap.mapper;
 
-import com.kclm.xsap.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

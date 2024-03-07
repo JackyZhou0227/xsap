@@ -80,9 +80,9 @@
 <!-- Page-Level Scripts -->
 <script>
     $(document).ready(function () {
-        $.post("[[${#request.getContextPath()}]]/course/courseList.do", function (courseList) {
+        $.post("[[${#request.getContextPath()}]]/course/courseList.do", function (data) {
             $('.dataTables-example').dataTable({
-                "data": courseList,
+                "data": data.courseList,
                 //行的定义
                 "columns": [
                     {"data": "name"},

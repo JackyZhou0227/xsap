@@ -176,11 +176,11 @@
 <script type="text/javascript">
     $(document).ready(function () {
         //加载窗体数据
-        $.post("[[${#request.getContextPath()}]]/member/memberList.do", function (memberList) {
-            console.log(memberList);
+        $.post("[[${#request.getContextPath()}]]/member/memberList.do", function (data) {
+            console.log(data);
             $('.dataTables-example').dataTable({
                 //注： 后面开发时，url的位置写 服务端控制器的 mapping值,服务端返回的将是json数据
-                "data": memberList,
+                "data": data.memberList,
                 //行的定义
                 "columns": [
                     // {"data": "namePhone",bAutoWidth: "false", sWidth: "20%"},

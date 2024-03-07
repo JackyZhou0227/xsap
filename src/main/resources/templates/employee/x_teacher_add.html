@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <!--                        <form id="addForm" method="post" class="form-horizontal" th:action="@{/user/teacherAdd.do}" >-->
+                        <!--                        <form id="addForm" method="post" class="form-horizontal" th:action="@{/teacher/teacherAdd.do}" >-->
                         <form class="form-horizontal" id="addForm" method="post">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"><i class="red">*</i>老师姓名</label>
@@ -160,7 +160,7 @@
                 closeOnConfirm: true
             }, function () {
                 $.ajax({
-                    url: '[[${#request.getContextPath()}]]/user/teacherAdd.do',
+                    url: '[[${#request.getContextPath()}]]/teacher/teacherAdd.do',
                     type: 'post',
                     data: serialize,
                     dataType: 'json',
@@ -168,9 +168,12 @@
                         if (data.code === 0) {
                             swal(data.msg, "", "success");
                             setTimeout(function () {
-                                window.location.href = '[[${#request.getContextPath()}]]/user/x_teacher_list.do'
+                                window.location.href = '[[${#request.getContextPath()}]]/teacher/x_teacher_list.do'
                             }, 1000);
                         }else if (data.code === 400) {
+                            // 清除所有已有错误提示
+                            $("[tip]").find('.text-danger').remove();
+
                             let errors = data.errorMap;
                             for (const key in errors) {
                                 $(`[tip=${key}]`).html("");

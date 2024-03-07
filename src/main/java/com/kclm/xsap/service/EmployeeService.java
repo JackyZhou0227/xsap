@@ -1,11 +1,9 @@
 package com.kclm.xsap.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kclm.xsap.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 员工表
@@ -36,5 +34,8 @@ public interface EmployeeService extends IService<EmployeeEntity> {
      */
     List<String> getTeacherNameListByIds(List<Long> teacherIdList);
 
+    boolean isPhoneExists(String phone);
+
+    boolean isEmailExists(String email);
 }
 

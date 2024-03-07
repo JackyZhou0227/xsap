@@ -1,13 +1,16 @@
 package com.kclm.xsap.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.kclm.xsap.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -50,7 +53,7 @@ public class UserController {
         EmployeeEntity user = this.employeeService.isExistEmp(name, pwd);
         if (user == null) {
             log.info("用户输入用户名或密码错误");
-            model.addAttribute("USER_NOT_EXIST",true);
+            model.addAttribute("USER_NOT_EXIST", true);
             return "x_login";
         } else {
             log.info("登录成功..");
@@ -69,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/toResetPwd")
-    public String toResetPwd(@RequestParam("userPhoneOrEmail") String userPhoneOrEmail,Model model) {
+    public String toResetPwd(@RequestParam("userPhoneOrEmail") String userPhoneOrEmail, Model model) {
         log.debug("用户重置密码,输入手机号或邮箱", userPhoneOrEmail);
 
         String emailRegex = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
@@ -86,7 +89,7 @@ public class UserController {
                 model.addAttribute("CHECK_USER_ERROR", true);
                 return "x_ensure_user";
             }
-            if (isAEmail){
+            if (isAEmail) {
                 //todo 发送邮件
 
                 return "send_mail_ok";
@@ -101,6 +104,7 @@ public class UserController {
             return "x_ensure_user";
         }
     }
+
     @GetMapping("/toResetPage")
     public String toResetPage() {
         log.info("前往重置密码页面");

@@ -2,6 +2,7 @@ package com.kclm.xsap.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kclm.xsap.model.entity.EmployeeEntity;
+import com.kclm.xsap.model.vo.register.RegisterVo;
 import com.kclm.xsap.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -62,6 +64,49 @@ public class UserController {
             //return "book/list";
             return "redirect:/index";
 
+        }
+    }
+
+    /**
+     * 注册页面的跳转
+     *
+     * @return 注册页面的视图名称
+     */
+    @GetMapping("/toRegister")
+    public String toRegister() {
+        log.info("前往注册页面");
+        return "x_register";
+    }
+
+    /**
+     * 用户注册
+     *
+     * @param userName  用户名
+     * @param password  密码
+     * @param pwd2      再次输入密码
+     * @param model     模型
+     * @return 登录页面
+     */
+    @PostMapping("/register")
+    public String register(@RequestParam("userName") String userName, @RequestParam("password") String password,
+                           @RequestParam("pwd2") String pwd2, Model model) {
+        log.debug("用户进行注册操作，参数分别是：userName:" + userName + ",password:" + password + ",pwd2:" + pwd2);
+
+        if (employeeService.isUsernameExists(userName)) {
+            model.addAttribute("CHECK_TYPE_ERROR", 0);
+            return "x_register";
+        }
+        if (!password.equals(pwd2)) {
+            model.addAttribute("CHECK_TYPE_ERROR", 1);
+            return "x_register";
+        }
+        RegisterVo registerVo = new RegisterVo(userName,password,pwd2);
+        if (employeeService.isrRegisterSuccess(registerVo)){
+            log.error("注册成功");
+            return "x_login";
+        }else {
+            log.error("注册失败");
+            return "x_register";
         }
     }
 
@@ -114,6 +159,9 @@ public class UserController {
     @GetMapping("/resetPassword")
     public String resetPassword(@RequestParam("newPwd") String newPwd, @RequestParam("pwd2") String pwd2, Model model) {
 
+
         return null;
     }
+
+
 }

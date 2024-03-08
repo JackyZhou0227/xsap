@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -32,9 +30,18 @@ public class MemberController {
     @PostMapping("/memberList.do")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> memberList() {
-        Map<String,Object> returnData = new HashMap<>();
+        Map<String, Object> returnData = new HashMap<>();
         returnData.put("memberList", memberService.getMemberVoList());
-
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
+
+    @GetMapping("/x_member_list_details.do")
+    public String toMemberListDetails(@RequestParam("id") Long id , Model model) {
+
+        log.info("前往member_list_details页面，id=" + id);
+//        model.addAttribute();
+        return "member/x_member_list_details";
+    }
+
+
 }

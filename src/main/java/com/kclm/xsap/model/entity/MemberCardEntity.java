@@ -101,6 +101,4 @@ public class MemberCardEntity implements Serializable {
 	@TableField(exist = false)
 	private LocalDateTime dueTime;
 
-
-
 }

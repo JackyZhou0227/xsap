@@ -52,14 +52,14 @@
             	    </figure>
             	</div>
 
-            <form action="#" th:action="@{/user/modifyUser.do}" name="updateUserForm" method="post" class="form-horizontal" enctype="multipart/form-data">
+            <form action="#" th:action="@{/index/modifyUser.do}" name="updateUserForm" method="post" class="form-horizontal" enctype="multipart/form-data">
                 <div class="modal-dialog">
                     <div>
                         <!--体部定义-->
                         <div class="modal-body">
                             <!-- 表单定义 -->
                             <center>
-								<span th:if="${CHECK_PHONE_EXIST}" class="text-danger">手机号跟其它用户撞名了</span>
+								<span th:if="${CHECK_PHONE_EXIST}" class="text-danger">手机号已存在</span>
                             </center>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">用户名</label>
@@ -151,7 +151,7 @@
 		console.log(formData);
 
         $.ajax({
-            url: "/user/modifyUserImg.do",
+            url: "/teacher/modifyUserImg.do",
             method: "post",
             data: formData,
             dataType: "json",	//接收服务器传输的数据格式

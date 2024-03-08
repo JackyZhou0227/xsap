@@ -34,7 +34,7 @@
             </div>
             <h3>欢迎注册 X+乐约课</h3>
             <p>创建一个X+乐约课商户新账号</p>
-            <form class="m-t" role="form" action="x_login.html" method="post" th:action="@{/index/register}">
+            <form class="m-t" role="form" action="x_login.html" method="post" th:action="@{/user/register}">
                 <div class="form-group">
                 	<span th:if="${CHECK_TYPE_ERROR == 0}" class="text-danger">用户名已存在</span>
                     <input type="text" class="form-control" name="userName" placeholder="请输入用户名" required="">

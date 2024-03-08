@@ -4,8 +4,10 @@ import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.service.EmployeeService;
 import com.kclm.xsap.utils.BeanError;
+import com.kclm.xsap.utils.file.ImgManger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +33,11 @@ import java.util.Map;
 @RequestMapping("/teacher")
 public class TeacherController {
     private final static Logger log = LoggerFactory.getLogger(TeacherController.class);
+
+    private final static String TEACHER_IMG_DIR = "teacher_img";
     @Resource
     private EmployeeService employeeService;
+
     @GetMapping("/x_teacher_list.do")
     public String toTeacherList() {
         log.info("进入teacherList页面");
@@ -42,11 +50,9 @@ public class TeacherController {
         List<EmployeeEntity> employeeEntities = employeeService.list();
         List<TeacherDTO> teacherDTOList = new ArrayList<>();
         Map<String, Object> returnData = new HashMap<>();
-
         for (EmployeeEntity employeeEntity : employeeEntities) {
             teacherDTOList.add(new TeacherDTO(employeeEntity));
         }
-
         returnData.put("data", teacherDTOList);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
@@ -61,9 +67,9 @@ public class TeacherController {
     public ResponseEntity<Map<String, Object>> teacherAdd(@Valid EmployeeEntity employeeEntity, BindingResult bindingResult) {
         log.info("添加教师");
         Map<String, Object> returnData = new HashMap<>();
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             log.info("添加老师bean验证错误");
-            Map<String,String> errorMap = BeanError.getErrorDataMap(bindingResult);
+            Map<String, String> errorMap = BeanError.getErrorDataMap(bindingResult);
             returnData.put("errorMap", errorMap);
             returnData.put("code", 400);
 
@@ -79,16 +85,17 @@ public class TeacherController {
             log.info("用户输入的手机号已存在");
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
-        if (employeeService.save(employeeEntity)){
+
+        if (employeeService.save(employeeEntity)) {
             returnData.put("msg", "添加成功");
             returnData.put("code", 0);
             log.info("添加成功");
-            return new ResponseEntity<>(returnData, HttpStatus.OK);
-        }else {
+        } else {
             returnData.put("msg", "添加老师失败！请联系管理员。");
             log.info("添加失败");
-            return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
+
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     @GetMapping("/x_teacher_update.do")
@@ -157,5 +164,37 @@ public class TeacherController {
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
+    @PostMapping("/modifyUserImg.do")
+    public ResponseEntity<Map<String, Object>> modifyUserImg(@RequestParam("id") Long id, @RequestParam("avatarFile") MultipartFile avatarUrl) {
+        log.info("修改老师头像,id=" + id + ", 图片url=" + avatarUrl);
+        ApplicationHome applicationHome = new ApplicationHome(getClass());
+        Map<String, Object> returnData = new HashMap<>();
+
+        if (id == null || employeeService.getById(id) == null) {
+            log.error("用户id为空或用户不存在");
+            returnData.put("msg", "用户id为空或用户不存在");
+            return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
+        }
+        if (avatarUrl.isEmpty()) {
+            log.error("用户上传头像为空");
+            returnData.put("msg", "用户头像为空");
+            return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
+        }
+        String filename = ImgManger.uploadImg(avatarUrl, applicationHome, TEACHER_IMG_DIR);
+        if (filename == null) {
+            log.error("用户上传头像失败");
+            returnData.put("msg", "用户上传头像失败");
+            return new ResponseEntity<>(returnData, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            log.info("用户上传头像成功");
+            EmployeeEntity employeeEntity = employeeService.getById(id);
+            employeeEntity.setAvatarUrl(filename);
+            employeeEntity.setLastModifyTime(LocalDateTime.now());
+            employeeService.updateById(employeeEntity);
+            returnData.put("msg", "用户上传头像成功");
+            returnData.put("userData1", employeeEntity);
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+    }
 
 }

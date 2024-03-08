@@ -22,6 +22,7 @@
         <result property="lastModifyTime" column="last_modify_time"/>
         <result property="version" column="version"/>
     </resultMap>
+
     <select id="selectTeacherNameListByIds" resultType="com.kclm.xsap.model.entity.EmployeeEntity">
         select `name`, `is_deleted` from t_employee
         where `is_deleted` = 0 and `id` in

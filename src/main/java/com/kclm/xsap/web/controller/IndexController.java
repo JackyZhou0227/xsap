@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -19,10 +16,9 @@ import java.time.LocalDateTime;
 @RequestMapping("/index")
 public class IndexController {
 
+    private final static Logger log = LoggerFactory.getLogger(IndexController.class);
     @Resource
     private EmployeeService employeeService;
-
-    private final static Logger log = LoggerFactory.getLogger(IndexController.class);
 
     @GetMapping
     public String index() {
@@ -35,6 +31,40 @@ public class IndexController {
         log.info("进入x_index_home");
         return "x_index_home";
     }
+
+    @GetMapping("/x_modify_password.do")
+    public String toModifyPassword() {
+        log.info("主页进入修改密码页面");
+        return "x_modify_password";
+    }
+
+    @GetMapping("/x_profile.do")
+    public String toProfile(@RequestParam("id") Long id, Model model) {
+        log.info("进入个人资料页面");
+        EmployeeEntity employeeEntity = employeeService.getById(id);
+        model.addAttribute("userInfo", employeeEntity);
+        return "x_profile";
+    }
+
+    @PostMapping("/modifyUser.do")
+    public String modifyUser(@RequestBody EmployeeEntity employeeEntity, Model model) {
+        log.info("修改用户信息");
+        EmployeeEntity originMessage = employeeService.getById(employeeEntity.getId());
+        if (employeeService.isPhoneExists(employeeEntity.getPhone()) && !originMessage.getPhone().equals(employeeEntity.getPhone())) {
+            log.info("手机号已存在");
+            model.addAttribute("CHECK_PHONE_EXIST", true);
+            return "x_profile";
+        }
+        employeeEntity.setLastModifyTime(LocalDateTime.now());
+        if (employeeService.updateById(employeeEntity)) {
+            log.info("用户修改个人资料成功");
+            return "x_index_home";
+        } else {
+            log.info("用户修改个人资料失败");
+            return "x_profile";
+        }
+    }
+
     /**
      * 用户退出登录
      *
@@ -48,48 +78,5 @@ public class IndexController {
         return "redirect:/user/toLogin";
     }
 
-    /**
-     * 注册页面的跳转
-     *
-     * @return 注册页面的视图名称
-     */
-    @GetMapping("/toRegister")
-    public String toRegister() {
-        log.info("前往注册页面");
-        return "x_register";
-    }
-
-    /**
-     * 用户注册
-     *
-     * @param userName  用户名
-     * @param password  密码
-     * @param pwd2      再次输入密码
-     * @param model     模型
-     * @return 登录页面
-     */
-    @PostMapping("/register")
-    public String register(@RequestParam("userName") String userName, @RequestParam("password") String password,
-                           @RequestParam("pwd2") String pwd2, Model model) {
-        log.debug("用户进行注册操作，参数分别是：userName:" + userName + ",password:" + password + ",pwd2:" + pwd2);
-
-        if (employeeService.isUsernameExists(userName)) {
-            model.addAttribute("CHECK_TYPE_ERROR", 0);
-            return "x_register";
-        }
-        if (!password.equals(pwd2)) {
-            model.addAttribute("CHECK_TYPE_ERROR", 1);
-            return "x_register";
-        }
-        EmployeeEntity user = new EmployeeEntity();
-        user.setRoleName(userName);
-        user.setRolePassword(password);
-        user.setCreateTime(LocalDateTime.now());
-        user.setLastModifyTime(LocalDateTime.now());
-        employeeService.save(user);
-        log.debug("注册成功");
-        model.addAttribute("REGISTER_SUCCESS", "注册成功");
-        return "x_login";
-    }
 
 }

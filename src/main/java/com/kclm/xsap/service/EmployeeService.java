@@ -2,6 +2,7 @@ package com.kclm.xsap.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kclm.xsap.model.entity.EmployeeEntity;
+import com.kclm.xsap.model.vo.register.RegisterVo;
 
 import java.util.List;
 
@@ -37,5 +38,7 @@ public interface EmployeeService extends IService<EmployeeEntity> {
     boolean isPhoneExists(String phone);
 
     boolean isEmailExists(String email);
+
+    boolean isrRegisterSuccess(RegisterVo registerVo);
 }
 

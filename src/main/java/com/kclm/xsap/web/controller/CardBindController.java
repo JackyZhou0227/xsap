@@ -1,6 +1,6 @@
 package com.kclm.xsap.web.controller;
 
-import com.kclm.xsap.service.CardService;
+import com.kclm.xsap.service.MemberCardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,8 @@ public class CardBindController {
 
     private final static Logger log = LoggerFactory.getLogger(CardController.class);
     @Resource
-    private CardService cardService;
+    private MemberCardService memberCardService;
+
     @GetMapping("/x_member_card_bind.do")
     public String toMemberCardBind(){
         log.info("前往会员卡绑定页面");

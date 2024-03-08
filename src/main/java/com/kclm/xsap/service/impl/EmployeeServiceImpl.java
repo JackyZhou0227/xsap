@@ -1,8 +1,10 @@
 package com.kclm.xsap.service.impl;
 
+import com.kclm.xsap.model.vo.register.RegisterVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +82,16 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
     @Override
     public boolean isEmailExists(String email) {
         return baseMapper.selectCount(new QueryWrapper<EmployeeEntity>().eq("role_email", email)) > 0;
+    }
+
+    @Override
+    public boolean isrRegisterSuccess(RegisterVo registerVo) {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setRoleName(registerVo.getUserName());
+        employeeEntity.setRolePassword(registerVo.getPassword());
+        employeeEntity.setCreateTime(LocalDateTime.now());
+        employeeEntity.setLastModifyTime(LocalDateTime.now());
+        return employeeMapper.insert(employeeEntity) > 0;
     }
 
 }

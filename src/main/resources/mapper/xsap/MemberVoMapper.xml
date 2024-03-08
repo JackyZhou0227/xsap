@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.MemberVoMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <select id="listAllMemberVo" resultType="com.kclm.xsap.model.vo.MemberVo">
+        SELECT m.id, CONCAT(m.`name`,'(',m.phone,')') memberName,
+               m.sex gender, GROUP_CONCAT(mc.`name`) cardHold, m.create_time joiningDate,m.note
+        from t_member_card mc
+                 join t_member_bind_record mbc
+                      on mc.id = mbc.card_id
+                 join t_member m
+                      on mbc.member_id = m.id
+        GROUP BY id,memberName,gender
+        order by 1
+    </select>
+
+</mapper>

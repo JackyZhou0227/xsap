@@ -44,9 +44,9 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a class="J_menuItem" href="x_modify_password.html" th:href="@{/user/x_modify_password.do}" target="_self">修改密码</a>
+                                <li><a class="J_menuItem" href="x_modify_password.html" th:href="@{/index/x_modify_password.do}" target="_self">修改密码</a>
                                 </li>
-                                <li><a class="J_menuItem" href="x_profile.html" th:href="@{/user/x_profile.do?id={id}(id=${session.LOGIN_USER.id})}">个人资料</a>
+                                <li><a class="J_menuItem" href="x_profile.html" th:href="@{/index/x_profile.do?id={id}(id=${session.LOGIN_USER.id})}">个人资料</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li><a href="x_login.html" th:href="@{/index/logout}">安全退出</a>

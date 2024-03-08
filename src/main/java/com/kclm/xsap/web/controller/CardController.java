@@ -1,7 +1,7 @@
 package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.entity.MemberCardEntity;
-import com.kclm.xsap.service.CardService;
+import com.kclm.xsap.service.MemberCardService;
 import com.kclm.xsap.utils.BeanError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CardController {
 
     private final static Logger log = LoggerFactory.getLogger(CardController.class);
     @Resource
-    private CardService cardService;
+    private MemberCardService memberCardService;
 
     @GetMapping("/x_member_card.do")
     public String toMemberCard() {
@@ -37,14 +37,14 @@ public class CardController {
     @PostMapping("/cardList.do")
     public ResponseEntity<Map<String, Object>> cardList() {
         Map<String, Object> returnData = new HashMap<>();
-        returnData.put("data", cardService.list());
+        returnData.put("data", memberCardService.list());
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     @GetMapping("/x_member_card_edit.do")
     public String toMemberCardEdit(@RequestParam("id") Long id, Model model) {
         log.info("跳转至card编辑页面,id=" + id);
-        MemberCardEntity cardMsg = cardService.getById(id);
+        MemberCardEntity cardMsg = memberCardService.getById(id);
         model.addAttribute("cardMsg", cardMsg);
         return "member/x_member_card_edit";
     }
@@ -64,7 +64,7 @@ public class CardController {
     @PostMapping("/deleteOne.do")
     public ResponseEntity<Map<String, Object>> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> returnData = new HashMap<>();
-        if (cardService.removeById(id)) {
+        if (memberCardService.removeById(id)) {
             returnData.put("status", "success");
             returnData.put("message", "删除成功");
         } else {

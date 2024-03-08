@@ -155,7 +155,7 @@
             contentType: false,	//必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
             processData: false,
             success: function (data) {
-                const userData = data.data;
+                const userData = data.userData1;
                 console.log(userData);
                 if (userData != null) {
                     // 读取的URL结果：this.result	@{/static/img/{avatar}(avatar=${userInfo.avatarUrl})}

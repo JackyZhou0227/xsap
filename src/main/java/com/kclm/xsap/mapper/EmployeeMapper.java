@@ -26,4 +26,5 @@ public interface EmployeeMapper extends BaseMapper<EmployeeEntity> {
     根据idList批量查询老师信息
      */
     List<EmployeeEntity> selectTeacherNameListByIds(@Param("teacherIdList") List<Long> teacherIdList);
+
 }

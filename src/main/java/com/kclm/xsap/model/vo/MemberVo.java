@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * @author fangkai
@@ -20,7 +21,7 @@ public class MemberVo {
     private Long id;
     private String memberName;
     private String gender;
-    private String[] cardHold;
+    private String cardHold;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate joiningDate;
@@ -37,5 +38,17 @@ public class MemberVo {
         this.gender = memberEntity.getSex();
         this.note = memberEntity.getNote();
         this.joiningDate = LocalDate.from(memberEntity.getCreateTime());
+    }
+
+    @Override
+    public String toString() {
+        return "MemberVo{" +
+                "id=" + id +
+                ", memberName='" + memberName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", cardHold=" + cardHold +
+                ", joiningDate=" + joiningDate +
+                ", note='" + note + '\'' +
+                '}';
     }
 }

@@ -8,8 +8,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, CourseEntity> implements CourseService {
-//    @Override
-//    public CourseEntity getById(Long courseId) {
-//        return null;
-//    }
+
 }

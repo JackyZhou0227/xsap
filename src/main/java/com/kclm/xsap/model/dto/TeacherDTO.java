@@ -2,7 +2,7 @@ package com.kclm.xsap.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kclm.xsap.model.entity.EmployeeEntity;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 public class TeacherDTO {
     private Long id;
     @NotBlank

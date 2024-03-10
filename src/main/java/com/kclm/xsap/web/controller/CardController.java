@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,13 +52,29 @@ public class CardController {
 
     @PostMapping("/cardEdit.do")
     public ResponseEntity<Map<String, Object>> cardEdit(@Valid MemberCardEntity cardMsg, BindingResult bindingResult) {
+        log.info("编辑卡信息,id=" + cardMsg.getId()+"，卡名:"+cardMsg.getName());
         Map<String, Object> returnData = new HashMap<>();
+
         if (bindingResult.hasErrors()) {
+            log.info("bean验证错误，cardEdit提交失败");
             String errorData = BeanError.getErrorData(bindingResult);
             returnData.put("msg",errorData);
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
-        return null;
+        if (memberCardService.isCardNameExist(cardMsg) && !cardMsg.getName().equals(memberCardService.getById(cardMsg.getId()).getName())){
+            log.info("用户提交的卡名已存在");
+            returnData.put("msg", "卡名已存在");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+        cardMsg.setLastModifyTime(LocalDateTime.now());
+        if (memberCardService.updateById(cardMsg)) {
+            returnData.put("code", 0);
+            returnData.put("msg", "修改成功");
+        } else {
+            log.error("未知错误，cardEdit失败");
+            returnData.put("msg", "修改失败");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
 

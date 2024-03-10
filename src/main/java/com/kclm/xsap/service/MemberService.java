@@ -9,4 +9,8 @@ import java.util.List;
 public interface MemberService extends IService<MemberEntity> {
 
     List<MemberVo> getMemberVoList();
+
+    boolean isPhoneExists(String phone);
+
+    List<MemberEntity> searchMembersByNameOrPhone(String keyword);
 }

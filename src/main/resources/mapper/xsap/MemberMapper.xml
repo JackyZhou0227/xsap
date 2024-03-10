@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.MemberMapper">
+    <resultMap type="com.kclm.xsap.model.entity.MemberEntity" id="MemberEntity">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="birthday" column="birthday"/>
+        <result property="note" column="note"/>
+        <result property="avatarUrl" column="avatar_url"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastModifyTime" column="last_modify_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+    <select id="searchMembersByNameOrPhone" resultMap="MemberEntity">
+        SELECT * FROM t_member
+        WHERE name LIKE CONCAT('%', #{keyword}, '%') OR phone LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <select id="listAllMemberVo" resultType="com.kclm.xsap.model.vo.MemberVo">
+        SELECT m.id, CONCAT(m.`name`,'(',m.phone,')') memberName,
+               m.sex gender, GROUP_CONCAT(mc.`name`) cardHold, m.create_time joiningDate,m.note
+        from t_member_card mc
+                 join t_member_bind_record mbc
+                      on mc.id = mbc.card_id
+                 join t_member m
+                      on mbc.member_id = m.id
+        GROUP BY id,memberName,gender
+        order by 1
+    </select>
+</mapper>

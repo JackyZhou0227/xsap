@@ -127,13 +127,9 @@
                     <div class="form-group">
                         <label for="member_card_type" class="col-sm-2 control-label margin_top">会员卡类型</label>
                         <div class="col-sm-8">
-                            <select class="form-control m-b margin_top disabled" disabled name="type"
-                                    id="member_card_type">
-                                <!--<option th:attr="selected=${cardMsg.type== '0' ? selected :''}">&#45;&#45;空&#45;&#45;</option>
-                                <option th:attr="selected=${cardMsg.type== '1' ? selected : ''}">次卡(有期限)</option>
-                                <option th:attr="selected=${cardMsg.type== '2' ? selected : ''}">次卡(无期限)</option>-->
-                                <option selected="selected" th:text="${cardMsg.type}"></option>
-                                -->
+                            <select class="form-control m-b margin_top" name="type" id="member_card_type">
+                                <option th:attr="selected=${cardMsg.type == null or cardMsg.type== '0' ? selected : ''}">次卡(有期限)</option>
+                                <option th:attr="selected=${cardMsg.type== '1' ? selected :''}">次卡(无期限)</option>
                             </select>
                         </div>
                     </div>
@@ -284,7 +280,7 @@
                                 window.location.href='[[${#request.getContextPath()}]]/card/x_member_card.do'
                             },1000);
                         } else {
-                            swal(data.msg, "未知错误。。。请联系管理员", "info");
+                            swal(data.msg, "更新失败", "info");
                         }
                     },
                     error:function(){

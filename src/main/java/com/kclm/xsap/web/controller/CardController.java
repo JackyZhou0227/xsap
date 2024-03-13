@@ -42,6 +42,12 @@ public class CardController {
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
+    @GetMapping("x_member_add_card.do")
+    public String toMemberCardAdd() {
+        log.info("跳转至card添加页面");
+        return "member/x_member_add_card";
+    }
+
     @GetMapping("/x_member_card_edit.do")
     public String toMemberCardEdit(@RequestParam("id") Long id, Model model) {
         log.info("跳转至card编辑页面,id=" + id);
@@ -91,5 +97,11 @@ public class CardController {
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
+
+    @PostMapping("/operateRecord.do")
+    public ResponseEntity<Map<String,Object>> getOperateRecord(@RequestParam("memberId") Long memberId,@RequestParam("cardId") String cardId){
+        Map<String, Object> returnData = new HashMap<>();
+        return null;
+    }
 
 }

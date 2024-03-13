@@ -214,9 +214,9 @@
                         <div class="form-group">
                             <div class="col-sm-2 col-sm-offset-2">
                                 <button class="btn btn-success" id="saveBtn" type="submit">保存</button>
-                                <button class="btn btn-default" onclick="window.history.go(-1)" type="button">
+                                <a class="btn btn-default" href="x_course_list.do" type="button">
                                     取消
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -360,7 +360,9 @@
                             //错误提示回显
                             $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
                         }
-                    }  else {
+                    }else if (data.code ===406){
+                        swal(data.msg, "请联系管理员", "success");
+                    } else {
                         swal("保存失败！", data.msg, "info");
                     }
                 },

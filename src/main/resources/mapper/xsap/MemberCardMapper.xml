@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.MemberCardMapper">
+    <resultMap type="com.kclm.xsap.model.entity.MemberCardEntity" id="MemberCardEntity">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="description" column="description"/>
+        <result property="note" column="note"/>
+        <result property="type" column="type"/>
+        <result property="totalCount" column="total_count"/>
+        <result property="totalDay" column="total_day"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastModifyTime" column="last_modify_time"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <select id="getCardsByMemberId" resultMap="MemberCardEntity">
+        SELECT *
+        FROM t_member_card mc
+                 JOIN t_member_bind_record mbc ON mc.id = mbc.card_id
+        WHERE mbc.member_id = #{memberId};
+    </select>
+
+    <select id="getCardsInfoByMemberId" resultType="com.kclm.xsap.model.vo.CardInfoVo">
+        SELECT mbc.id                                                   bindId,
+               mc.`name`,
+               mc.type,
+               mc.total_count                                           totalCount,
+               mbc.valid_day                                            validDay,
+               DATE_ADD(mbc.create_time, INTERVAL mbc.valid_day DAY) AS dueTime,
+               mbc.active_status                                        activeStatus,
+               mbc.create_time                                          createTime,
+               mbc.last_modify_time                                     lastModifyTime
+        FROM t_member_card mc
+                 JOIN t_member_bind_record mbc ON mc.id = mbc.card_id
+        WHERE mbc.member_id = #{memberId};
+    </select>
+
+    <select id="getBindCardIdsByCourseId" resultType="long">
+        SELECT mc.id
+        FROM t_member_card mc
+                 JOIN t_course c
+                 JOIN t_course_card cc
+        WHERE c.id = #{courseId};
+    </select>
+
+</mapper>

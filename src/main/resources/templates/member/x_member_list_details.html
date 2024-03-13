@@ -588,14 +588,15 @@
 <script src="../../static/js/plugins/magicsuggest/magicsuggest-min.js" th:src="@{/static/js/plugins/magicsuggest/magicsuggest-min.js}"
         type="text/javascript"></script>
 
-<script>
-
+<script th:inline="javascript">
 
     $(function () {
 
+        // [[${#request.getContextPath()}]]
+
         /* 排课搜索 */
         $("#scheduleSearch").bsSuggest({
-            url: "[[${#request.getContextPath()}]]/schedule/toSearch.do",
+            url: "/schedule/toSearch.do",
             // effectiveFieldsAlias: {id: "ID", name: "课程名称", contains: "可容纳人数"},
             title: 'kk',
             effectiveFieldsAlias: {scheduleId: "ID", courseName: "课程名称", teacherName: "老师", classDateTime: "上课时间"},
@@ -792,7 +793,7 @@
         /* 编辑窗口数据填充 */
         var mid = [[${ID}]]
         $.ajax({
-            url: "[[${#request.getContextPath()}]]/member/x_member_edit.do",
+            url: "/member/x_member_edit.do",
             type: "post",
             data: {id: mid},
             dataType: "json",
@@ -833,7 +834,7 @@
         $("input[name='phone']").nextAll().remove();
         //提交表单
         $.ajax({
-            url: "[[${#request.getContextPath()}]]/member/memberEdit.do",
+            url: "/member/memberEdit.do",
             type: "post",
             data: form,
             success: function (data) {
@@ -874,6 +875,8 @@
         //会员卡信息 - 预加载
         $.post("/member/cardInfo.do", {id: [[${ID}]]}, function (data) {
             let cardInfo = data.data;
+            console.log("--------------------");
+            console.log(cardInfo);
             if (cardInfo.length < 1) {
                 cardInfo = [];
             }

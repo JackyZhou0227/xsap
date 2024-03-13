@@ -20,7 +20,6 @@
         WHERE name LIKE CONCAT('%', #{keyword}, '%') OR phone LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
-    <!-- 可根据自己的需求，是否要使用 -->
     <select id="listAllMemberVo" resultType="com.kclm.xsap.model.vo.MemberVo">
         SELECT m.id, CONCAT(m.`name`,'(',m.phone,')') memberName,
                m.sex gender, GROUP_CONCAT(mc.`name`) cardHold, m.create_time joiningDate,m.note

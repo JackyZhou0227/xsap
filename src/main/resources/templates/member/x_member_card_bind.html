@@ -197,7 +197,9 @@
         /* 会员搜索 */
         $("#searchText").bsSuggest({
             // url: "[[${#request.getContextPath()}]]/member/toSearch.do",
-            url: "[[${#request.getContextPath()}]]/member/toSearcherAll.do",
+            url: "[[${#request.getContextPath()}]]/member/toSearcherAll.do?keyword=",
+            getDataMethod: 'url',
+            allowNoKeyword: false,
             effectiveFieldsAlias: {id: "ID", name: "会员名称", sex: "性别", phone: "手机号"},
             effectiveFields: ["id", "name", "sex", "phone"],
             ignorecase: true,

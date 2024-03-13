@@ -35,6 +35,7 @@ public class MemberBindRecordEntity implements Serializable {
 	/**
 	 * 会员id
 	 */
+	@NotNull(message = "请选择会员！")
 	private Long memberId;
 	/**
 	 * 会员卡id

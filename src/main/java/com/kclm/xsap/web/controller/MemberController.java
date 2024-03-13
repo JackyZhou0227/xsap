@@ -1,16 +1,21 @@
 package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.entity.MemberEntity;
+import com.kclm.xsap.model.vo.CardInfoVo;
+import com.kclm.xsap.service.MemberCardService;
 import com.kclm.xsap.service.MemberService;
 import com.kclm.xsap.utils.BeanError;
+import com.kclm.xsap.utils.file.ImgManger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -24,8 +29,19 @@ import java.util.Map;
 public class MemberController {
 
     private final static Logger log = LoggerFactory.getLogger(MemberController.class);
+
+    private final static String MEMBER_IMG_DIR = "member_img";
     @Resource
     private MemberService memberService;
+
+    @Resource
+    private MemberCardService memberCardService;
+
+    @GetMapping("/x_member_import.do")
+    public String toMemberImport() {
+        log.info("前往member_import页面");
+        return "member/x_member_import";
+    }
 
     @GetMapping("/x_member_list.do")
     public String toMemberList() {
@@ -47,6 +63,13 @@ public class MemberController {
         return "member/x_member_add";
     }
 
+    /**
+     * 添加会员信息
+     *
+     * @param memberMsg     会员实体对象，包含会员信息
+     * @param bindingResult 数据验证结果，用于存放验证错误信息
+     * @return 返回一个响应实体，包含操作响应实体，包含操作结果代码和错误结果代码和错误信息（如果有）
+     */
     @PostMapping("/memberAdd.do")
     public ResponseEntity<Map<String, Object>> memberAdd(@Valid MemberEntity memberMsg, BindingResult bindingResult) {
         log.info("添加会员");
@@ -80,16 +103,119 @@ public class MemberController {
 
     @GetMapping("/x_member_list_details.do")
     public String toMemberListDetails(@RequestParam("id") Long id, Model model) {
-
         log.info("前往member_list_details页面，id=" + id);
-//        model.addAttribute();
+        model.addAttribute("ID", id);
         return "member/x_member_list_details";
     }
 
-    @GetMapping("/toSearcherAll.do")
-    @ResponseBody
-    public List<MemberEntity> toSearcherAll(@RequestParam String keyword) {
-        //todo 接收就有问题 No mapping for GET /member/toSearcherAll.do123
-        return memberService.searchMembersByNameOrPhone(keyword);
+    @PostMapping("/memberDetail.do")
+    public ResponseEntity<Map<String, Object>> memberDetail(@RequestParam("id") Long id) {
+        log.info("获取会员信息，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        MemberEntity memberEntity = memberService.getById(id);
+        returnData.put("data", memberEntity);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
+
+
+    @GetMapping("/toSearcherAll.do")
+    public ResponseEntity<Map<String, Object>> toSearcherAll(@RequestParam("keyword") String keyword) {
+        log.info("绑卡操作查找会员，keyword =" + keyword);
+        Map<String, Object> returnData = new HashMap<>();
+        List<MemberEntity> memberList = memberService.searchMembersByNameOrPhone(keyword);
+        returnData.put("value", memberList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/modifyMemberImg.do")
+    public ResponseEntity<Map<String, Object>> modifyMemberImg(@RequestParam("id") Long id, @RequestParam("avatarFile") MultipartFile avatarUrl) {
+        log.info("修改会员头像，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        ApplicationHome applicationHome = new ApplicationHome(getClass());
+
+        if (id == null || memberService.getById(id) == null) {
+            log.error("会员id为空或会员不存在");
+            returnData.put("msg", "用户id为空或用户不存在");
+            return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
+        }
+
+        if (avatarUrl.isEmpty()) {
+            log.error("上传头像为空");
+            returnData.put("msg", "上传头像为空");
+            return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
+        }
+        String filename = ImgManger.uploadImg(avatarUrl, applicationHome, MEMBER_IMG_DIR);
+        if (filename == null) {
+            log.error("上传头像失败");
+            returnData.put("msg", "上传头像失败");
+            return new ResponseEntity<>(returnData, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            log.info("修改上传头像成功");
+            MemberEntity memberEntity = memberService.getById(id);
+            memberEntity.setAvatarUrl(filename);
+            memberEntity.setLastModifyTime(LocalDateTime.now());
+            memberService.updateById(memberEntity);
+            returnData.put("code", 0);
+            returnData.put("msg", "上传头像成功");
+            returnData.put("userData", memberEntity);
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/x_member_edit.do")
+    public ResponseEntity<Map<String, Object>> toMemberEdit(@RequestParam("id") Long id) {
+        log.info("显示member信息，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", memberService.getById(id));
+        return ResponseEntity.ok(returnData);
+    }
+
+    @PostMapping("/memberEdit.do")
+    public ResponseEntity<Map<String, Object>> memberEdit(@Valid MemberEntity memberMsg, BindingResult bindingResult) {
+
+        log.info("修改会员信息");
+
+        Map<String, Object> returnData = new HashMap<>();
+
+        if (bindingResult.hasErrors()) {
+            log.info("bean验证错误");
+            returnData.put("code", 400);
+            returnData.put("msg", BeanError.getErrorData(bindingResult));
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+
+        if (memberService.isPhoneExists(memberMsg.getPhone())) {
+            log.info("手机号已存在");
+            returnData.put("code", 400);
+            returnData.put("msg", "该手机号码已存在");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+
+        memberMsg.setLastModifyTime(LocalDateTime.now());
+
+        if (memberService.updateById(memberMsg)) {
+            log.info("修改成功");
+            returnData.put("code", 0);
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        } else {
+            log.error("修改失败，未知错误");
+            return new ResponseEntity<>(returnData, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/cardInfo.do")
+    public ResponseEntity<Map<String, Object>> getCardInfo(@RequestParam("id") Long id) {
+        log.info("获取会员持卡信息，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        List<CardInfoVo> cardInfoVoList = memberCardService.getCardsInfoByMemberId(id);
+        returnData.put("data", cardInfoVoList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    //todo 预约记录
+    //todo 上课记录
+    //todo 操作记录
+
+
 }

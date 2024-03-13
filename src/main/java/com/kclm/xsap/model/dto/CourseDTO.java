@@ -1,15 +1,7 @@
-package com.kclm.xsap.model.entity;
+package com.kclm.xsap.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.kclm.xsap.model.dto.CourseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,6 +9,9 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 课程表
@@ -27,15 +22,13 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @EqualsAndHashCode(callSuper=false)
-@TableName("t_course")
 @Accessors(chain = true)
-public class CourseEntity implements Serializable {
+public class CourseDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 
 	 */
-	@TableId
 	private Long id;
 	/**
 	 * 
@@ -50,7 +43,6 @@ public class CourseEntity implements Serializable {
 	/**
 	 * 课堂容纳人数
 	 */
-	@TableField(value = "`contains`")
 	@NotNull(message = "请填写课堂容纳人数")
 	private Integer contains;
 	/**
@@ -98,22 +90,7 @@ public class CourseEntity implements Serializable {
 	/**
 	 * 关联的会员卡, 不是数据库的列
 	 */
-	@TableField(exist = false)
 	@ToString.Exclude
-	private List<MemberCardEntity> cardList;
+	private List<Long> cardListStr;
 
-	public CourseEntity() {
-	}
-	public CourseEntity(CourseDTO courseDTO) {
-		this.name = courseDTO.getName();
-		this.duration = courseDTO.getDuration();
-		this.contains = courseDTO.getContains();
-		this.timesCost = courseDTO.getTimesCost();
-		this.color = courseDTO.getColor();
-		this.introduce = courseDTO.getIntroduce();
-		this.limitSex = courseDTO.getLimitSex();
-		this.limitAge = courseDTO.getLimitAge();
-		this.limitCounts = courseDTO.getLimitCounts();
-	}
 }
-

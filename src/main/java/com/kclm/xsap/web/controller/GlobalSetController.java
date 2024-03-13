@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class GlobalSetController {
     public ResponseEntity<Map<String, Object>> globalSetUpdate(GlobalReservationSetEntity set) {
         log.info("更新全局设置");
         Map<String, Object> returnData = new HashMap<>();
+        set.setLastModifyTime(LocalDateTime.now());
         if (globalReservationSetService.updateById(set)) {
             returnData.put("code", 1);
             returnData.put("msg", "更新成功");
@@ -45,6 +47,5 @@ public class GlobalSetController {
         }
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
-
 
 }

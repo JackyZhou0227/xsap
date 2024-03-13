@@ -9,7 +9,8 @@
 
     <title>X+约课系统 - 会员列表</title>
     <meta name="keywords" content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
-    <meta name="description" content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <meta name="description"
+          content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
 
     <link rel="shortcut icon" href="../../static/favicon.ico" th:href="@{/static/favicon.ico}">
     <link href="../../static/css/bootstrap.min.css?v=3.3.6" th:href="@{/static/css/bootstrap.min.css(v='3.3.6')}"
@@ -60,7 +61,7 @@
                             <th>性别</th>
                             <th>会员卡</th>
                             <th>入会日期</th>
-                             <th>备注</th>
+                            <th>备注</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -177,7 +178,6 @@
     $(document).ready(function () {
         //加载窗体数据
         $.post("[[${#request.getContextPath()}]]/member/memberList.do", function (data) {
-            console.log(data);
             $('.dataTables-example').dataTable({
                 //注： 后面开发时，url的位置写 服务端控制器的 mapping值,服务端返回的将是json数据
                 "data": data.memberList,
@@ -333,12 +333,12 @@
                         setTimeout(function () {
                             window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
                         }, 1000);
-                    } else {
-                        swal(data.msg, "未知原因,请稍后再试！", "success");
+                    } else if (data.code === 400) {
+                        swal(data.msg, "请按要求重新填写", "info");
                         //刷新界面
-                        setTimeout(function () {
-                            window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
-                        }, 1000);
+                        // setTimeout(function () {
+                        //     window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                        // }, 1000);
                     }
                 },
                 error: function () {

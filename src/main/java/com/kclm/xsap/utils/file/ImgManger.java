@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class ImgManger {
 
-    private final static String IMG_UPLOAD_DIR = "images";
+    private final static String IMG_UPLOAD_DIR = "/upload/images";
     private final static Logger log = LoggerFactory.getLogger(ImgManger.class);
 
 

@@ -93,4 +93,8 @@ public class CourseDTO implements Serializable {
 	@ToString.Exclude
 	private List<Long> cardListStr;
 
+	private int limitAgeRadio;
+
+	private int limitCountsRadio;
+
 }

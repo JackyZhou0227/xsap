@@ -14,5 +14,5 @@ public interface MemberCardMapper extends BaseMapper<MemberCardEntity> {
 
     List<CardInfoVo> getCardsInfoByMemberId(Long memberId);
 
-    List<Long> getBindCardIdsByCourseId(Long courseId);
+    List<Long> getAllCardIds();
 }

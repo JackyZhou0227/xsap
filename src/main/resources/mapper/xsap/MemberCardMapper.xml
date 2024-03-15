@@ -39,12 +39,8 @@
         WHERE mbc.member_id = #{memberId};
     </select>
 
-    <select id="getBindCardIdsByCourseId" resultType="long">
-        SELECT mc.id
-        FROM t_member_card mc
-                 JOIN t_course c
-                 JOIN t_course_card cc
-        WHERE c.id = #{courseId};
-    </select>
 
+    <select id="getAllCardIds" resultType="long">
+        SELECT id FROM t_member_card
+    </select>
 </mapper>

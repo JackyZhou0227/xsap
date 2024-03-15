@@ -10,6 +10,7 @@ import com.kclm.xsap.service.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -32,15 +33,47 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, CourseEntity> i
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveCourseDTO(CourseDTO courseDTO) {
         CourseEntity courseEntity = new CourseEntity(courseDTO);
         courseEntity.setCreateTime(LocalDateTime.now());
         courseEntity.setLastModifyTime(LocalDateTime.now());
-//        courseEntity.setVersion(1);
+        //Mybatis-plus会自动赋值version
         List<Long> cardIdList = courseDTO.getCardListStr();
-        courseMapper.insert(courseEntity);
         Long courseId = courseEntity.getId();
         log.info("courseId:{}", courseId);
-        return courseCardMapper.insertCourseAndCards(courseId, cardIdList) > 0;
+        try {
+            courseMapper.insert(courseEntity);
+            return courseCardMapper.insertCourseAndCards(courseEntity.getId(), cardIdList) > 0;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("save course failure", e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateCourseDTO(CourseDTO courseDTO) {
+        log.info("courseDTO的id为"+courseDTO.getId());
+        CourseEntity courseEntity = new CourseEntity(courseDTO);
+        courseEntity.setId(courseDTO.getId());
+        log.info("courseEntity的id为"+courseEntity.getId());
+
+        courseEntity.setLastModifyTime(LocalDateTime.now());
+        List<Long> cardIdList = courseDTO.getCardListStr();
+
+        try {
+            courseMapper.updateById(courseEntity);
+            courseCardMapper.deleteAllCardsByCourseId(courseEntity.getId());
+            return courseCardMapper.insertCourseAndCards(courseEntity.getId(), cardIdList) > 0;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("update course failure", e);
+        }
+    }
+
+    @Override
+    public List<Long> getAllCourseIds() {
+        return courseMapper.getAllCourseIds();
     }
 }

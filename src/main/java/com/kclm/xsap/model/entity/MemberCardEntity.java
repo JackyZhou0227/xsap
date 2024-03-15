@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kclm.xsap.model.dto.MemberCardDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -101,4 +102,16 @@ public class MemberCardEntity implements Serializable {
 	@TableField(exist = false)
 	private LocalDateTime dueTime;
 
+	public MemberCardEntity() {
+	}
+	public MemberCardEntity(MemberCardDTO memberCardDTO) {
+		this.name = memberCardDTO.getName();
+		this.price = memberCardDTO.getPrice();
+		this.description = memberCardDTO.getDescription();
+		this.note = memberCardDTO.getNote();
+		this.type = memberCardDTO.getType();
+		this.totalCount = memberCardDTO.getTotalCount();
+		this.totalDay = memberCardDTO.getTotalDay();
+		this.status = memberCardDTO.getStatus();
+	}
 }

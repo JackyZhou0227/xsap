@@ -9,7 +9,8 @@
 
     <title>X+约课系统 - 添加会员卡</title>
     <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
-    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术"
+          name="description">
 
     <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
     <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
@@ -25,7 +26,8 @@
     <link href="../../static/css/plugins/dataTables/dataTables.bootstrap.css"
           rel="stylesheet" th:href="@{/static/css/plugins/dataTables/dataTables.bootstrap.css}">
     <!-- Sweet Alert -->
-    <link href="../../static/css/plugins/sweetalert/sweetalert.css" th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
+    <link href="../../static/css/plugins/sweetalert/sweetalert.css"
+          th:href="@{/static/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet">
 
 
     <style type="text/css">
@@ -83,7 +85,8 @@
                                for="inputCardName"><span
                                 style="color: red">*&nbsp;</span>会员卡名称</label>
                         <div class="col-sm-6">
-                            <input class="form-control margin_top" id="inputCardName" name="name" placeholder="会员卡名称"
+                            <input class="form-control margin_top" id="inputCardName" name="name"
+                                   placeholder="会员卡名称"
                                    required
                                    type="text">
                             <span class="text-danger">[[${NAME_EXIST}]]</span>
@@ -184,7 +187,8 @@
                                    id="support_program">
                                 <thead>
                                 <tr>
-                                    <th><input class="i-checks" id="check_all" name="courseListStr" type="checkbox" value="-1">
+                                    <th><input class="i-checks" id="check_all" name="courseListStr" type="checkbox"
+                                               value="-1">
                                     </th>
                                     <th class="col-sm-7">课程</th>
                                     <th>收费情况(次卡)</th>
@@ -223,7 +227,8 @@
 <!-- iCheck -->
 <script src="../../static/js/plugins/iCheck/icheck.min.js" th:src="@{/static/js/plugins/iCheck/icheck.min.js}"></script>
 <!-- Sweet alert -->
-<script src="../../static/js/plugins/sweetalert/sweetalert.min.js" th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
+<script src="../../static/js/plugins/sweetalert/sweetalert.min.js"
+        th:src="@{/static/js/plugins/sweetalert/sweetalert.min.js}"></script>
 <script>
     $(function () {
         /*表单序列化*/
@@ -239,7 +244,7 @@
             console.log(courseData);
             $('.dataTables-example').dataTable({
                 //获取数据
-                "data": courseData,
+                "data": courseData.courseList,
                 //行的定义
                 "columns": [
                     {
@@ -298,7 +303,8 @@
                     data: formData,
                     success: function (data) {
                         if (data.code === 0) {
-                            swal(data.msg, "您已经创建了这一张新的会员卡。", "success");
+                            //swal(data.msg, "您已经创建了这一张新的会员卡。", "success");
+                            alert(data.msg);
                             //刷新界面
                             setTimeout(function () {
                                 window.location.href = '[[${#request.getContextPath()}]]/card/x_member_card.do'
@@ -310,15 +316,23 @@
                                 //错误提示回显
                                 $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
                             }
-                        }else {
-                            swal(data.msg, "未知错误", "info")
+                        } else if (data === 406) {
+                            //swal(data.msg, "请按要求填写信息！", "info")
+                            alert(data.msg);
                             setTimeout(function () {
                                 window.location.reload();
-                            },1200);
+                            }, 1200);
+                        } else {
+                            //swal(data.msg, "请联系管理员！", "info")
+                            alert(data.msg);
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1200);
                         }
                     },
                     error: function () {
-                        swal("添加失败！", "未知错误。。。", "info");
+                        //swal("添加失败！", "未知错误。。。", "info");
+                        alert("添加失败！请联系管理员！");
                         setTimeout(function () {
                             window.location.reload();
                         });

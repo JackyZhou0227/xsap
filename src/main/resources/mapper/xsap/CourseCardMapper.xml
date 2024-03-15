@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kclm.xsap.mapper.CourseCardMapper">
+    <resultMap id="CourseCardEntity" type="com.kclm.xsap.model.entity.CourseCardEntity">
+        <result property="cardId" column="card_id"/>
+        <result property="courseId" column="course_id"/>
+    </resultMap>
+
     <insert id="insertCourseAndCards" parameterType="map">
         INSERT INTO t_course_card (`course_id`, `card_id`)
         VALUES
@@ -9,4 +14,38 @@
             (#{courseId}, #{cardId})
         </foreach>
     </insert>
+    <insert id="insertCardAndCourses" parameterType="map">
+        INSERT INTO t_course_card (`course_id`, `card_id`)
+        VALUES
+        <foreach collection="courseIdList" item="courseId" separator=",">
+            (#{courseId}, #{cardId})
+        </foreach>
+    </insert>
+
+    <select id="selectCardIdsByCourseId" parameterType="map" resultType="java.lang.Long">
+        SELECT `card_id`
+        FROM t_course_card
+        WHERE `course_id` = #{courseId}
+    </select>
+
+    <select id="selectCourseIdsByCardId" resultType="long">
+        SELECT `course_id`
+        FROM t_course_card
+        WHERE `card_id` = #{cardId}
+    </select>
+
+    <!--  删除课程所有绑定的卡记录  -->
+    <delete id="deleteAllCardsByCourseId">
+        DELETE
+        FROM t_course_card
+        WHERE course_id = #{courseId}
+    </delete>
+
+    <!--  删除卡所有绑定的课程记录  -->
+    <delete id="deleteAllCoursesByCardId">
+        DELETE
+        FROM t_course_card
+        WHERE card_id = #{cardId}
+    </delete>
+
 </mapper>

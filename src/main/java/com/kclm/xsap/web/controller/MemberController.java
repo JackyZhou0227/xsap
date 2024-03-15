@@ -184,7 +184,7 @@ public class MemberController {
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
 
-        if (memberService.isPhoneExists(memberMsg.getPhone())) {
+        if (memberService.isPhoneExists(memberMsg.getPhone()) && !memberMsg.getPhone().equals(memberService.getById(memberMsg.getId()).getPhone())) {
             log.info("手机号已存在");
             returnData.put("code", 400);
             returnData.put("msg", "该手机号码已存在");
@@ -196,6 +196,7 @@ public class MemberController {
         if (memberService.updateById(memberMsg)) {
             log.info("修改成功");
             returnData.put("code", 0);
+            returnData.put("msg", "修改成功");
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } else {
             log.error("修改失败，未知错误");

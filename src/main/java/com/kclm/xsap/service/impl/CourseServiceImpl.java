@@ -76,4 +76,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, CourseEntity> i
     public List<Long> getAllCourseIds() {
         return courseMapper.getAllCourseIds();
     }
+
+    @Override
+    public List<CourseEntity> selectCoursesByKeyword(String keyword) {
+        return courseMapper.selectCoursesByKeyword(keyword);
+    }
 }

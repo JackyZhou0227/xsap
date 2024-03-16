@@ -1,7 +1,9 @@
 package com.kclm.xsap.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
+import com.kclm.xsap.model.vo.TeacherClassRecordVo;
 import com.kclm.xsap.model.vo.register.RegisterVo;
 
 import java.util.List;
@@ -40,5 +42,7 @@ public interface EmployeeService extends IService<EmployeeEntity> {
     boolean isEmailExists(String email);
 
     boolean isrRegisterSuccess(RegisterVo registerVo);
+
+    List<TeacherDTO> getTeacherByKeyword(String keyword);
 }
 

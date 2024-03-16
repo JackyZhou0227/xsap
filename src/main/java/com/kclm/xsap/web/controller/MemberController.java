@@ -110,9 +110,10 @@ public class MemberController {
 
     @PostMapping("/memberDetail.do")
     public ResponseEntity<Map<String, Object>> memberDetail(@RequestParam("id") Long id) {
-        log.info("获取会员信息，id=" + id);
+        log.info("memberDetail.do，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         MemberEntity memberEntity = memberService.getById(id);
+        log.info("name: " + memberEntity.getName());
         returnData.put("data", memberEntity);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
@@ -120,7 +121,7 @@ public class MemberController {
 
     @GetMapping("/toSearcherAll.do")
     public ResponseEntity<Map<String, Object>> toSearcherAll(@RequestParam("keyword") String keyword) {
-        log.info("绑卡操作查找会员，keyword =" + keyword);
+        log.info("查找会员，keyword =" + keyword);
         Map<String, Object> returnData = new HashMap<>();
         List<MemberEntity> memberList = memberService.searchMembersByNameOrPhone(keyword);
         returnData.put("value", memberList);
@@ -164,7 +165,7 @@ public class MemberController {
 
     @PostMapping("/x_member_edit.do")
     public ResponseEntity<Map<String, Object>> toMemberEdit(@RequestParam("id") Long id) {
-        log.info("显示member信息，id=" + id);
+        log.info("修改member信息，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         returnData.put("data", memberService.getById(id));
         return ResponseEntity.ok(returnData);
@@ -210,6 +211,9 @@ public class MemberController {
         log.info("获取会员持卡信息，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         List<CardInfoVo> cardInfoVoList = memberCardService.getCardsInfoByMemberId(id);
+        for (CardInfoVo cardInfoVo : cardInfoVoList) {
+            log.info("会员卡：" + cardInfoVo.getName() + "激活状态：" + cardInfoVo.getActiveStatus());
+        }
         returnData.put("data", cardInfoVoList);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }

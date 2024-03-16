@@ -34,17 +34,29 @@ public class GlobalSetController {
         return "course/x_course_reservation";
     }
 
+    /**
+     * 更新全局设置信息
+     *
+     * @param set 全局预留设置实体对象，包含需要更新的设置信息
+     * @return 返回一个响应实体，包含更新操作的状态码和消息
+     */
     @PostMapping("/globalSetUpdate.do")
     public ResponseEntity<Map<String, Object>> globalSetUpdate(GlobalReservationSetEntity set) {
         log.info("更新全局设置");
         Map<String, Object> returnData = new HashMap<>();
-        set.setLastModifyTime(LocalDateTime.now());
+        set.setLastModifyTime(LocalDateTime.now()); // 更新最后修改时间
+
+        // 尝试更新全局设置信息
         if (globalReservationSetService.updateById(set)) {
-            returnData.put("code", 1);
-            returnData.put("msg", "更新成功");
+            log.info("更新成功");
+            returnData.put("code", 0); // 更新成功状态码
+            returnData.put("msg", "更新成功"); // 更新成功消息
         } else {
-            returnData.put("msg", "更新失败");
+            log.error("更新全局设置失败");
+            returnData.put("msg", "更新失败"); // 更新失败消息
         }
+
+        // 返回更新操作的结果
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 

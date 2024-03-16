@@ -2,6 +2,7 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.dto.CourseDTO;
 import com.kclm.xsap.model.entity.CourseEntity;
+import com.kclm.xsap.model.entity.MemberEntity;
 import com.kclm.xsap.service.CourseCardService;
 import com.kclm.xsap.service.CourseService;
 import com.kclm.xsap.service.MemberCardService;
@@ -82,10 +83,10 @@ public class CourseController {
             return ResponseEntity.ok(returnData);
         }
 
-        if (courseDTO.getLimitAgeRadio()==0){
+        if (courseDTO.getLimitAgeRadio() == 0) {
             courseDTO.setLimitAge(0);
         }
-        if (courseDTO.getLimitCountsRadio()==0){
+        if (courseDTO.getLimitCountsRadio() == 0) {
             courseDTO.setLimitCounts(0);
         }
 
@@ -150,17 +151,17 @@ public class CourseController {
             courseDTO.setCardListStr(cardIdList);
 
             //前端checkbox有两个选项，无限制，有限制+岁数，无限制时，前端传入Radio值-1，此时要把limitAge和limitCounts设置为-1,表示无限制
-            if (courseDTO.getLimitAgeRadio()==0){
+            if (courseDTO.getLimitAgeRadio() == 0) {
                 courseDTO.setLimitAge(0);
             }
-            if (courseDTO.getLimitCountsRadio()==0){
+            if (courseDTO.getLimitCountsRadio() == 0) {
                 courseDTO.setLimitCounts(0);
             }
 
             if (courseService.updateCourseDTO(courseDTO)) {
                 log.info("编辑成功");
                 returnData.put("code", 0);
-                returnData.put("msg","编辑成功");
+                returnData.put("msg", "编辑成功");
             } else {
                 log.error("编辑失败");
                 returnData.put("msg", "未知错误");
@@ -185,4 +186,21 @@ public class CourseController {
         return cardCarry.stream().filter(allCardIdsSet::contains).collect(Collectors.toList());
     }
 
+    @GetMapping("/toSearch.do")
+    public ResponseEntity<Map<String, Object>> toSearchCourses(@RequestParam("keyword") String keyword) {
+        log.info("排课操作查找课程，keyword =" + keyword);
+        Map<String, Object> returnData = new HashMap<>();
+        List<CourseEntity> courseEntityList = courseService.selectCoursesByKeyword(keyword);
+        returnData.put("value", courseEntityList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/getOneCourse.do")
+    public ResponseEntity<Map<String, Object>> getOneCourse(@RequestParam("id") Long id) {
+        log.info("获取单个课程信息，课程id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        CourseEntity courseEntity = courseService.getById(id);
+        returnData.put("data", courseEntity);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
 }

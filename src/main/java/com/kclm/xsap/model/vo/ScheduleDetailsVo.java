@@ -38,7 +38,7 @@ public class ScheduleDetailsVo {
      */
     private Integer limitAge;
 
-    private List<String> supportCards;
+    private String supportCards;
 
     private String TeacherName;
     /**

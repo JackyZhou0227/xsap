@@ -63,7 +63,7 @@
                     <button class="btn btn-info" data-target="#addCourse" data-toggle="modal">新增排课</button>
                     <button class="btn btn-info" data-target="#copyCourse" data-toggle="modal">复制排课</button>
                     <button class="btn btn-success " onclick="window.location.reload()" data-target="#refresh" data-toggle="modal">刷新课程表</button>
-                    <button class="btn btn-default " onclick="refreshCache()" data-target="#refresh_cache" data-toggle="modal">refresh cache</button>
+                    <button class="btn btn-default " onclick="refreshCache()" data-target="#refresh_cache" data-toggle="modal">刷新缓存</button>
                     <button class="btn btn-warning pull-right" data-target="#upCourse" data-toggle="modal">批量导出预约数据</button>
 
                 </div>
@@ -373,12 +373,12 @@
     function refreshCache() {
         $.get('/schedule/refreshCache.do', function (data) {
             if (data.code === 0) {
-                swal("清楚缓存成功！","即将刷新信息","success");
+                swal("清除缓存成功！","即将刷新信息","success");
                 setTimeout(function (){
                     window.location.reload();
                 }, 1200);
             } else {
-                swal("清楚缓存失败", "请联系管理员", "info")
+                swal("清除缓存失败", "请联系管理员", "info")
             }
         })
     }
@@ -396,7 +396,7 @@
 
         /* 课程搜索 */
         $("#courseSearch").bsSuggest({
-            url: "[[${#request.getContextPath()}]]/course/toSearch.do",
+            url: "[[${#request.getContextPath()}]]/course/toSearch.do?keyword=",
             effectiveFieldsAlias: {id: "ID", name: "课程名称", contains: "可容纳人数"},
             effectiveFields: ["id", "name", "contains"],
             ignorecase: true,
@@ -434,7 +434,7 @@
 
         /* 老师搜索 */
         $("#teacherSearch").bsSuggest({
-            url: "[[${#request.getContextPath()}]]/user/toSearch.do",
+            url: "[[${#request.getContextPath()}]]/teacher/toSearch.do?keyword=",
             effectiveFieldsAlias: {id: "ID", name: "教师名称", sex: "性别", note: "专长科目"},
             effectiveFields: ["id", "name", "sex", "note"],
             ignorecase: true,
@@ -477,7 +477,8 @@
             }, function () {
                 $.post("/schedule/scheduleAdd.do", addScheduleForm, function (data) {
                     if (data.code === 0) {
-                        swal("添加成功！", "", "success");
+                        //swal(data.msg, "你已经新增了这一门排课！", "success");
+                        alert(data.msg);
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);

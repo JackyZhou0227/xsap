@@ -16,4 +16,6 @@ public interface CourseService extends IService<CourseEntity> {
     boolean updateCourseDTO(CourseDTO courseDTO);
 
     List<Long> getAllCourseIds();
+
+    List<CourseEntity> selectCoursesByKeyword(String keyword);
 }

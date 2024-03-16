@@ -2,8 +2,10 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.dto.MemberCardDTO;
 import com.kclm.xsap.model.entity.MemberCardEntity;
+import com.kclm.xsap.model.vo.CardInfoVo;
 import com.kclm.xsap.service.CourseCardService;
 import com.kclm.xsap.service.CourseService;
+import com.kclm.xsap.service.MemberBindRecordService;
 import com.kclm.xsap.service.MemberCardService;
 import com.kclm.xsap.utils.BeanError;
 import org.slf4j.Logger;
@@ -37,6 +39,9 @@ public class CardController {
 
     @Resource
     private CourseCardService courseCardService;
+
+    @Resource
+    private MemberBindRecordService memberBindRecordService;
 
     @GetMapping("/x_member_card.do")
     public String toMemberCard() {
@@ -167,7 +172,42 @@ public class CardController {
     @PostMapping("/operateRecord.do")
     public ResponseEntity<Map<String, Object>> getOperateRecord(@RequestParam("memberId") Long memberId, @RequestParam("cardId") String cardId) {
         Map<String, Object> returnData = new HashMap<>();
+        //todo
+
         return null;
+    }
+
+    @PostMapping("activeOpt.do")
+    public ResponseEntity<Map<String, Object>> activeOpt(@RequestParam("memberId") Long memberId,
+                                                         @RequestParam("bindId") Long bindId,
+                                                         @RequestParam("status") Integer status) {
+        log.info("激活操作，memberId=" + memberId + ",bindId=" + bindId + ",status=" + status);
+        Map<String, Object> returnData = new HashMap<>();
+        if (memberBindRecordService.updateBindStatus(memberId, bindId, status)) {
+            log.info("操作成功");
+            returnData.put("data", memberBindRecordService.getById(bindId).getActiveStatus());
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        } else {
+            log.error("操作失败!");
+            returnData.put("msg", "操作失败");
+            return new ResponseEntity<>(returnData, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/toSearchByMemberId.do")
+    public ResponseEntity<Map<String, Object>> toSearchByMemberId(@RequestParam("memberId") Long memberId) {
+        Map<String, Object> returnData = new HashMap<>();
+        List<CardInfoVo> cardInfoVoList = memberCardService.getCardsInfoByMemberId(memberId);
+        returnData.put("value", cardInfoVoList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/cardTip.do")
+    public ResponseEntity<Map<String, Object>> cardTip(@RequestParam("cardId") Long cardId, @RequestParam("scheduleId") Long scheduleId) {
+        Map<String, Object> returnData = new HashMap<>();
+        //todo
+        returnData.put("data", null);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
 }

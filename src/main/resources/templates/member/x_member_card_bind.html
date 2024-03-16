@@ -293,7 +293,8 @@
                     //移除重复提示 - 绑卡
                     $("#selectList").nextAll().remove();
                     if (data.code === 0) {
-                        swal("绑定成功！", "", "success");
+                        // swal("绑定成功！", "", "success");
+                        alert("绑定成功！");
                         setTimeout(function () {
                             // window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
                             window.location.reload();
@@ -308,7 +309,8 @@
                             $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
                         }
                     } else {
-                        swal("绑定失败！", data.msg, "info");
+                        //swal("绑定失败！", data.msg, "info");
+                        alert("未知错误，请联系管理员！");
                     }
                 });
             });

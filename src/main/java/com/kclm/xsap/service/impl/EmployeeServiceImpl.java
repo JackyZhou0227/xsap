@@ -1,21 +1,20 @@
 package com.kclm.xsap.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kclm.xsap.mapper.EmployeeMapper;
+import com.kclm.xsap.model.dto.TeacherDTO;
+import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.model.vo.register.RegisterVo;
+import com.kclm.xsap.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import com.kclm.xsap.mapper.EmployeeMapper;
-import com.kclm.xsap.model.entity.EmployeeEntity;
-import com.kclm.xsap.service.EmployeeService;
-
-import javax.annotation.Resource;
 
 
 @Slf4j
@@ -40,7 +39,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
     @Override
     public EmployeeEntity isExistEmp(String username, String password) {
         EmployeeEntity selectOneForLogin = this.baseMapper.selectOne(new QueryWrapper<EmployeeEntity>().eq("role_name", username).eq("role_password", password));
-        log.debug("selectOneForLogin{}",selectOneForLogin);
+        log.debug("selectOneForLogin{}", selectOneForLogin);
         return selectOneForLogin;
     }
 
@@ -56,7 +55,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
 
         EmployeeEntity entity = baseMapper.selectTeacherNameById(teacherId);
         String teacherName = entity.getName();
-        if (entity.getIsDeleted() == 1){
+        if (entity.getIsDeleted() == 1) {
             teacherName = teacherName + "(已退出)";
         }
         return teacherName;
@@ -92,6 +91,16 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
         employeeEntity.setCreateTime(LocalDateTime.now());
         employeeEntity.setLastModifyTime(LocalDateTime.now());
         return employeeMapper.insert(employeeEntity) > 0;
+    }
+
+    @Override
+    public List<TeacherDTO> getTeacherByKeyword(String keyword) {
+        List<EmployeeEntity> employeeEntities = employeeMapper.getTeacherByKeyword(keyword);
+        List<TeacherDTO> teacherDTOList = new ArrayList<>();
+        for (EmployeeEntity employeeEntity : employeeEntities) {
+            teacherDTOList.add(new TeacherDTO(employeeEntity));
+        }
+        return teacherDTOList;
     }
 
 }

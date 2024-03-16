@@ -31,4 +31,11 @@
         </foreach>
     </select>
 
+    <select id="getTeacherByKeyword" resultMap="employeeMap">
+        select *
+        from t_employee
+        where `is_deleted` = 0 and `name` like CONCAT('%', #{keyword}, '%')
+           or `note` like CONCAT('%', #{keyword}, '%')
+    </select>
+
 </mapper>

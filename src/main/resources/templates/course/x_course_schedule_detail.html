@@ -653,7 +653,7 @@
 
         /*------会员搜索------*/
         $("#chooseMember").bsSuggest({
-            url: "[[${#request.getContextPath()}]]/member/toSearch.do",
+            url: "[[${#request.getContextPath()}]]/member/toSearcherAll.do?keyword=",
             effectiveFieldsAlias: {id: "ID", name: "会员名", sex: "性别", phone: "手机号"},
             effectiveFields: ["id", "name", "sex", "phone"],
             ignorecase: true,

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.ScheduleRecordMapper">
+
+    <resultMap id="ScheduleRecordEntity" type="com.kclm.xsap.model.entity.ScheduleRecordEntity">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="teacher_id" property="teacherId"/>
+        <result column="order_nums" property="orderNums"/>
+        <result column="start_date" property="startDate"/>
+        <result column="class_time" property="classTime"/>
+        <result column="limit_sex" property="limitSex"/>
+        <result column="limit_age" property="limitAge"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_modify_time" property="lastModifyTime"/>
+        <result column="version" property="version"/>
+    </resultMap>
+    <select id="listAllCourseScheduleVo" resultType="com.kclm.xsap.model.vo.CourseScheduleVo">
+        SELECT c.`name`                                                                         title,
+               sr.start_date                                                                    start,
+               CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')) AS start,
+               DATE_ADD(
+                       STR_TO_DATE(CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')),
+                                   '%Y-%m-%d %H:%i:%s'),
+                       INTERVAL c.duration MINUTE
+               )                                                                             AS end,
+               c.color,
+               CONCAT('/schedule/x_course_schedule_detail.do?id=', sr.id)                       url
+        FROM t_schedule_record sr
+                 JOIN t_course c on sr.course_id = c.id
+                 JOIN t_employee e on sr.teacher_id = e.id;
+    </select>
+
+    <select id="getScheduleRecordByDate" resultMap="ScheduleRecordEntity">
+        SELECT *
+        FROM t_schedule_record
+        WHERE start_date = #{date}
+    </select>
+
+    <select id="getScheduleDetailsVoById" resultType="com.kclm.xsap.model.vo.ScheduleDetailsVo">
+
+        SELECT c.name                                                                           courseName,
+               CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')) AS startTime,
+               DATE_ADD(
+                       STR_TO_DATE(CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')),
+                                   '%Y-%m-%d %H:%i:%s'),
+                       INTERVAL c.duration MINUTE
+               )                                                                             AS endTime,
+               c.duration,
+               sr.limit_sex                                                                     limitSex,
+               sr.limit_age                                                                     limitAge,
+               c.times_cost                                                                     timesCost,
+               GROUP_CONCAT(mc.`name`)                                                          supportCards,
+               e.name                                                                           TeacherName,
+               sr.order_nums                                                                    orderNums,
+               c.contains                                                                       orderNums,
+               c.times_cost                                                                     timeCost
+        FROM t_schedule_record sr
+                 JOIN t_course c ON sr.course_id = c.id
+                 JOIN t_employee e ON e.id = sr.teacher_id
+                 JOIN t_course_card cc ON c.id = cc.course_id
+                 JOIN t_member_card mc ON cc.card_id = mc.id
+        WHERE sr.id = #{id}
+
+    </select>
+</mapper>

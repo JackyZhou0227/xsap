@@ -1,5 +1,6 @@
 package com.kclm.xsap.mapper;
 
+import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,5 +27,7 @@ public interface EmployeeMapper extends BaseMapper<EmployeeEntity> {
     根据idList批量查询老师信息
      */
     List<EmployeeEntity> selectTeacherNameListByIds(@Param("teacherIdList") List<Long> teacherIdList);
+
+    List<EmployeeEntity> getTeacherByKeyword(String keyword);
 
 }

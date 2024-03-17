@@ -83,20 +83,36 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
         return baseMapper.selectCount(new QueryWrapper<EmployeeEntity>().eq("role_email", email)) > 0;
     }
 
+    /**
+     * 注册员工信息。
+     *
+     * @param registerVo 注册视图对象，包含用户名和密码。
+     * @return 返回注册是否成功，如果插入员工信息到数据库成功，则返回true，否则返回false。
+     */
     @Override
     public boolean isrRegisterSuccess(RegisterVo registerVo) {
+        // 创建一个新的员工实体并设置其属性
         EmployeeEntity employeeEntity = new EmployeeEntity();
-        employeeEntity.setRoleName(registerVo.getUserName());
-        employeeEntity.setRolePassword(registerVo.getPassword());
-        employeeEntity.setCreateTime(LocalDateTime.now());
-        employeeEntity.setLastModifyTime(LocalDateTime.now());
+        employeeEntity.setRoleName(registerVo.getUserName()); // 设置用户名
+        employeeEntity.setRolePassword(registerVo.getPassword()); // 设置密码
+        employeeEntity.setCreateTime(LocalDateTime.now()); // 设置创建时间
+        employeeEntity.setLastModifyTime(LocalDateTime.now()); // 设置最后修改时间
+        // 尝试将员工实体插入数据库，并根据操作结果判断注册是否成功
         return employeeMapper.insert(employeeEntity) > 0;
     }
 
+    /**
+     * 根据关键字获取教师信息列表。
+     *
+     * @param keyword 关键字，用于搜索教师信息。
+     * @return 返回教师信息的列表，列表中每个元素都是一个TeacherDTO对象。
+     */
     @Override
     public List<TeacherDTO> getTeacherByKeyword(String keyword) {
+        // 通过关键字查询员工实体列表，这里的员工实体包括了所有的教师信息
         List<EmployeeEntity> employeeEntities = employeeMapper.getTeacherByKeyword(keyword);
         List<TeacherDTO> teacherDTOList = new ArrayList<>();
+        // 遍历员工实体列表，将每个实体转换为TeacherDTO对象，并添加到教师信息列表中
         for (EmployeeEntity employeeEntity : employeeEntities) {
             teacherDTOList.add(new TeacherDTO(employeeEntity));
         }

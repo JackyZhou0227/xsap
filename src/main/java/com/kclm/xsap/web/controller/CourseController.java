@@ -63,10 +63,18 @@ public class CourseController {
         return "course/x_course_list_add";
     }
 
+    /**
+     * 添加课程信息
+     *
+     * @param courseDTO 包含课程信息的数据传输对象，必须是有效的课程信息
+     * @param bindingResult 对courseDTO进行验证后的结果，包含验证错误信息
+     * @return 返回一个实体响应，包含操作结果代码、错误信息等
+     */
     @PostMapping("/courseAdd.do")
     public ResponseEntity<Map<String, Object>> courseAdd(@Valid CourseDTO courseDTO, BindingResult bindingResult) {
         log.info("添加课程，课程名" + courseDTO.getName());
         Map<String, Object> returnData = new HashMap<>();
+        // 验证课程信息输入是否有错误
         if (bindingResult.hasErrors()) {
             log.info("Bean验证错误");
             log.info(BeanError.getErrorData(bindingResult));
@@ -76,6 +84,7 @@ public class CourseController {
             return ResponseEntity.ok(returnData);
         }
 
+        // 检查课程名称是否已存在
         if (courseService.isCourseNameExist(courseDTO.getName())) {
             log.info("课程名已存在");
             returnData.put("code", 406);
@@ -83,6 +92,7 @@ public class CourseController {
             return ResponseEntity.ok(returnData);
         }
 
+        // 处理课程限制年龄和人数的默认值
         if (courseDTO.getLimitAgeRadio() == 0) {
             courseDTO.setLimitAge(0);
         }
@@ -90,6 +100,7 @@ public class CourseController {
             courseDTO.setLimitCounts(0);
         }
 
+        // 处理选择的会员卡列表
         List<Long> cardIdList = courseDTO.getCardListStr();
         if (cardIdList != null && !cardIdList.isEmpty()) {
             cardIdList = keepValidCardIds(cardIdList);
@@ -100,6 +111,7 @@ public class CourseController {
                 return ResponseEntity.ok(returnData);
             }
             courseDTO.setCardListStr(cardIdList);
+            // 保存课程信息
             if (courseService.saveCourseDTO(courseDTO)) {
                 log.info("添加成功");
                 returnData.put("code", 0);
@@ -119,18 +131,28 @@ public class CourseController {
 
     }
 
+    /**
+     * 编辑课程信息
+     *
+     * @param courseDTO 包含课程编辑信息的数据传输对象，包括课程ID、名称等
+     * @param bindingResult 对courseDTO进行验证后的结果，包含验证错误信息
+     * @return ResponseEntity 包含编辑结果的响应实体，包括成功与否的消息和状态码
+     */
     @PostMapping("/courseEdit.do")
     public ResponseEntity<Map<String, Object>> courseEdit(@Valid CourseDTO courseDTO, BindingResult bindingResult) {
         log.info("编辑课程，课程id=" + courseDTO.getId());
 
         Map<String, Object> returnData = new HashMap<>();
+        // 验证courseDTO中的数据是否符合要求
         if (bindingResult.hasErrors()) {
             log.info("Bean验证错误");
             log.info(BeanError.getErrorData(bindingResult));
             returnData.put("msg", BeanError.getErrorData(bindingResult));
             return ResponseEntity.ok(returnData);
         }
+        // 根据课程ID获取课程实体
         CourseEntity courseEntity = courseService.getById(courseDTO.getId());
+        // 检查课程名称是否已存在
         if (courseService.isCourseNameExist(courseDTO.getName()) && !courseDTO.getName().equals(courseEntity.getName())) {
             log.info("课程名已存在");
             returnData.put("msg", "课程名已存在");
@@ -138,10 +160,10 @@ public class CourseController {
         }
         List<Long> cardIdList = courseDTO.getCardListStr();
 
-        //传入的cardListStr可能为空，如果不做判断，在进行keepValidCardIds时，会报空指针异常
+        // 判断并处理传入的会员卡ID列表，过滤无效卡号
         if (cardIdList != null && !cardIdList.isEmpty()) {
             cardIdList = keepValidCardIds(cardIdList);
-            //判断过滤掉无效值的cardIdList是否为空
+            // 过滤后判断列表是否为空，为空则表示没有有效卡号
             if (cardIdList == null || cardIdList.isEmpty()) {
                 log.info("用户传入了无效的会员卡号");
                 returnData.put("msg", "请选择有效的会员卡");
@@ -150,7 +172,7 @@ public class CourseController {
 
             courseDTO.setCardListStr(cardIdList);
 
-            //前端checkbox有两个选项，无限制，有限制+岁数，无限制时，前端传入Radio值-1，此时要把limitAge和limitCounts设置为-1,表示无限制
+            // 处理课程的限制年龄和限制人数选项，无限制时设置为0
             if (courseDTO.getLimitAgeRadio() == 0) {
                 courseDTO.setLimitAge(0);
             }
@@ -158,6 +180,7 @@ public class CourseController {
                 courseDTO.setLimitCounts(0);
             }
 
+            // 更新课程信息
             if (courseService.updateCourseDTO(courseDTO)) {
                 log.info("编辑成功");
                 returnData.put("code", 0);
@@ -168,6 +191,7 @@ public class CourseController {
             }
             return ResponseEntity.ok(returnData);
         } else {
+            // 用户未选择任何会员卡
             log.info("用户未选择任何会员卡");
             returnData.put("msg", "请至少选择一张会员卡");
             return ResponseEntity.ok(returnData);

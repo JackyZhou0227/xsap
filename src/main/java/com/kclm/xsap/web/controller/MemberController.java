@@ -128,23 +128,36 @@ public class MemberController {
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
+    /**
+     * 修改会员头像
+     *
+     * @param id 会员ID，用于标识需要修改头像的会员
+     * @param avatarUrl 会员头像文件，使用MultipartFile接收上传的文件
+     * @return ResponseEntity<Map<String, Object>> 包含操作结果信息的响应实体：
+     *         - 当操作成功时，返回状态码200（HttpStatus.OK），并包含上传成功的信息及更新后的会员数据；
+     *         - 当操作失败时，返回状态码400（HttpStatus.BAD_REQUEST），并包含失败的原因。
+     */
     @PostMapping("/modifyMemberImg.do")
     public ResponseEntity<Map<String, Object>> modifyMemberImg(@RequestParam("id") Long id, @RequestParam("avatarFile") MultipartFile avatarUrl) {
         log.info("修改会员头像，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         ApplicationHome applicationHome = new ApplicationHome(getClass());
 
+        // 检查会员ID是否为空，以及会员是否存在
         if (id == null || memberService.getById(id) == null) {
             log.error("会员id为空或会员不存在");
             returnData.put("msg", "用户id为空或用户不存在");
             return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
         }
 
+        // 检查上传的头像文件是否为空
         if (avatarUrl.isEmpty()) {
             log.error("上传头像为空");
             returnData.put("msg", "上传头像为空");
             return new ResponseEntity<>(returnData, HttpStatus.BAD_REQUEST);
         }
+
+        // 上传头像文件
         String filename = ImgManger.uploadImg(avatarUrl, applicationHome, MEMBER_IMG_DIR);
         if (filename == null) {
             log.error("上传头像失败");
@@ -152,10 +165,13 @@ public class MemberController {
             return new ResponseEntity<>(returnData, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
             log.info("修改上传头像成功");
+            // 更新会员头像信息
             MemberEntity memberEntity = memberService.getById(id);
             memberEntity.setAvatarUrl(filename);
             memberEntity.setLastModifyTime(LocalDateTime.now());
             memberService.updateById(memberEntity);
+
+            // 返回成功信息及更新后的会员数据
             returnData.put("code", 0);
             returnData.put("msg", "上传头像成功");
             returnData.put("userData", memberEntity);
@@ -171,6 +187,13 @@ public class MemberController {
         return ResponseEntity.ok(returnData);
     }
 
+    /**
+     * 修改会员信息
+     *
+     * @param memberMsg 会员实体对象，包含要修改的会员信息
+     * @param bindingResult 数据验证结果，用于存放验证错误信息
+     * @return ResponseEntity<Map<String, Object>> 包含操作结果的状态码、消息和数据
+     */
     @PostMapping("/memberEdit.do")
     public ResponseEntity<Map<String, Object>> memberEdit(@Valid MemberEntity memberMsg, BindingResult bindingResult) {
 
@@ -178,6 +201,7 @@ public class MemberController {
 
         Map<String, Object> returnData = new HashMap<>();
 
+        // 验证输入数据的正确性
         if (bindingResult.hasErrors()) {
             log.info("bean验证错误");
             returnData.put("code", 400);
@@ -185,6 +209,7 @@ public class MemberController {
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
 
+        // 检查手机号是否已存在
         if (memberService.isPhoneExists(memberMsg.getPhone()) && !memberMsg.getPhone().equals(memberService.getById(memberMsg.getId()).getPhone())) {
             log.info("手机号已存在");
             returnData.put("code", 400);
@@ -192,8 +217,10 @@ public class MemberController {
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
 
+        // 更新会员信息的最后修改时间
         memberMsg.setLastModifyTime(LocalDateTime.now());
 
+        // 更新会员信息
         if (memberService.updateById(memberMsg)) {
             log.info("修改成功");
             returnData.put("code", 0);

@@ -116,34 +116,45 @@ public class UserController {
         return "x_ensure_user";
     }
 
+    /**
+     * 用户重置密码页面的跳转逻辑。
+     *
+     * @param userPhoneOrEmail 用户输入的手机号或邮箱，用于重置密码。
+     * @param model Spring模型，用于在视图和控制器之间传递数据。
+     * @return 返回字符串路径，根据逻辑跳转到不同的页面。
+     */
     @GetMapping("/toResetPwd")
     public String toResetPwd(@RequestParam("userPhoneOrEmail") String userPhoneOrEmail, Model model) {
         log.debug("用户重置密码,输入手机号或邮箱", userPhoneOrEmail);
 
+        // 定义邮箱和手机号的正则表达式
         String emailRegex = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
         String phoneRegex = "^1[0-9]{10}$";
 
+        // 判断输入是邮箱还是手机号
         boolean isAEmail = Pattern.compile(emailRegex).matcher(userPhoneOrEmail).matches();
         boolean isAPhone = Pattern.compile(phoneRegex).matcher(userPhoneOrEmail).matches();
         if (isAEmail || isAPhone) {
-            //根据邮箱查询该用户     //由于保存的时候没有设置邮箱去重检查，所以假设可以存在相同邮箱【相容用户】
+            // 根据邮箱或手机号查询用户信息
             List<EmployeeEntity> userOne = employeeService.list(new QueryWrapper<EmployeeEntity>().eq("role_email", userPhoneOrEmail).or().eq("phone", userPhoneOrEmail));
-            //由于可能会用到该用户的信息，故不用count查个数
+
             if (userOne.isEmpty()) {
-                //没查到该用户信息,返回提示到前台
+                // 如果未查询到用户信息，则将错误信息添加到模型中，返回到特定页面
                 model.addAttribute("CHECK_USER_ERROR", true);
                 return "x_ensure_user";
             }
-            if (isAEmail) {
-                //todo 发送邮件
 
+            if (isAEmail) {
+                // 如果是邮箱，理论上应该发送邮件给用户（该部分代码未实现）
+
+                // 假设邮件发送成功，返回相应页面
                 return "send_mail_ok";
             }
 
-            //查到信息，跳转页面
+            // 如果是手机号，同样假设发送邮件成功，返回相应页面
             return "send_mail_ok";
         } else {
-            //格式不正确，返回提示到前台
+            // 如果输入格式不正确，将错误信息添加到模型中，返回到特定页面进行提示
             model.addAttribute("CHECK_INPUT_FORMAT", true);
 
             return "x_ensure_user";

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -81,10 +80,10 @@ public class UserController {
     /**
      * 用户注册
      *
-     * @param userName  用户名
-     * @param password  密码
-     * @param pwd2      再次输入密码
-     * @param model     模型
+     * @param userName 用户名
+     * @param password 密码
+     * @param pwd2     再次输入密码
+     * @param model    模型
      * @return 登录页面
      */
     @PostMapping("/register")
@@ -100,11 +99,11 @@ public class UserController {
             model.addAttribute("CHECK_TYPE_ERROR", 1);
             return "x_register";
         }
-        RegisterVo registerVo = new RegisterVo(userName,password,pwd2);
-        if (employeeService.isrRegisterSuccess(registerVo)){
+        RegisterVo registerVo = new RegisterVo(userName, password, pwd2);
+        if (employeeService.isrRegisterSuccess(registerVo)) {
             log.error("注册成功");
             return "x_login";
-        }else {
+        } else {
             log.error("注册失败");
             return "x_register";
         }
@@ -120,7 +119,7 @@ public class UserController {
      * 用户重置密码页面的跳转逻辑。
      *
      * @param userPhoneOrEmail 用户输入的手机号或邮箱，用于重置密码。
-     * @param model Spring模型，用于在视图和控制器之间传递数据。
+     * @param model            Spring模型，用于在视图和控制器之间传递数据。
      * @return 返回字符串路径，根据逻辑跳转到不同的页面。
      */
     @GetMapping("/toResetPwd")
@@ -145,13 +144,13 @@ public class UserController {
             }
 
             if (isAEmail) {
-                // 如果是邮箱，理论上应该发送邮件给用户（该部分代码未实现）
+                // todo 如果是邮箱，理论上应该发送邮件给用户
 
                 // 假设邮件发送成功，返回相应页面
                 return "send_mail_ok";
             }
 
-            // 如果是手机号，同样假设发送邮件成功，返回相应页面
+            //todo 如果是手机号，同样假设发送邮件成功，返回相应页面
             return "send_mail_ok";
         } else {
             // 如果输入格式不正确，将错误信息添加到模型中，返回到特定页面进行提示
@@ -167,12 +166,16 @@ public class UserController {
         return "x_reset_passward";
     }
 
-    @GetMapping("/resetPassword")
+    @PostMapping("/resetPassword")
     public String resetPassword(@RequestParam("newPwd") String newPwd, @RequestParam("pwd2") String pwd2, Model model) {
-
-
-        return null;
+        log.info("重置密码，参数分别是：newPwd:" + newPwd + ",pwd2:" + pwd2);
+        if (newPwd.isEmpty() || pwd2.isEmpty()) {
+            return "x_reset_passward";
+        }
+        if (!newPwd.equals(pwd2)) {
+            model.addAttribute("CHECK_TYPE_ERROR", true);
+            return "x_reset_passward";
+        }
+        return "redirect:/user/toLogin";
     }
-
-
 }

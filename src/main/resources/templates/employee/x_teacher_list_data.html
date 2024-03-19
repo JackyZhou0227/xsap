@@ -94,7 +94,7 @@
                                         <tr>
                                             <th>课程名</th>
                                             <th>上课时间</th>
-                                            <th>参加的会员</th>
+                                            <th>上课会员</th>
                                             <th>次数/单人单次</th>
                                         </tr>
                                         </thead>
@@ -155,6 +155,7 @@
             contentType: false,	//必需使用 false,  这样才能使用form表单采用 multipart/form-data 传输
             processData: false,
             success: function (data) {
+                alert("修改头像成功！");
                 const userData = data.userData1;
                 console.log(userData);
                 if (userData != null) {
@@ -209,7 +210,7 @@
                     "columns": [
                         {"data": "courseName"},
                         {"data": "classTime"},
-                        {"data": "cardName"},
+                        {"data": "students"},
                         {"data": "timesCost"}
                     ],
 

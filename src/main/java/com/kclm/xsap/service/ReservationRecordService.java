@@ -1,9 +1,17 @@
 package com.kclm.xsap.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.kclm.xsap.model.entity.ReservationRecordEntity;
-import org.springframework.stereotype.Service;
+import com.kclm.xsap.model.vo.ReserveInfoVo;
+import com.kclm.xsap.model.vo.ScheduleDetailReservedVo;
 
-public interface ReservationRecordService {
-    boolean remove(QueryWrapper<ReservationRecordEntity> scheduleId);
+import java.util.List;
+
+public interface ReservationRecordService extends IService<ReservationRecordEntity> {
+//    boolean remove(QueryWrapper<ReservationRecordEntity> scheduleId);
+    List<ScheduleDetailReservedVo> getScheduleDetailReservedVoByScheduleId(Long scheduleId);
+
+    boolean updateStatusById(Long id);
+
+    List<ReserveInfoVo> getReserveInfoVoListByMemberId(Long memberId);
 }

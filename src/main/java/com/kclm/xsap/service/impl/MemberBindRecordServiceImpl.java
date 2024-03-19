@@ -3,6 +3,7 @@ package com.kclm.xsap.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kclm.xsap.mapper.MemberBindRecordMapper;
 import com.kclm.xsap.model.entity.MemberBindRecordEntity;
+import com.kclm.xsap.model.vo.CardTipVo;
 import com.kclm.xsap.service.MemberBindRecordService;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,11 @@ public class MemberBindRecordServiceImpl extends ServiceImpl<MemberBindRecordMap
             throw new RuntimeException("激活状态修改失败！", e);
         }
 
+    }
+
+    @Override
+    public CardTipVo getCardTip(Long bindId, Long scheduleId) {
+        return memberBindRecordMapper.getCardTip(bindId, scheduleId);
     }
 
 }

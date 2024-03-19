@@ -2,7 +2,10 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.entity.ScheduleRecordEntity;
 import com.kclm.xsap.model.vo.CourseScheduleVo;
+import com.kclm.xsap.model.vo.ScheduleDetailReservedVo;
 import com.kclm.xsap.model.vo.ScheduleDetailsVo;
+import com.kclm.xsap.service.ClassRecordService;
+import com.kclm.xsap.service.ReservationRecordService;
 import com.kclm.xsap.service.ScheduleRecordService;
 import com.kclm.xsap.utils.BeanError;
 import org.slf4j.Logger;
@@ -31,6 +34,12 @@ public class ScheduleController {
     @Resource
     private ScheduleRecordService scheduleRecordService;
 
+    @Resource
+    private ReservationRecordService reservationRecordService;
+
+    @Resource
+    private ClassRecordService classRecordService;
+
     @GetMapping("/x_course_schedule.do")
     public String toCourseSchedule() {
         return "course/x_course_schedule";
@@ -46,8 +55,8 @@ public class ScheduleController {
      * 排课信息新增接口
      *
      * @param scheduleRecordEntity 排课信息实体，包含排课的详细信息，需要进行验证
-     * @param bindingResult 数据验证结果，用于检查scheduleRecordEntity的合法性
-     * @return ResponseEntity<Map<String, Object>> 包含操作结果的状态码和数据信息
+     * @param bindingResult        数据验证结果，用于检查scheduleRecordEntity的合法性
+     * @return ResponseEntity<Map < String, Object>> 包含操作结果的状态码和数据信息
      */
     @PostMapping("/scheduleAdd.do")
     public ResponseEntity<Map<String, Object>> scheduleAdd(@Valid ScheduleRecordEntity scheduleRecordEntity, BindingResult bindingResult) {
@@ -76,45 +85,38 @@ public class ScheduleController {
         }
     }
 
-
-    @GetMapping("/refreshCache.do")
-    public ResponseEntity<Map<String, Object>> refreshCache() {
-        //todo
-        return null;
-    }
-
     /**
      * 调度并执行课程表的复制操作。
      *
      * @param sourceDateStr 源日期字符串，表示要复制的课程表的日期。
      * @param targetDateStr 目标日期字符串，表示要将课程复制到的日期。
      * @return 返回一个包含操作结果的状态码和消息的Map。
-     *         如果复制成功，则"code"为0，无"msg"；
-     *         如果复制失败，则"code"非0，"msg"包含错误信息。
+     * 如果复制成功，则"code"为0，无"msg"；
+     * 如果复制失败，则"code"非0，"msg"包含错误信息。
      */
     @PostMapping("/scheduleCopy.do")
     public ResponseEntity<Map<String, Object>> scheduleCopy(@RequestParam("sourceDateStr") String sourceDateStr, @RequestParam("targetDateStr") String targetDateStr) {
         // 记录开始复制的日志
-        log.info("复制课程表，复制 " + sourceDateStr+" 的课程到 "+targetDateStr);
+        log.info("复制课程表，复制 " + sourceDateStr + " 的课程到 " + targetDateStr);
         Map<String, Object> returnData = new HashMap<>();
         // 调用服务层方法执行课程表复制，并根据结果组装返回数据
-        if (scheduleRecordService.copySchedule(sourceDateStr,targetDateStr)) {
+        if (scheduleRecordService.copySchedule(sourceDateStr, targetDateStr)) {
             log.info("复制成功");
             // 复制成功，设置返回码为0
             returnData.put("code", 0);
-            return new ResponseEntity<>(returnData,HttpStatus.OK);
-        }else {
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        } else {
             log.info("复制失败");
             // 复制失败，设置错误消息
             returnData.put("msg", "请选择有排课的日期复制！");
-            return new ResponseEntity<>(returnData,HttpStatus.OK);
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
     }
 
     @GetMapping("/x_course_schedule_detail.do")
     public String toCourseScheduleDetail(@RequestParam("id") String id, Model model) {
         log.info("进入排课详细信息页面");
-        model.addAttribute("ID",id);
+        model.addAttribute("ID", id);
         return "course/x_course_schedule_detail";
     }
 
@@ -123,13 +125,17 @@ public class ScheduleController {
      *
      * @param id 排课的唯一标识符。
      * @return 返回一个ResponseEntity对象，其中包含一个Map<String, Object>类型的body。
-     *         如果找到对应的排课信息，则"code"键的值为0，"data"键的值为排课详情对象。
-     *         如果未找到对应的排课信息，则返回内部服务器错误状态码。
+     * 如果找到对应的排课信息，则"code"键的值为0，"data"键的值为排课详情对象。
+     * 如果未找到对应的排课信息，则返回内部服务器错误状态码。
      */
     @PostMapping("/scheduleDetail.do")
     public ResponseEntity<Map<String, Object>> scheduleDetail(@RequestParam("id") Long id) {
         log.info("获取排课详细信息");
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Map<String, Object> returnData = new HashMap<>();
+
         // 通过ID查询排课详情
         ScheduleDetailsVo scheduleDetailsVo = scheduleRecordService.getScheduleDetailsVoById(id);
         if (scheduleDetailsVo != null) {
@@ -140,6 +146,67 @@ public class ScheduleController {
         } else {
             // 未找到排课详情，返回内部服务器错误
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/reservedList.do")
+    public ResponseEntity<Map<String, Object>> reservedList(@RequestParam("id") Long id) {
+        log.info("已预约信息，id=" + id);
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Map<String, Object> returnData = new HashMap<>();
+        List<ScheduleDetailReservedVo> scheduleDetailReservedVoList = reservationRecordService.getScheduleDetailReservedVoByScheduleId(id);
+        scheduleDetailReservedVoList.removeIf(scheduleDetailReservedVo -> scheduleDetailReservedVo.getReserveStatus() != 0);
+        returnData.put("data", scheduleDetailReservedVoList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/reserveRecord.do")
+    public ResponseEntity<Map<String, Object>> reserveRecord(@RequestParam("id") Long id) {
+        log.info("查看预约记录，id=" + id);
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Map<String, Object> returnData = new HashMap<>();
+        List<ScheduleDetailReservedVo> scheduleDetailReservedVoList = reservationRecordService.getScheduleDetailReservedVoByScheduleId(id);
+
+        returnData.put("data", scheduleDetailReservedVoList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+
+
+    }
+
+    @PostMapping("/classRecord.do")
+    public ResponseEntity<Map<String, Object>> classRecord(@RequestParam("id") Long id) {
+        log.info("查看上课数据，id=" + id);
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", classRecordService.getClassRecordVoListByScheduleId(id));
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteOne.do")
+    public ResponseEntity<Map<String, Object>> deleteOne(@RequestParam("id") Long id) {
+        log.info("删除排课，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (classRecordService.getClassRecordVoListByScheduleId(id).isEmpty() && reservationRecordService.getScheduleDetailReservedVoByScheduleId(id).isEmpty()) {
+            if (scheduleRecordService.removeById(id)) {
+                returnData.put("code", 0);
+                return new ResponseEntity<>(returnData, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 }

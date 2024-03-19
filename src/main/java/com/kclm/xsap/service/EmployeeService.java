@@ -44,5 +44,9 @@ public interface EmployeeService extends IService<EmployeeEntity> {
     boolean isrRegisterSuccess(RegisterVo registerVo);
 
     List<TeacherDTO> getTeacherByKeyword(String keyword);
+
+    EmployeeEntity getEmployeeByRoleName(String roleName);
+
+    String getPwdById(Long id);
 }
 

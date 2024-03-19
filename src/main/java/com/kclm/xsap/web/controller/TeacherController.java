@@ -2,6 +2,7 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
+import com.kclm.xsap.service.ClassRecordService;
 import com.kclm.xsap.service.EmployeeService;
 import com.kclm.xsap.utils.BeanError;
 import com.kclm.xsap.utils.file.ImgManger;
@@ -36,6 +37,9 @@ public class TeacherController {
     @Resource
     private EmployeeService employeeService;
 
+    @Resource
+    private ClassRecordService classRecordService;
+
     @GetMapping("/x_teacher_list.do")
     public String toTeacherList() {
         log.info("进入teacherList页面");
@@ -65,7 +69,7 @@ public class TeacherController {
      * 添加教师信息
      *
      * @param employeeEntity 包含教师信息的实体对象，必须是有效的。
-     * @param bindingResult 用于存储数据绑定和验证结果的对象。
+     * @param bindingResult  用于存储数据绑定和验证结果的对象。
      * @return 返回一个响应实体，包含操作结果和相应的状态码。
      */
     @PostMapping("/teacherAdd.do")
@@ -120,7 +124,7 @@ public class TeacherController {
     /**
      * 编辑教师信息
      *
-     * @param teacher 一个经过验证的EmployeeEntity对象，包含待更新的教师信息
+     * @param teacher       一个经过验证的EmployeeEntity对象，包含待更新的教师信息
      * @param bindingResult 包含验证结果的对象，用于检查teacher对象中的数据错误
      * @return 返回一个ResponseEntity对象，其中包含操作结果信息（消息和状态码）
      */
@@ -188,11 +192,11 @@ public class TeacherController {
     /**
      * 修改用户头像
      *
-     * @param id 用户ID，用于标识需要修改头像的用户
+     * @param id        用户ID，用于标识需要修改头像的用户
      * @param avatarUrl 用户上传的头像文件
-     * @return ResponseEntity<Map<String, Object>> 包含操作结果信息的响应实体：
-     *         - 当操作成功时，返回状态码200（HttpStatus.OK）和包含成功消息及更新后的用户数据的Map；
-     *         - 当操作失败时，返回状态码400（HttpStatus.BAD_REQUEST）和包含错误消息的Map。
+     * @return ResponseEntity<Map < String, Object>> 包含操作结果信息的响应实体：
+     * - 当操作成功时，返回状态码200（HttpStatus.OK）和包含成功消息及更新后的用户数据的Map；
+     * - 当操作失败时，返回状态码400（HttpStatus.BAD_REQUEST）和包含错误消息的Map。
      */
     @PostMapping("/modifyUserImg.do")
     public ResponseEntity<Map<String, Object>> modifyUserImg(@RequestParam("id") Long id, @RequestParam("avatarFile") MultipartFile avatarUrl) {
@@ -238,6 +242,17 @@ public class TeacherController {
         Map<String, Object> returnData = new HashMap<>();
         List<TeacherDTO> teacherDTOList = employeeService.getTeacherByKeyword(keyword);
         returnData.put("value", teacherDTOList);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/teacherClassRecord.do")
+    public ResponseEntity<Map<String, Object>> teacherClassRecord(@RequestParam("tid") Long id) {
+        log.info("查看教师上课记录,id=" + id);
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", classRecordService.getTeacherClassRecordVoListByTeacherId(id));
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 

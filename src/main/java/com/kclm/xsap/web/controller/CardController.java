@@ -3,10 +3,8 @@ package com.kclm.xsap.web.controller;
 import com.kclm.xsap.model.dto.MemberCardDTO;
 import com.kclm.xsap.model.entity.MemberCardEntity;
 import com.kclm.xsap.model.vo.CardInfoVo;
-import com.kclm.xsap.service.CourseCardService;
-import com.kclm.xsap.service.CourseService;
-import com.kclm.xsap.service.MemberBindRecordService;
-import com.kclm.xsap.service.MemberCardService;
+import com.kclm.xsap.model.vo.CardTipVo;
+import com.kclm.xsap.service.*;
 import com.kclm.xsap.utils.BeanError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +40,9 @@ public class CardController {
 
     @Resource
     private MemberBindRecordService memberBindRecordService;
+
+    @Resource
+    private MemberLogService memberLogService;
 
     @GetMapping("/x_member_card.do")
     public String toMemberCard() {
@@ -125,7 +126,7 @@ public class CardController {
     /**
      * 跳转到会员卡编辑页面。
      *
-     * @param id 会员卡的ID，用于根据ID获取会员卡信息和相关的课程信息。
+     * @param id    会员卡的ID，用于根据ID获取会员卡信息和相关的课程信息。
      * @param model Model对象，用于在跳转页面时传递数据。
      * @return 返回编辑页面的路径。
      */
@@ -144,7 +145,7 @@ public class CardController {
     /**
      * 编辑会员卡信息
      *
-     * @param cardDTO 包含会员卡信息的数据传输对象，必须经过验证
+     * @param cardDTO       包含会员卡信息的数据传输对象，必须经过验证
      * @param bindingResult 验证结果，用于存放数据校验时产生的错误信息
      * @return 返回一个响应实体，包含操作结果信息（成功或失败）和相应的状态码
      */
@@ -204,11 +205,15 @@ public class CardController {
 
 
     @PostMapping("/operateRecord.do")
-    public ResponseEntity<Map<String, Object>> getOperateRecord(@RequestParam("memberId") Long memberId, @RequestParam("cardId") String cardId) {
+    public ResponseEntity<Map<String, Object>> getOperateRecord(@RequestParam("memberId") Long memberId, @RequestParam("cardId") Long cardId) {
+        log.info("获取操作记录，memberId= " + memberId + "；cardId= " + cardId);
+        if (memberId == null || cardId == null) {
+            log.warn("参数为空");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Map<String, Object> returnData = new HashMap<>();
-        //todo
-
-        return null;
+        returnData.put("data", memberLogService.getOperateRecordVoByMemberIdAndCardId(memberId, cardId));
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     /**
@@ -216,11 +221,11 @@ public class CardController {
      * 通过传入成员ID、绑定ID和状态，更新绑定状态，并返回操作结果。
      *
      * @param memberId 成员ID，用于标识成员。
-     * @param bindId 绑定ID，用于标识成员和设备等的绑定关系。
-     * @param status 状态，用于更新绑定关系的状态。
-     * @return ResponseEntity<Map<String, Object>> 包含操作结果的数据实体。
-     *         如果操作成功，返回状态码200和激活状态；
-     *         如果操作失败，返回状态码500和错误消息。
+     * @param bindId   绑定ID，用于标识成员和设备等的绑定关系。
+     * @param status   状态，用于更新绑定关系的状态。
+     * @return ResponseEntity<Map < String, Object>> 包含操作结果的数据实体。
+     * 如果操作成功，返回状态码200和激活状态；
+     * 如果操作失败，返回状态码500和错误消息。
      */
     @PostMapping("activeOpt.do")
     public ResponseEntity<Map<String, Object>> activeOpt(@RequestParam("memberId") Long memberId,
@@ -248,8 +253,8 @@ public class CardController {
      * 根据会员ID查询会员卡信息
      *
      * @param memberId 会员ID，用于查询该会员的卡信息
-     * @return ResponseEntity<Map<String, Object>> 返回一个响应实体，包含查询结果和HTTP状态码。
-     *         其中，Map的"value"键对应的值为查询到的卡信息列表。
+     * @return ResponseEntity<Map < String, Object>> 返回一个响应实体，包含查询结果和HTTP状态码。
+     * 其中，Map的"value"键对应的值为查询到的卡信息列表。
      */
     @PostMapping("/toSearchByMemberId.do")
     public ResponseEntity<Map<String, Object>> toSearchByMemberId(@RequestParam("memberId") Long memberId) {
@@ -264,11 +269,23 @@ public class CardController {
     }
 
     @PostMapping("/cardTip.do")
-    public ResponseEntity<Map<String, Object>> cardTip(@RequestParam("cardId") Long cardId, @RequestParam("scheduleId") Long scheduleId) {
+    public ResponseEntity<Map<String, Object>> cardTip(@RequestParam("bindId") Long bindId, @RequestParam("scheduleId") Long scheduleId) {
+        log.info("cardTip.do,cardId = " + bindId + ",scheduleId = " + scheduleId);
         Map<String, Object> returnData = new HashMap<>();
-        //todo
-        returnData.put("data", null);
+        CardTipVo cardTipVo = memberBindRecordService.getCardTip(bindId, scheduleId);
+        log.info("可使用次数：" + cardTipVo.getCardTotalCount() + "课程消耗：" + cardTipVo.getCourseTimesCost());
+        returnData.put("data", cardTipVo);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+
+    //todo 充值会员卡
+    @PostMapping("/rechargeOpt.do")
+    public ResponseEntity<Map<String, Object>> rechargeOpt(){
+        log.info("rechargeOpt.do");
+        Map<String, Object> returnData = new HashMap<>();
+
+        return null;
     }
 
 }

@@ -314,7 +314,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-
         /* initialize the calendar
         ----------------------------------------------------------------*/
         var date = new Date();
@@ -367,11 +366,13 @@
 
 
     });
+
 </script>
+
 <script type="text/javascript">
 
     function refreshCache() {
-        $.get('/schedule/refreshCache.do', function (data) {
+        /*$.get('/schedule/refreshCache.do', function (data) {
             if (data.code === 0) {
                 swal("清除缓存成功！","即将刷新信息","success");
                 setTimeout(function (){
@@ -380,7 +381,20 @@
             } else {
                 swal("清除缓存失败", "请联系管理员", "info")
             }
-        })
+        })*/
+        swal("刷新成功!","","success");
+        $('#calendar').fullCalendar('updateEvent',{
+            //自定义视图
+            events: {
+                url: '/schedule/scheduleList.do',
+                type: 'post',
+                error: function () {
+                    alert('there was an error while fetching events!');
+                },
+                textColor: 'white'
+            }
+        });
+
     }
 
     /* ---------排课详情-------- */

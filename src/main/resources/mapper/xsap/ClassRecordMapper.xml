@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kclm.xsap.mapper.ClassRecordMapper">
+
+    <select id="getClassInfoVoListByMemberId" resultType="com.kclm.xsap.model.vo.ClassInfoVo">
+        SELECT c.name          courseName,
+               cr.create_time  classTime,
+               e.name          teacherName,
+               cr.card_name    cardName,
+               sr.order_nums   classNumbers,
+               c.times_cost    timesCost,
+               cr.comment,
+               cr.check_status checkStatus
+        FROM t_class_record cr
+                 join t_schedule_record sr on cr.schedule_id = sr.id
+                 join t_course c on sr.course_id = c.id
+                 join t_employee e on e.id = sr.teacher_id
+        WHERE cr.member_id = #{memberId}
+    </select>
+
+    <select id="getClassRecordVoListByScheduleId" resultType="com.kclm.xsap.model.vo.ClassRecordVo">
+        SELECT m.name              memberName,
+               m.phone             memberPhone,
+               cr.card_name        cardName,
+               m.sex               memberSex,
+               m.birthday          memberBirthday,
+               c.times_cost        timesCost,
+               rr.reserve_nums     reserveNums,
+               cr.last_modify_time operateTime,
+               cr.check_status     checkStatus
+        FROM t_class_record cr
+                 join t_member m on m.id = cr.member_id
+                 join t_schedule_record sr on sr.id = cr.schedule_id
+                 join t_course c on c.id = sr.course_id
+                 join t_reservation_record rr on rr.schedule_id = sr.id
+        WHERE cr.schedule_id = #{scheduleId}
+    </select>
+
+    <select id="getTeacherClassRecordVoListByTeacherId" resultType="com.kclm.xsap.model.vo.TeacherClassRecordVo">
+        SELECT c.name                                                                           courseName,
+               CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')) AS classTime,
+               GROUP_CONCAT(m.`name`)                                                           students,
+               c.times_cost                                                                     timesCost
+        FROM t_class_record cr
+                 JOIN t_schedule_record sr ON cr.schedule_id = sr.id
+                 JOIN t_course c ON sr.course_id = c.id
+                 JOIN t_member m ON cr.member_id = m.id
+        WHERE sr.teacher_id = #{teacherId}
+        GROUP BY courseName, classTime, timesCost
+        order by 1;
+    </select>
+
+</mapper>

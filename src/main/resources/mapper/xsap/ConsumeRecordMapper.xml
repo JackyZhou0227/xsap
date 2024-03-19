@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.ConsumeRecordMapper">
+
+    <select id="getConsumeInfoByMemberId" resultType="com.kclm.xsap.model.vo.ConsumeInfoVo">
+        SELECT mc.name              cardName,
+               cr.last_modify_time  operateTime,
+               cr.card_count_change cardCountChange,
+               mbr.valid_count      timesRemainder,
+               cr.money_cost        moneyCost,
+               cr.operate_type      operateType,
+               cr.operator,
+               cr.note
+
+        FROM t_consume_record cr
+                 join t_member_bind_record mbr on cr.member_bind_id = mbr.id
+                 join t_member_card mc on mbr.card_id = mc.id
+        WHERE mbr.member_id = #{memberId}
+    </select>
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kclm.xsap.mapper.ReservationRecordMapper">
+
+   <select id="getAllScheduleDetailReservedVoByScheduleId" resultType="com.kclm.xsap.model.vo.ScheduleDetailReservedVo">
+       SELECT m.name                           memberName,
+              m.phone,
+              rr.card_name                     cardName,
+              rr.reserve_nums                  reserveNumbers,
+              (SELECT c.times_cost
+               FROM t_course c
+                        JOIN t_schedule_record sr on c.id = sr.course_id
+               where sr.id = #{scheduleId}) as timesCost,
+              rr.last_modify_time              operateTime,
+              rr.operator,
+              rr.note                          reserveNote,
+              rr.status                        reserveStatus,
+              rr.id                            reserveId
+       FROM t_reservation_record rr
+                JOIN t_member m ON m.id = rr.member_id
+       WHERE rr.schedule_id = #{scheduleId}
+         AND m.is_deleted = 0
+   </select>
+
+    <select id="getReserveInfoVoListByMemberId" resultType="com.kclm.xsap.model.vo.ReserveInfoVo">
+        SELECT c.name              courseName,
+               rr.create_time      reserveTime,
+               rr.card_name        cardName,
+               rr.reserve_nums     reserveNumbers,
+               c.times_cost        timesCost,
+               rr.last_modify_time operateTime,
+               rr.operator,
+               rr.note             reserveNote,
+               rr.status           reserveStatus
+        FROM t_reservation_record rr
+                 join t_schedule_record sr on sr.id = rr.schedule_id
+                 join t_course c on c.id = sr.course_id
+    </select>
+
+
+</mapper>

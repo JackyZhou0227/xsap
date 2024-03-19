@@ -30,4 +30,6 @@ public interface EmployeeMapper extends BaseMapper<EmployeeEntity> {
 
     List<EmployeeEntity> getTeacherByKeyword(String keyword);
 
+    @Select("select `role_password` from t_employee where `id` = #{id}")
+    String getPwdById(Long id);
 }

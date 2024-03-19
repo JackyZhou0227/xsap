@@ -4,7 +4,19 @@
 <mapper namespace="com.kclm.xsap.mapper.MemberBindRecordMapper">
 
     <select id="getBindCardIdsByMemberId" resultType="long">
-        select card_id from t_member_bind_record where member_id = #{memberId}
+        select card_id
+        from t_member_bind_record
+        where member_id = #{memberId}
+    </select>
+
+    <select id="getCardTip" resultType="com.kclm.xsap.model.vo.CardTipVo">
+        SELECT mbr.valid_count               as cardTotalCount,
+               (SELECT c.times_cost
+                FROM t_course c
+                         join t_schedule_record sr on c.id = sr.course_id
+                WHERE sr.id = #{scheduleId}) as courseTimesCost
+        FROM t_member_bind_record mbr
+        WHERE mbr.id = #{bindId};
     </select>
 
 </mapper>

@@ -318,7 +318,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">该会员的该会员卡</label>
+                        <label class="col-sm-3 control-label">该会员卡剩余使用次数</label>
                         <p class="col-sm-3 text-danger" id="p_tip" style="margin-top:7px">剩余<span id="remained">0</span>次
                         </p>
                         <label class="col-sm-3 control-label">每节课每人收取<span class="text-danger"
@@ -696,12 +696,12 @@
                         if (cardListSave[i] != null) {
                             $("option[value='" + cardListSave[i].name + "']").attr("selected", "");
                             if (selectOne === cardListSave[i].name) {
-                                let id = cardListSave[i].id;
+                                let id = cardListSave[i].bindId;
                                 $('#cardId').attr("value",id);
                                 console.log(id);
                                 $("option[value='" + selectOne + "']").attr("selected", "selected");
                                 //---------显示某会员的某会员卡的提示信息---------
-                                $.post("/card/cardTip.do", {cardId: id, scheduleId: schedule_id}, function (data) {
+                                $.post("/card/cardTip.do", {bindId: id, scheduleId: schedule_id}, function (data) {
                                     //会员对应的卡剩余的次数
                                     var result = data.data;
                                     if (result.cardTotalCount > 0) {
@@ -766,8 +766,9 @@
                     /*{"data": "comment"},*/
                     {"data": "reserveNote"},
                     {
-                        "data": "reserveId", "render": function (data, type, row) {
-                            var html = "<button name='cancel_btn' onclick='cancel_btn(" + data + ")' value='" + data + "' class='btn btn-warning '>取消预约</button>&nbsp &nbsp";
+                        "data": "reserveId",
+                        "render": function (data, type, row) {
+                            var html = "<button name='cancel_btn' onclick='cancel_btn(" + row.reserveId + ")' class='btn btn-warning '>取消预约</button>&nbsp &nbsp";
                             if (row.classCheck === 1) {
                                 html = "<button name='cancel_btn' class='btn btn-default' disabled >取消预约</button>&nbsp &nbsp";
                             }
@@ -807,7 +808,7 @@
                         "orderable": false,
                         "render": function (data, type, row) {
                             var status = data;
-                            if (status === 1) {
+                            if (status === 0) {
                                 status = "已预约";
                             } else {
                                 status = "已取消";

@@ -2,8 +2,7 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.entity.MemberEntity;
 import com.kclm.xsap.model.vo.CardInfoVo;
-import com.kclm.xsap.service.MemberCardService;
-import com.kclm.xsap.service.MemberService;
+import com.kclm.xsap.service.*;
 import com.kclm.xsap.utils.BeanError;
 import com.kclm.xsap.utils.file.ImgManger;
 import org.slf4j.Logger;
@@ -36,6 +35,15 @@ public class MemberController {
 
     @Resource
     private MemberCardService memberCardService;
+
+    @Resource
+    private ConsumeRecordService consumeRecordService;
+
+    @Resource
+    private ClassRecordService classRecordService;
+
+    @Resource
+    private ReservationRecordService reservationRecordService;
 
     @GetMapping("/x_member_import.do")
     public String toMemberImport() {
@@ -174,7 +182,7 @@ public class MemberController {
             // 返回成功信息及更新后的会员数据
             returnData.put("code", 0);
             returnData.put("msg", "上传头像成功");
-            returnData.put("userData", memberEntity);
+            returnData.put("avatarUrl", filename);
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
     }
@@ -245,9 +253,32 @@ public class MemberController {
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
-    //todo 预约记录
-    //todo 上课记录
-    //todo 操作记录
+
+    @PostMapping("/reserveInfo.do")
+    public ResponseEntity<Map<String, Object>> getReserveInfo(@RequestParam("id") Long id) {
+        log.info("获取会员预约记录，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", reservationRecordService.getReserveInfoVoListByMemberId(id));
+        return new ResponseEntity<>(returnData,HttpStatus.OK);
+
+    }
+
+
+    @PostMapping("/classInfo.do")
+    public ResponseEntity<Map<String, Object>> getClassInfo(@RequestParam("id") Long id) {
+        log.info("获取会员课上课记录，会员id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", classRecordService.getClassInfoVoListByMemberId(id));
+        return new ResponseEntity<>(returnData,HttpStatus.OK);
+    }
+
+    @PostMapping("/consumeInfo.do")
+    public ResponseEntity<Map<String, Object>> getConsumeInfo(@RequestParam("id") Long id) {
+        log.info("获取会员消费信息，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("data", consumeRecordService.getConsumeInfoByMemberId(id));
+        return new ResponseEntity<>(returnData,HttpStatus.OK);
+    }
 
 
 }

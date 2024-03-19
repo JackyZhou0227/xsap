@@ -119,4 +119,14 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
         return teacherDTOList;
     }
 
+    @Override
+    public EmployeeEntity getEmployeeByRoleName(String roleName) {
+        return baseMapper.selectOne(new QueryWrapper<EmployeeEntity>().eq("role_name", roleName));
+    }
+
+    @Override
+    public String getPwdById(Long id) {
+        return employeeMapper.getPwdById(id);
+    }
+
 }

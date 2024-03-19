@@ -26,9 +26,9 @@ public class TeacherClassRecordVo {
     private LocalDateTime classTime;
 
     /**
-     * 支持的会员卡名
+     * 上过课的会员
      */
-    private String cardName;
+    private String students;
 
     /**
      * 使用次数

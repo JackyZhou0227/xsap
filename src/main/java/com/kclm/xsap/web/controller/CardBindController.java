@@ -4,6 +4,7 @@ import com.kclm.xsap.model.entity.MemberBindRecordEntity;
 import com.kclm.xsap.service.MemberBindRecordService;
 import com.kclm.xsap.service.MemberCardService;
 import com.kclm.xsap.utils.BeanError;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,11 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/cardBind")
 public class CardBindController {
 
-    private final static Logger log = LoggerFactory.getLogger(CardController.class);
     @Resource
     private MemberCardService memberCardService;
 
@@ -53,7 +54,6 @@ public class CardBindController {
     @PostMapping("/memberBind.do")
     public ResponseEntity<Map<String, Object>> memberBind(@Valid MemberBindRecordEntity memberBindRecordEntity,
                                                           BindingResult bindingResult) {
-
         // 记录会员绑定信息日志
         log.info("会员绑定,memberId = " + memberBindRecordEntity.getMemberId() + "; cardId = " + memberBindRecordEntity.getCardId());
         Map<String, Object> returnData = new HashMap<>();
@@ -70,7 +70,7 @@ public class CardBindController {
         memberBindRecordEntity.setCreateTime(LocalDateTime.now());
         memberBindRecordEntity.setLastModifyTime(LocalDateTime.now());
         // 保存会员绑定信息，若成功则返回成功标识
-        if (memberBindRecordService.save(memberBindRecordEntity)) {
+        if (memberBindRecordService.doBind(memberBindRecordEntity)) {
             log.info("绑定成功");
             returnData.put("code", 0);
             return ResponseEntity.ok(returnData);

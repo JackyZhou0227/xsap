@@ -9,6 +9,7 @@ import com.kclm.xsap.service.MemberService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,5 +30,15 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, MemberEntity> i
     @Override
     public List<MemberEntity> searchMembersByNameOrPhone(String keyword) {
         return memberMapper.searchMembersByNameOrPhone(keyword);
+    }
+
+    @Override
+    public boolean isAllowToDelete(Long memberId) {
+        return baseMapper.getReservationByMemberId(memberId).isEmpty();
+    }
+
+    @Override
+    public List<LocalDateTime> delTimelist() {
+        return  baseMapper.delTimeList();
     }
 }

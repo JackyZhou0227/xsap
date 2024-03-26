@@ -16,4 +16,12 @@ public interface ClassRecordMapper extends BaseMapper<ClassRecordEntity> {
     List<ClassRecordVo> getClassRecordVoListByScheduleId(Long scheduleId);
 
     List<TeacherClassRecordVo> getTeacherClassRecordVoListByTeacherId(Long teacherId);
+
+    List<ClassRecordEntity> getClassRecordEntityListByScheduleId(Long scheduleId);
+
+    boolean consumeEnsureAll(Long scheduleId);
+
+    Integer getAmountsPayableByClassId(Long classId);
+
+    ClassRecordEntity getClassRecordEntityByReserveId(Long reserveId);
 }

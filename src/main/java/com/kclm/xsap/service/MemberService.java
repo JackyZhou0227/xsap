@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.kclm.xsap.model.entity.MemberEntity;
 import com.kclm.xsap.model.vo.MemberVo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MemberService extends IService<MemberEntity> {
@@ -13,4 +14,8 @@ public interface MemberService extends IService<MemberEntity> {
     boolean isPhoneExists(String phone);
 
     List<MemberEntity> searchMembersByNameOrPhone(String keyword);
+
+    boolean isAllowToDelete(Long memberId);
+
+    List<LocalDateTime> delTimelist();
 }

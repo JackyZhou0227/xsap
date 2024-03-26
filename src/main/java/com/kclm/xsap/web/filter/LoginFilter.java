@@ -20,10 +20,9 @@ import java.io.IOException;
         dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ASYNC})
 public class LoginFilter implements Filter {
 
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("LoginFilter.init()...执行...");
+        log.debug(">>>>>>>>>> LoginFilter.init()...执行...");
     }
 
     @Override
@@ -34,15 +33,15 @@ public class LoginFilter implements Filter {
 
         HttpSession session = req.getSession(false);
         if (session == null) {
-            log.info("登录session为null；即将重定向到登录页面");
+            log.debug(">>>>>>>>>> 登录session为null；即将重定向到登录页面");
             resp.sendRedirect(req.getServletContext().getContextPath() + "/user/toLogin");
         } else {
             //继续判断session中有没有user信息
             if (session.getAttribute("LOGIN_USER") == null) {
-                log.info("存在session但user为null，即将重定向到登录页面");
+                log.debug(">>>>>>>>>> 存在session但user为null，即将重定向到登录页面");
                 resp.sendRedirect(req.getServletContext().getContextPath() + "/user/toLogin");
             } else {
-                log.info("session有效，放行登录");
+                log.debug(">>>>>>>>>> session有效，放行登录");
                 chain.doFilter(req, resp);
             }
         }
@@ -50,6 +49,6 @@ public class LoginFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("LoginFilter.destroy()...执行...");
+        log.debug(">>>>>>>>>> LoginFilter.destroy()...执行...");
     }
 }

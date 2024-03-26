@@ -4,10 +4,10 @@ import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.service.ClassRecordService;
 import com.kclm.xsap.service.EmployeeService;
+import com.kclm.xsap.service.ScheduleRecordService;
 import com.kclm.xsap.utils.BeanError;
 import com.kclm.xsap.utils.file.ImgManger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
-    private final static Logger log = LoggerFactory.getLogger(TeacherController.class);
 
     private final static String TEACHER_IMG_DIR = "teacher_img";
     @Resource
@@ -39,6 +39,9 @@ public class TeacherController {
 
     @Resource
     private ClassRecordService classRecordService;
+
+    @Resource
+    private ScheduleRecordService scheduleRecordService;
 
     @GetMapping("/x_teacher_list.do")
     public String toTeacherList() {
@@ -53,7 +56,9 @@ public class TeacherController {
         List<TeacherDTO> teacherDTOList = new ArrayList<>();
         Map<String, Object> returnData = new HashMap<>();
         for (EmployeeEntity employeeEntity : employeeEntities) {
-            teacherDTOList.add(new TeacherDTO(employeeEntity));
+            if (employeeEntity.getIsDeleted() == 0) {
+                teacherDTOList.add(new TeacherDTO(employeeEntity));
+            }
         }
         returnData.put("data", teacherDTOList);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
@@ -171,6 +176,40 @@ public class TeacherController {
         }
 
         return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    /**
+     * 删除老师
+     * 1.删除成功。该老师已没有排课记录和计划）
+     * 2.删除成功。该老师存在未完成的排课计划，但尚没有预约记录，
+     * 2.1该老师没有已完成的排课记录，删除该老师信息后未完成的排课计划也会被删除
+     * 2.2该老师存在已完成的排课记录，删除该老师信息后未完成的排课计划也会被删除，但已完成的排课记录会被保留
+     * 3.删除失败。该老师存在未完成的排课记录且有预约，无法删除该老师
+     * 4.删除成功。该老师没有未完成的排课计划，仅删除该老师信息后保留已有的排课记录
+     *
+     * @param id 老师id
+     * @return ResponseEntity 携带删除结果和信息
+     */
+    @PostMapping("/deleteOne.do")
+    public ResponseEntity<Map<String, Object>> deleteOneTeacher(@RequestParam("id") Long id) {
+        log.debug("删除老师，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        if (employeeService.isAllowToDelete(id)) {
+            log.info("该教师可被删除");
+            EmployeeEntity employeeEntity = employeeService.getById(id);
+            employeeEntity.setIsDeleted(1);
+            log.info("isDeleted:" + employeeEntity.getIsDeleted());
+            if (employeeService.removeById(employeeEntity)) {
+                returnData.put("code", 0);
+                returnData.put("msg", "该教师信息已成功删除！");
+            } else {
+                returnData.put("msg", "未知错误！请联系管理员！");
+            }
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        } else {
+            returnData.put("msg", "该教师存在未完成的排课记录且有预约，无法删除！");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/x_teacher_list_data.do")

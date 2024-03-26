@@ -206,6 +206,7 @@ CREATE TABLE `t_member_card`  (
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `last_modify_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
   `version` int(10) UNSIGNED NULL DEFAULT 1 COMMENT '版本',
+  `is_deleted` tinyint(1) unsigned zerofill DEFAULT '0' COMMENT '逻辑删除，0未删除，1删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '会员卡表' ROW_FORMAT = Dynamic;
 
@@ -261,7 +262,7 @@ CREATE TABLE `t_recharge_record`  (
 DROP TABLE IF EXISTS `t_reservation_record`;
 CREATE TABLE `t_reservation_record`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `status` tinyint(1) UNSIGNED NULL DEFAULT 0 COMMENT '预约状态，1有效，0无效',
+  `status` tinyint(1) UNSIGNED NULL DEFAULT 0 COMMENT '预约状态，0有效，1无效',
   `reserve_nums` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '单次操作预约人数',
   `cancel_times` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '取消次数统计',
   `comment` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '教师评语',
@@ -298,6 +299,7 @@ CREATE TABLE `t_schedule_record`  (
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `last_modify_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
   `version` int(10) UNSIGNED NULL DEFAULT 1 COMMENT '版本',
+  `is_deleted` tinyint(1) unsigned zerofill NOT NULL DEFAULT '0' COMMENT '排课的逻辑删除，0未删除，1删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `only_course_teach`(`course_id`, `teacher_id`, `class_time`, `start_date`) USING BTREE,
   INDEX `fk_sche_teacher_id`(`teacher_id`) USING BTREE,

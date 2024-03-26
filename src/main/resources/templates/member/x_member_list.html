@@ -256,12 +256,17 @@
                 url: "[[${#request.getContextPath()}]]/member/deleteOne.do",
                 type: "post",
                 data: {id: tid},
-                success: function () {
-                    swal("注销成功！", "您已经永久注销了这条信息。", "success");
-                    //刷新界面
-                    setTimeout(function () {
-                        window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
-                    }, 1000);
+                success: function (data) {
+                    if(data.code === 0){
+                        swal("注销成功！", "您已经永久注销了这条信息。", "success");
+                        //刷新界面
+                        setTimeout(function () {
+                            window.location.href = "[[${#request.getContextPath()}]]/member/x_member_list.do";
+                        }, 1000);
+                    }
+                    else {
+                        swal("注销失败！", data.msg, "info");
+                    }
                 },
                 error: function () {
                     swal("注销失败！", "未知错误。。。", "info");

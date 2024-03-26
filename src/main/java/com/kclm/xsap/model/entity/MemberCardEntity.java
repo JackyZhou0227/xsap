@@ -102,6 +102,8 @@ public class MemberCardEntity implements Serializable {
 	@TableField(exist = false)
 	private LocalDateTime dueTime;
 
+	private Integer isDeleted;
+
 	public MemberCardEntity() {
 	}
 	public MemberCardEntity(MemberCardDTO memberCardDTO) {

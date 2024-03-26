@@ -7,7 +7,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>X+约课系统 - 课程预约详情</title>
     <meta content="后台bootstrap框架,会员中心主题,后台HTML,响应式后台" name="keywords">
-    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术" name="description">
+    <meta content="完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术"
+          name="description">
 
     <link href="../../static/favicon.ico" rel="shortcut icon" th:href="@{/static/favicon.ico}">
     <link href="../../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"
@@ -133,7 +134,8 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-md-push-1 text-right">
-                        <button class="btn btn-primary" data-target="#addReservation" data-toggle="modal">添加会员预约</button>
+                        <button class="btn btn-primary" data-target="#addReservation" data-toggle="modal">添加会员预约
+                        </button>
                         <button class="btn btn-success" id="exportData">导出预约数据</button>
                         <button class="btn btn-danger  demo3" id="delCourse">删除课程</button>
                         <button class="btn btn-default " onclick="window.history.go(-1)" id="cancel">返回</button>
@@ -297,7 +299,8 @@
                                 <!-- 隐藏域，id -->
                                 <input id="member" name="memberId" type="hidden"/>
 
-                                <input class="form-control" id="chooseMember" placeholder="输入手机号或名字搜索" type="text">
+                                <input class="form-control" id="chooseMember" placeholder="输入手机号或名字搜索"
+                                       type="text">
                                 <div class="input-group-btn">
                                     <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" type="button">
                                         <span class="caret"></span>
@@ -319,10 +322,11 @@
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">该会员卡剩余使用次数</label>
-                        <p class="col-sm-3 text-danger" id="p_tip" style="margin-top:7px">剩余<span id="remained">0</span>次
+                        <p class="col-sm-3 text-danger" id="p_tip" style="margin-top:7px">剩余<span
+                                id="remained">0</span>次
                         </p>
                         <label class="col-sm-3 control-label">每节课每人收取<span class="text-danger"
-                                                                           id="cost">0</span>次</label>
+                                                                                  id="cost">0</span>次</label>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">预约人数</label>
@@ -371,7 +375,8 @@
                         <label class="col-sm-2 control-label">
                             扣除次数</label>
                         <div class="col-sm-6">
-                            <input class="form-control" id="cardCountChange" name="cardCountChange" placeholder="1" type="number" value="1">
+                            <input class="form-control" id="cardCountChange" name="cardCountChange" placeholder="1"
+                                   type="number" value="1">
                         </div>
 
                         <div class="col-sm-4">
@@ -383,7 +388,8 @@
                         <label class="col-sm-2 control-label">
                             应扣金额</label>
                         <div class="col-sm-6">
-                            <input class="form-control" id="amountOfConsumption" name="amountOfConsumption" placeholder="0" type="number" step="0.01">
+                            <input class="form-control" id="amountOfConsumption" name="amountOfConsumption"
+                                   placeholder="0" type="number" step="0.01">
                         </div>
                     </div>
                     <div class="form-group">
@@ -443,9 +449,11 @@
 
     function toConsume(member_id, card_id, class_id, timesCost, reserveNums, schedule_id) {
 
+
         let amounts_payable
         /*获取单次所使用的会员卡默认单人单节课单次消耗金额*/
-        $.post("/schedule/queryAmountsPayable.do", {bindCardId: card_id}, function (data) {
+        $.post("/schedule/queryAmountsPayable.do", {classId: class_id}, function (data) {
+
             if (data.code === 0) {
                 amounts_payable = data.data;
                 console.log('后台传入的金金额=' + amounts_payable);
@@ -461,10 +469,9 @@
 
             } else {
                 //打印失败信息
-                swal("无法扣费" , data.msg, info);
+                swal("无法扣费", data.msg, "info");
             }
         });
-
 
 
         var reserve_id = "";
@@ -476,37 +483,67 @@
         });
         $("#consume_btn").click(function () {
             swal({
-                title: "您确定要确认扣费吗？",
-                text: "注意:一旦扣费成功，将无法取消！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "确认",
-                closeOnConfirm: false
-            }, function () {
-                $.post("/schedule/consumeEnsure.do", consumeForm, function (data) {
-                    if (data.code == 0) {
-                        console.log("确认上课ok");
-                        swal(data.msg, "", "success");
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 1000);
-                    } else if (data.code === 400) {
-                        // swal("确认上课失败！", data.msg, "info");
-                        setTimeout(function () {
-                            $(`[tip=cardCountChange]`).html("");
-                            $("<span class='text-danger'>" + data.errorMap['cardCountChange'] + "</span>").appendTo($("[tip=cardCountChange]"));
-                        },1000);
-                    }else {
-                        swal("确认上课失败！", data.msg, "info");
-                        setTimeout(function () {
-                            $("button[name='cancel_btn'][value='" + reserve_id + "']")
-                                .removeClass("btn-warning").addClass("btn-default").attr("disabled", true);
-                            window.location.reload();
-                        },1000);
-                    }
-                });
-            });
+                    title: "您确定要确认扣费吗？",
+                    text: "注意:一旦扣费成功，将无法取消！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确认",
+                    closeOnConfirm: false
+                },
+                //     function () {
+                //     $.post("/schedule/consumeEnsure.do", consumeForm, function (data) {
+                //         if (data.code === 0) {
+                //             console.log("确认上课ok");
+                //             swal(data.msg, "", "success");
+                //             setTimeout(function () {
+                //                 window.location.reload();
+                //             }, 1000);
+                //         } else if (data.code === 400) {
+                //             // swal("确认上课失败！", data.msg, "info");
+                //             setTimeout(function () {
+                //                 $(`[tip=cardCountChange]`).html("");
+                //                 $("<span class='text-danger'>" + data.errorMap['cardCountChange'] + "</span>").appendTo($("[tip=cardCountChange]"));
+                //             },1000);
+                //         }else {
+                //             swal("确认上课失败！", data.msg, "error");
+                //             setTimeout(function () {
+                //                 $("button[name='cancel_btn'][value='" + reserve_id + "']")
+                //                     .removeClass("btn-warning").addClass("btn-default").attr("disabled", true);
+                //                 window.location.reload();
+                //             },1000);
+                //         }
+                //     });
+                // }
+                function handleConsumeEnsure() {
+                    $.post("/schedule/consumeEnsure.do", consumeForm, function (data, textStatus, jqXHR) {
+                        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        console.log(consumeForm);
+                        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        // 成功回调：HTTP状态码为200且服务器返回code为0
+                        if (data.code === 0) {
+                            console.log("确认上课ok");
+                            swal(data.msg, "", "success");
+                            setTimeout(function () {
+                                window.location.reload();
+                                ``
+                            }, 1000);
+                        } else if (data.code === 400) {
+                            swal("请按要求填写！", data.msg, "info")
+                        } else {
+                            swal("确认上课失败！", data.msg, "error");
+                            setTimeout(function () {
+                                $("button[name='cancel_btn'][value='" + reserve_id + "']")
+                                    .removeClass("btn-warning").addClass("btn-default").attr("disabled", true);
+                                window.location.reload();
+                            }, 1000);
+                        }
+                    }).fail(function () {
+                        // 处理HTTP请求错误（如网络问题、服务器无响应等）
+                        swal("未知错误！", "请联系管理员！", "error");
+                    });
+                }
+            );
         });
     }
 
@@ -529,7 +566,7 @@
                     success: function (data) {
                         //成功
                         if (data.code === 0) {
-                            swal("一键确认扣费成功！", "", "success");
+                            swal(data.msg, "一键确认扣费成功！", "success");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 1000);
@@ -539,7 +576,7 @@
                     },
                     error: function (jqXHR) {
                         // 失败
-                        alert("一件确认无效");
+                        swal("一键确认无效！", "未知错误，请联系管理员！", "error")
                     }
                 });
             });
@@ -560,7 +597,7 @@
             $.post("/reserve/cancelReserve.do", {reserveId: reserve_id}, function (data) {
                 // var result = data.data;
                 // var tip = result.comment;
-                if (data.code == 0) {
+                if (data.code === 0) {
                     swal("取消预约成功！", "", "success");
                     setTimeout(function () {
                         window.location.reload();
@@ -632,12 +669,14 @@
                     } else {
                         swal("删除失败！", "当前课程已有预约", "info");
                     }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    // 在这里处理错误
+                    swal("请求失败！", "发生错误：" + textStatus + "，详细信息：" + errorThrown, "error");
                 });
 
             });
 
         });
-
 
 
         /*------------导出数据----------*/
@@ -697,7 +736,7 @@
                             $("option[value='" + cardListSave[i].name + "']").attr("selected", "");
                             if (selectOne === cardListSave[i].name) {
                                 let id = cardListSave[i].bindId;
-                                $('#cardId').attr("value",id);
+                                $('#cardId').attr("value", id);
                                 console.log(id);
                                 $("option[value='" + selectOne + "']").attr("selected", "selected");
                                 //---------显示某会员的某会员卡的提示信息---------
@@ -709,7 +748,7 @@
                                         $("#cost").html(result.courseTimesCost);
                                     } else {
                                         $("#p_tip").html('此卡可用次数不足！请更换或充值次数');
-                                        $("#reserveAdd_btn").attr("disabled","disabled");
+                                        $("#reserveAdd_btn").attr("disabled", "disabled");
                                     }
 
                                 });
@@ -802,7 +841,7 @@
                     {"data": "timesCost"},
                     {"data": "operateTime"},
                     {"data": "operator"},
-                   /* {"data": "comment"},*/
+                    /* {"data": "comment"},*/
                     {
                         "data": "reserveStatus",
                         "orderable": false,

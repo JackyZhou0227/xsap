@@ -16,6 +16,11 @@
         <result column="last_modify_time" property="lastModifyTime"/>
         <result column="version" property="version"/>
     </resultMap>
+    <update id="updateOrderNums">
+        UPDATE t_schedule_record
+        SET order_nums = order_nums + #{orderNums}
+        WHERE id = #{scheduleId}
+    </update>
     <select id="listAllCourseScheduleVo" resultType="com.kclm.xsap.model.vo.CourseScheduleVo">
         SELECT c.`name`                                                                         title,
                sr.start_date                                                                    start,
@@ -29,7 +34,8 @@
                CONCAT('/schedule/x_course_schedule_detail.do?id=', sr.id)                       url
         FROM t_schedule_record sr
                  JOIN t_course c on sr.course_id = c.id
-                 JOIN t_employee e on sr.teacher_id = e.id;
+                 JOIN t_employee e on sr.teacher_id = e.id
+        WHERE sr.is_deleted = 0;
     </select>
 
     <select id="getScheduleRecordByDate" resultMap="ScheduleRecordEntity">
@@ -55,7 +61,8 @@
                e.name                                                                           TeacherName,
                sr.order_nums                                                                    orderNums,
                c.contains                                                                       orderNums,
-               c.times_cost                                                                     timeCost
+               c.times_cost                                                                     timeCost,
+               c.contains                                                                       classNumbers
         FROM t_schedule_record sr
                  JOIN t_course c ON sr.course_id = c.id
                  JOIN t_employee e ON e.id = sr.teacher_id
@@ -64,4 +71,40 @@
         WHERE sr.id = #{id}
 
     </select>
+
+    <select id="getScheduleForConsumeSearchVoByKeyword" resultType="com.kclm.xsap.model.vo.ScheduleForConsumeSearchVo">
+        SELECT sr.id                                                                         AS scheduleId,
+               c.name                                                                        AS courseName,
+               e.name                                                                        AS teacherName,
+               CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s')) AS classDateTime
+        FROM t_schedule_record sr
+                 JOIN t_course c ON sr.course_id = c.id
+                 JOIN t_employee e ON sr.teacher_id = e.id
+        WHERE (c.name LIKE CONCAT('%', #{keyword}, '%')
+            OR e.name LIKE CONCAT('%', #{keyword}, '%')
+            OR sr.id LIKE CONCAT('%', #{keyword}, '%'))
+          AND sr.start_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
+    </select>
+
+    <select id="getStartTimeByScheduleId" resultType="java.time.LocalDateTime">
+        SELECT CONCAT(CAST(start_date AS CHAR), ' ', TIME_FORMAT(class_time, '%H:%i:%s'))
+        FROM t_schedule_record
+        WHERE id = #{id}
+    </select>
+
+    <select id="getStartTimeByReserveId" resultType="java.time.LocalDateTime">
+        SELECT CONCAT(CAST(sr.start_date AS CHAR), ' ', TIME_FORMAT(sr.class_time, '%H:%i:%s'))
+        FROM t_schedule_record sr
+                 JOIN t_reservation_record rr ON rr.schedule_id = sr.id
+        WHERE rr.id = #{reserveId}
+    </select>
+    <select id="getScheduleRecordByTeacherIdAndDate"
+            resultType="com.kclm.xsap.model.entity.ScheduleRecordEntity">
+        SELECT *
+        FROM t_schedule_record
+        WHERE teacher_id = #{teacherId}
+          AND start_date = #{startDate}
+          AND is_deleted = 0
+    </select>
+
 </mapper>

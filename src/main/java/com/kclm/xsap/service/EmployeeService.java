@@ -31,7 +31,7 @@ public interface EmployeeService extends IService<EmployeeEntity> {
     String getTeacherNameById(Long teacherId);
 
     /**
-     * g根据批量id批量查询老师信息
+     * 根据批量id批量查询老师信息
      * @param teacherIdList
      * @return
      */
@@ -48,5 +48,7 @@ public interface EmployeeService extends IService<EmployeeEntity> {
     EmployeeEntity getEmployeeByRoleName(String roleName);
 
     String getPwdById(Long id);
+
+    boolean isAllowToDelete(Long id);
 }
 

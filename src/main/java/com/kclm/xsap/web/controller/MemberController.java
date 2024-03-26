@@ -5,8 +5,7 @@ import com.kclm.xsap.model.vo.CardInfoVo;
 import com.kclm.xsap.service.*;
 import com.kclm.xsap.utils.BeanError;
 import com.kclm.xsap.utils.file.ImgManger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/member")
 public class MemberController {
-
-    private final static Logger log = LoggerFactory.getLogger(MemberController.class);
 
     private final static String MEMBER_IMG_DIR = "member_img";
     @Resource
@@ -139,11 +137,11 @@ public class MemberController {
     /**
      * 修改会员头像
      *
-     * @param id 会员ID，用于标识需要修改头像的会员
+     * @param id        会员ID，用于标识需要修改头像的会员
      * @param avatarUrl 会员头像文件，使用MultipartFile接收上传的文件
-     * @return ResponseEntity<Map<String, Object>> 包含操作结果信息的响应实体：
-     *         - 当操作成功时，返回状态码200（HttpStatus.OK），并包含上传成功的信息及更新后的会员数据；
-     *         - 当操作失败时，返回状态码400（HttpStatus.BAD_REQUEST），并包含失败的原因。
+     * @return ResponseEntity<Map < String, Object>> 包含操作结果信息的响应实体：
+     * - 当操作成功时，返回状态码200（HttpStatus.OK），并包含上传成功的信息及更新后的会员数据；
+     * - 当操作失败时，返回状态码400（HttpStatus.BAD_REQUEST），并包含失败的原因。
      */
     @PostMapping("/modifyMemberImg.do")
     public ResponseEntity<Map<String, Object>> modifyMemberImg(@RequestParam("id") Long id, @RequestParam("avatarFile") MultipartFile avatarUrl) {
@@ -198,9 +196,9 @@ public class MemberController {
     /**
      * 修改会员信息
      *
-     * @param memberMsg 会员实体对象，包含要修改的会员信息
+     * @param memberMsg     会员实体对象，包含要修改的会员信息
      * @param bindingResult 数据验证结果，用于存放验证错误信息
-     * @return ResponseEntity<Map<String, Object>> 包含操作结果的状态码、消息和数据
+     * @return ResponseEntity<Map < String, Object>> 包含操作结果的状态码、消息和数据
      */
     @PostMapping("/memberEdit.do")
     public ResponseEntity<Map<String, Object>> memberEdit(@Valid MemberEntity memberMsg, BindingResult bindingResult) {
@@ -241,6 +239,24 @@ public class MemberController {
 
     }
 
+    @PostMapping("/deleteOne.do")
+    public ResponseEntity<Map<String, Object>> deleteOne(@RequestParam("id") Long id) {
+        log.info("删除会员，id=" + id);
+        Map<String, Object> returnData = new HashMap<>();
+        if (memberService.isAllowToDelete(id)) {
+            if (memberService.removeById(id)) {
+                returnData.put("code", 0);
+                return new ResponseEntity<>(returnData, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            returnData.put("msg", "该会员存在预约未上的课程！");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+    }
+
+
     @PostMapping("/cardInfo.do")
     public ResponseEntity<Map<String, Object>> getCardInfo(@RequestParam("id") Long id) {
         log.info("获取会员持卡信息，id=" + id);
@@ -259,7 +275,7 @@ public class MemberController {
         log.info("获取会员预约记录，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         returnData.put("data", reservationRecordService.getReserveInfoVoListByMemberId(id));
-        return new ResponseEntity<>(returnData,HttpStatus.OK);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
 
     }
 
@@ -269,7 +285,7 @@ public class MemberController {
         log.info("获取会员课上课记录，会员id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         returnData.put("data", classRecordService.getClassInfoVoListByMemberId(id));
-        return new ResponseEntity<>(returnData,HttpStatus.OK);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     @PostMapping("/consumeInfo.do")
@@ -277,7 +293,7 @@ public class MemberController {
         log.info("获取会员消费信息，id=" + id);
         Map<String, Object> returnData = new HashMap<>();
         returnData.put("data", consumeRecordService.getConsumeInfoByMemberId(id));
-        return new ResponseEntity<>(returnData,HttpStatus.OK);
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
 

@@ -17,6 +17,7 @@ public class ClassRecordServiceImpl extends ServiceImpl<ClassRecordMapper, Class
     @Resource
     private ClassRecordMapper classRecordMapper;
 
+
 //    @Override
 //    public Arrays list(QueryWrapper<ClassRecordEntity> eq) {
 //        return null;
@@ -24,16 +25,21 @@ public class ClassRecordServiceImpl extends ServiceImpl<ClassRecordMapper, Class
 
     @Override
     public List<ClassInfoVo> getClassInfoVoListByMemberId(Long memberId) {
-        return classRecordMapper.getClassInfoVoListByMemberId(memberId);
+        return baseMapper.getClassInfoVoListByMemberId(memberId);
     }
 
     @Override
     public List<ClassRecordVo> getClassRecordVoListByScheduleId(Long scheduleId) {
-        return classRecordMapper.getClassRecordVoListByScheduleId(scheduleId);
+        return baseMapper.getClassRecordVoListByScheduleId(scheduleId);
     }
 
     @Override
     public List<TeacherClassRecordVo> getTeacherClassRecordVoListByTeacherId(Long teacherId) {
-        return classRecordMapper.getTeacherClassRecordVoListByTeacherId(teacherId);
+        return baseMapper.getTeacherClassRecordVoListByTeacherId(teacherId);
+    }
+
+    @Override
+    public Integer getAmountsPayableByClassId(Long classId) {
+        return baseMapper.getAmountsPayableByClassId(classId);
     }
 }

@@ -12,4 +12,6 @@ public interface CourseMapper extends BaseMapper<CourseEntity> {
     List<Long> getAllCourseIds();
 
     List<CourseEntity> selectCoursesByKeyword(String keyword);
+
+    Integer getCountByScheduleId(Long scheduleId);
 }

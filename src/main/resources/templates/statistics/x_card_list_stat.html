@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="ibox-tools">
-                    <button class="btn btn-default pull-right" onclick="refreshCache()"  ><i aria-hidden="true" class="fa fa-refresh fa-lx" >refresh cache</i></button>
+                    <button class="btn btn-default pull-right" onclick="refreshCache()"  ><i aria-hidden="true" class="fa fa-refresh fa-lx" >刷新缓存</i></button>
                     <button class="btn btn-primary pull-right" onclick="window.location.reload()" ><i aria-hidden="true" class="fa fa-refresh fa-lx" >刷新数据</i></button>
                 </div>
                 <div class="ibox-content">
@@ -114,9 +114,9 @@
                     {"data": "totalClassTimes"},
                     {"data": "usedClassTimes"},
                     {"data": "remainingClassTimes"},
-                    {"data": "lumpSum"},
-                    {"data": "amountUsed"},
-                    {"data": "balance"}
+                    {"data": "lumpSumBigD"},
+                    {"data": "amountUsedBigD"},
+                    {"data": "balanceBigD"}
                 ]
             });
 
@@ -213,16 +213,20 @@
 </script>
 <script >
     function refreshCache() {
-        $.get('/statistics/refreshCache.do', function (data) {
-            if (data.code === 0) {
-                swal("清除缓存成功", "", "success");
-                setTimeout(function () {
-                    window.location.reload();
-                }, 1200);
-            } else {
-                swal("清楚失败！","请联系管理员", "info")
-            }
-        });
+        window.location.reload();
+        swal("刷新成功", "", "success");
+        // $.post("[[${#request.getContextPath()}]]/statistics/cardInfo.do", function (data) {
+        //     var infoList = data.data;
+        //     if (data.code === 400) {
+        //         swal(data.msg, "", "info");
+        //         infoList = [];
+        //     }
+        //     var table = $('.dataTables-example').dataTable();
+        //
+        // })
+        // var table = $('.dataTables-example').dataTable();
+        // table.ajax.reload();
+        // alert("re draw over.")
     }
 </script>
 

@@ -19,4 +19,34 @@
         WHERE mbr.id = #{bindId};
     </select>
 
+    <select id="getUsableBindRecordByCardId" resultType="com.kclm.xsap.model.entity.MemberBindRecordEntity">
+        select *
+        from t_member_bind_record
+        where card_id = #{cardId}
+          and active_status = 1
+          and valid_count > 0
+    </select>
+    <select id="getCardIdByBindId" resultType="com.kclm.xsap.model.entity.MemberCardEntity">
+        select mc.name as name,
+               mc.id   as id
+        FROM t_member_card mc
+                 JOIN t_member_bind_record mbr ON mbr.card_id = mc.id
+        WHERE mbr.id = #{id};
+    </select>
+
+    <update id="addCountAndDay">
+        update t_member_bind_record
+        set valid_count      = valid_count + #{addCount},
+            valid_day        = valid_day + #{addDay},
+            last_modify_time = NOW()
+        where id = #{memberBindId}
+    </update>
+
+    <update id="deductCount">
+        update t_member_bind_record
+        set valid_count      = valid_count - #{deductCount},
+            last_modify_time = NOW()
+        where id = #{memberBindId}
+    </update>
+
 </mapper>

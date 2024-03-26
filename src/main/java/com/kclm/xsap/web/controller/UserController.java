@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kclm.xsap.model.entity.EmployeeEntity;
 import com.kclm.xsap.model.vo.register.RegisterVo;
 import com.kclm.xsap.service.EmployeeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +17,11 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
     @Resource
     private EmployeeService employeeService;
 

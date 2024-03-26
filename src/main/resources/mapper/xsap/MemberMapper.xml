@@ -14,6 +14,11 @@
         <result property="lastModifyTime" column="last_modify_time"/>
         <result property="isDeleted" column="is_deleted"/>
     </resultMap>
+    <select id="delTimeList" resultType="java.time.LocalDateTime">
+        SELECT last_modify_time
+        FROM t_member
+        WHERE is_deleted = 1;
+    </select>
 
     <select id="searchMembersByNameOrPhone" resultMap="MemberEntity">
         SELECT * FROM t_member
@@ -36,5 +41,40 @@
         where m.is_deleted = 0
         GROUP BY id, memberName, gender
         order by 1
+    </select>
+    <select id="getReservationByMemberId" resultType="com.kclm.xsap.model.entity.ReservationRecordEntity">
+        SELECT *
+        FROM t_reservation_record rr
+                 JOIN t_schedule_record sr ON sr.id = rr.schedule_id
+        WHERE rr.member_id = #{memberId}
+          AND status = 0
+          AND sr.start_date + INTERVAL sr.class_time SECOND > NOW();
+    </select>
+    <select id="getMemberCardStatistics" resultType="com.kclm.xsap.model.vo.MemberCardStatisticsVo">
+        SELECT m.id                                  memberId,
+               m.name                                memberName,
+               mbr.id                                bindCardId,
+
+               (SELECT SUM(cr.card_count_change)
+                FROM t_consume_record cr
+                WHERE cr.member_bind_id = mbr.id) +
+               mbr.valid_count                    AS totalClassTimes,
+               (SELECT SUM(cr.card_count_change)
+                FROM t_consume_record cr
+                WHERE cr.member_bind_id = mbr.id) AS usedClassTimes,
+               mbr.valid_count                       remainingClassTimes,
+
+               (SELECT SUM(cr.money_cost) FROM t_consume_record cr WHERE cr.member_bind_id = mbr.id) +
+               mbr.received_money                 AS lumpSumBigD,
+               (SELECT SUM(cr.money_cost)
+                FROM t_consume_record cr
+                WHERE cr.member_bind_id = mbr.id) AS amountUsedBigD,
+               mbr.received_money                    balanceBigD
+        FROM t_member m
+                 JOIN t_member_bind_record mbr
+                      ON mbr.member_id = m.id
+                 JOIN t_consume_record cr ON cr.member_bind_id = mbr.id
+        GROUP BY bindCardId
+
     </select>
 </mapper>

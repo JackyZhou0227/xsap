@@ -11,7 +11,11 @@ public interface ReservationRecordService extends IService<ReservationRecordEnti
 //    boolean remove(QueryWrapper<ReservationRecordEntity> scheduleId);
     List<ScheduleDetailReservedVo> getScheduleDetailReservedVoByScheduleId(Long scheduleId);
 
-    boolean updateStatusById(Long id);
-
     List<ReserveInfoVo> getReserveInfoVoListByMemberId(Long memberId);
+
+    boolean cancelReservation(Long reserveId);
+
+    boolean doReserve(ReservationRecordEntity reservationRecordEntity);
+
+    Long getReserveId(Long memberId, Long scheduleId);
 }

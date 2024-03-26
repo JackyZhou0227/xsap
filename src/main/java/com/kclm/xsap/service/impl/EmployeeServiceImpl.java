@@ -3,8 +3,10 @@ package com.kclm.xsap.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kclm.xsap.mapper.EmployeeMapper;
+import com.kclm.xsap.mapper.ReservationRecordMapper;
 import com.kclm.xsap.model.dto.TeacherDTO;
 import com.kclm.xsap.model.entity.EmployeeEntity;
+import com.kclm.xsap.model.entity.ReservationRecordEntity;
 import com.kclm.xsap.model.vo.register.RegisterVo;
 import com.kclm.xsap.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
 
     @Resource
     private EmployeeMapper employeeMapper;
+
+    @Resource
+    private ReservationRecordMapper reservationRecordMapper;
 
     /*
     @Override
@@ -127,6 +132,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEnt
     @Override
     public String getPwdById(Long id) {
         return employeeMapper.getPwdById(id);
+    }
+
+    @Override
+    public boolean isAllowToDelete(Long id) {
+        return reservationRecordMapper.getReservationByTeacherId(id).isEmpty();
     }
 
 }

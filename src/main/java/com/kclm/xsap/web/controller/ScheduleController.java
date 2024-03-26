@@ -1,15 +1,14 @@
 package com.kclm.xsap.web.controller;
 
+import com.kclm.xsap.model.entity.CourseEntity;
 import com.kclm.xsap.model.entity.ScheduleRecordEntity;
+import com.kclm.xsap.model.vo.ConsumeEnsureVo;
 import com.kclm.xsap.model.vo.CourseScheduleVo;
 import com.kclm.xsap.model.vo.ScheduleDetailReservedVo;
 import com.kclm.xsap.model.vo.ScheduleDetailsVo;
-import com.kclm.xsap.service.ClassRecordService;
-import com.kclm.xsap.service.ReservationRecordService;
-import com.kclm.xsap.service.ScheduleRecordService;
+import com.kclm.xsap.service.*;
 import com.kclm.xsap.utils.BeanError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,18 +17,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/schedule")
 public class ScheduleController {
-
-    private final static Logger log = LoggerFactory.getLogger(ScheduleController.class);
 
     @Resource
     private ScheduleRecordService scheduleRecordService;
@@ -40,6 +37,12 @@ public class ScheduleController {
     @Resource
     private ClassRecordService classRecordService;
 
+    @Resource
+    private CourseService courseService;
+
+    @Resource
+    private MemberLogService memberLogService;
+
     @GetMapping("/x_course_schedule.do")
     public String toCourseSchedule() {
         return "course/x_course_schedule";
@@ -47,7 +50,7 @@ public class ScheduleController {
 
     @PostMapping("/scheduleList.do")
     @ResponseBody
-    public List<CourseScheduleVo> scheduleList(HttpServletRequest request) {
+    public List<CourseScheduleVo> scheduleList() {
         return scheduleRecordService.listAllCourseScheduleVo();
     }
 
@@ -70,8 +73,16 @@ public class ScheduleController {
             returnData.put("code", 400);
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
+        if(scheduleRecordService.isTeacherBusy(scheduleRecordEntity)){
+            returnData.put("msg", "该老师已被占用");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+        CourseEntity courseEntity = courseService.getById(scheduleRecordEntity.getCourseId());
+
         // 设置创建时间和最后修改时间为当前时间
         scheduleRecordEntity.setCreateTime(LocalDateTime.now());
+        scheduleRecordEntity.setLimitAge(courseEntity.getLimitAge());
+        scheduleRecordEntity.setLimitSex(courseEntity.getLimitSex());
         scheduleRecordEntity.setLastModifyTime(LocalDateTime.now());
         // 保存排课信息
         if (scheduleRecordService.save(scheduleRecordEntity)) {
@@ -104,18 +115,18 @@ public class ScheduleController {
             log.info("复制成功");
             // 复制成功，设置返回码为0
             returnData.put("code", 0);
-            return new ResponseEntity<>(returnData, HttpStatus.OK);
         } else {
             log.info("复制失败");
             // 复制失败，设置错误消息
             returnData.put("msg", "请选择有排课的日期复制！");
-            return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     @GetMapping("/x_course_schedule_detail.do")
-    public String toCourseScheduleDetail(@RequestParam("id") String id, Model model) {
+    public String toCourseScheduleDetail(@RequestParam("id") Long id, Model model) {
         log.info("进入排课详细信息页面");
+//        scheduleRecordService.initClassRecord(id);
         model.addAttribute("ID", id);
         return "course/x_course_schedule_detail";
     }
@@ -134,6 +145,7 @@ public class ScheduleController {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         Map<String, Object> returnData = new HashMap<>();
 
         // 通过ID查询排课详情
@@ -177,12 +189,11 @@ public class ScheduleController {
         returnData.put("data", scheduleDetailReservedVoList);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
 
-
     }
 
     @PostMapping("/classRecord.do")
     public ResponseEntity<Map<String, Object>> classRecord(@RequestParam("id") Long id) {
-        log.info("查看上课数据，id=" + id);
+        log.warn("查看上课数据，id=" + id);
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -198,15 +209,82 @@ public class ScheduleController {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (classRecordService.getClassRecordVoListByScheduleId(id).isEmpty() && reservationRecordService.getScheduleDetailReservedVoByScheduleId(id).isEmpty()) {
+        List<ScheduleDetailReservedVo> scheduleDetailReservedVoList = reservationRecordService.getScheduleDetailReservedVoByScheduleId(id);
+        scheduleDetailReservedVoList.removeIf(scheduleDetailReservedVo -> scheduleDetailReservedVo.getReserveStatus() != 0);
+        if (classRecordService.getClassRecordVoListByScheduleId(id).isEmpty() && scheduleDetailReservedVoList.isEmpty()) {
             if (scheduleRecordService.removeById(id)) {
                 returnData.put("code", 0);
                 return new ResponseEntity<>(returnData, HttpStatus.OK);
             } else {
+                log.error("删除排课失败");
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+
+    @GetMapping("/toSearch.do")
+    public ResponseEntity<Map<String, Object>> toSearch(@RequestParam("keyword") String keyword) {
+        log.info("扣费操作，搜索课程，keyword=" + keyword);
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("value", scheduleRecordService.getScheduleForConsumeSearchVoByKeyword(keyword));
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/consumeEnsureAll.do")
+    public ResponseEntity<Map<String, Object>> consumeEnsureAll(@RequestParam("scheduleId") Long scheduleId, @RequestParam("operator") String operator) {
+        log.info("一键扣费");
+        if (scheduleId == null || operator == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Map<String, Object> returnData = new HashMap<>();
+        if (memberLogService.consumeEnsureAll(scheduleId, operator)) {
+            returnData.put("code", 0);
+            returnData.put("msg", "扣费成功");
+        } else {
+            returnData.put("msg", "未知错误，请联系管理员！");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/queryAmountsPayable.do")
+    public ResponseEntity<Map<String, Object>> queryAmountsPayable(@RequestParam("classId") Long classId) {
+        Map<String, Object> returnData = new HashMap<>();
+        Integer amountsPayable = classRecordService.getAmountsPayableByClassId(classId);
+        if (amountsPayable != null) {
+            log.info("应扣次数：" + amountsPayable);
+            returnData.put("code", 0);
+            returnData.put("data", amountsPayable);
+        } else {
+            returnData.put("msg", "没有查到应扣次数值！");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
+
+    @PostMapping("/consumeEnsure.do")
+    public ResponseEntity<Map<String, Object>> consumeEnsure(@Valid ConsumeEnsureVo consumeEnsureVo, BindingResult bindingResult) {
+        log.info("课程单独扣费操作");
+        Map<String, Object> returnData = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            log.info("课程单独扣费操作bean验证错误");
+            returnData.put("msg", BeanError.getErrorData(bindingResult));
+            returnData.put("code", 400);
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+        if (consumeEnsureVo.getClassId() == null || consumeEnsureVo.getScheduleId() == null || consumeEnsureVo.getOperator().isEmpty()) {
+            log.warn("课程单独扣费操作参数不合法!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (memberLogService.consumeEnsure(consumeEnsureVo)) {
+            returnData.put("code", 0);
+            returnData.put("msg", "扣费成功");
+        } else {
+            returnData.put("msg", "未知错误，请联系管理员！");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 }

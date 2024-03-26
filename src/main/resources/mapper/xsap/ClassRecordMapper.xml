@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kclm.xsap.mapper.ClassRecordMapper">
 
+    <update id="consumeEnsureAll">
+        UPDATE t_class_record
+        SET check_status = 1
+        WHERE schedule_id = #{scheduleId}
+          AND reserve_check = 0
+    </update>
+
     <select id="getClassInfoVoListByMemberId" resultType="com.kclm.xsap.model.vo.ClassInfoVo">
         SELECT c.name          courseName,
                cr.create_time  classTime,
@@ -19,21 +26,23 @@
     </select>
 
     <select id="getClassRecordVoListByScheduleId" resultType="com.kclm.xsap.model.vo.ClassRecordVo">
-        SELECT m.name              memberName,
-               m.phone             memberPhone,
-               cr.card_name        cardName,
-               m.sex               memberSex,
-               m.birthday          memberBirthday,
-               c.times_cost        timesCost,
-               rr.reserve_nums     reserveNums,
-               cr.last_modify_time operateTime,
-               cr.check_status     checkStatus
+        SELECT distinct cr.id               classRecordId,
+                        m.name              memberName,
+                        m.phone             memberPhone,
+                        cr.card_name        cardName,
+                        m.sex               memberSex,
+                        m.birthday          memberBirthday,
+                        c.times_cost        timesCost,
+                        rr.reserve_nums     reserveNums,
+                        cr.last_modify_time operateTime,
+                        cr.check_status     checkStatus
         FROM t_class_record cr
                  join t_member m on m.id = cr.member_id
                  join t_schedule_record sr on sr.id = cr.schedule_id
                  join t_course c on c.id = sr.course_id
-                 join t_reservation_record rr on rr.schedule_id = sr.id
+                 join t_reservation_record rr on rr.card_id = cr.bind_card_id
         WHERE cr.schedule_id = #{scheduleId}
+          AND cr.reserve_check = 0
     </select>
 
     <select id="getTeacherClassRecordVoListByTeacherId" resultType="com.kclm.xsap.model.vo.TeacherClassRecordVo">
@@ -48,6 +57,28 @@
         WHERE sr.teacher_id = #{teacherId}
         GROUP BY courseName, classTime, timesCost
         order by 1;
+    </select>
+
+    <select id="getClassRecordEntityListByScheduleId"
+            resultType="com.kclm.xsap.model.entity.ClassRecordEntity">
+        SELECT *
+        FROM t_class_record
+        WHERE schedule_id = #{scheduleId}
+    </select>
+
+    <select id="getAmountsPayableByClassId" resultType="java.lang.Integer">
+        SELECT c.times_cost
+        FROM t_class_record cr
+                 JOIN t_schedule_record sr ON sr.id = cr.schedule_id
+                 JOIN t_course c ON c.id = sr.course_id
+        WHERE cr.id = #{classId}
+    </select>
+    <select id="getClassRecordEntityByReserveId" resultType="com.kclm.xsap.model.entity.ClassRecordEntity">
+        SELECT *
+        FROM t_class_record cr
+                 JOIN
+             t_reservation_record rr ON rr.schedule_id = cr.schedule_id AND rr.card_id = cr.bind_card_id
+        WHERE rr.id = #{reserveId}
     </select>
 
 </mapper>

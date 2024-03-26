@@ -2,8 +2,7 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.entity.GlobalReservationSetEntity;
 import com.kclm.xsap.service.GlobalReservationSetService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,12 +16,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/globalSet")
 public class GlobalSetController {
-
-    private final static Logger log = LoggerFactory.getLogger(GlobalSetController.class);
-
     @Resource
     private GlobalReservationSetService globalReservationSetService;
 

@@ -18,4 +18,6 @@ public interface ClassRecordService extends IService<ClassRecordEntity> {
     List<ClassRecordVo> getClassRecordVoListByScheduleId(Long scheduleId);
 
     List<TeacherClassRecordVo> getTeacherClassRecordVoListByTeacherId(Long teacherId);
+
+    Integer getAmountsPayableByClassId(Long classId);
 }

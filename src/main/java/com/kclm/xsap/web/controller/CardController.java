@@ -4,10 +4,11 @@ import com.kclm.xsap.model.dto.MemberCardDTO;
 import com.kclm.xsap.model.entity.MemberCardEntity;
 import com.kclm.xsap.model.vo.CardInfoVo;
 import com.kclm.xsap.model.vo.CardTipVo;
+import com.kclm.xsap.model.vo.ConsumeOptVo;
+import com.kclm.xsap.model.vo.RechargeOptVo;
 import com.kclm.xsap.service.*;
 import com.kclm.xsap.utils.BeanError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,11 +25,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/card")
 public class CardController {
 
-    private final static Logger log = LoggerFactory.getLogger(CardController.class);
+
     @Resource
     private MemberCardService memberCardService;
 
@@ -58,7 +60,7 @@ public class CardController {
     }
 
     @GetMapping("x_member_add_card.do")
-    public String toMemberCardAdd(Model model) {
+    public String toMemberCardAdd() {
         log.info("跳转至card添加页面");
         return "member/x_member_add_card";
     }
@@ -192,15 +194,17 @@ public class CardController {
     @PostMapping("/deleteOne.do")
     public ResponseEntity<Map<String, Object>> deleteOne(@RequestParam("id") Long id) {
         Map<String, Object> returnData = new HashMap<>();
-        //todo
-        if (memberCardService.removeById(id)) {
-            returnData.put("status", "success");
-            returnData.put("message", "删除成功");
+        if (memberBindRecordService.isAllowToDelete(id)) {
+            if (memberCardService.removeById(id)) {
+                returnData.put("code", 0);
+                return new ResponseEntity<>(returnData, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
-            returnData.put("status", "error");
-            returnData.put("message", "删除失败");
+            returnData.put("msg", "有学员绑定了该卡，有未用完的次数");
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
-        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
 
@@ -227,16 +231,17 @@ public class CardController {
      * 如果操作成功，返回状态码200和激活状态；
      * 如果操作失败，返回状态码500和错误消息。
      */
-    @PostMapping("activeOpt.do")
+    @PostMapping("/activeOpt.do")
     public ResponseEntity<Map<String, Object>> activeOpt(@RequestParam("memberId") Long memberId,
                                                          @RequestParam("bindId") Long bindId,
-                                                         @RequestParam("status") Integer status) {
+                                                         @RequestParam("status") Integer status,
+                                                         @RequestParam("operator") String operator) {
         // 记录激活操作的开始日志
-        log.info("激活操作，memberId=" + memberId + ",bindId=" + bindId + ",status=" + status);
+        log.info("激活or停用操作，memberId=" + memberId + ",bindId=" + bindId + ",status=" + status);
         Map<String, Object> returnData = new HashMap<>();
 
         // 更新绑定状态，并根据结果返回不同的数据
-        if (memberBindRecordService.updateBindStatus(memberId, bindId, status)) {
+        if (memberBindRecordService.updateBindStatus(memberId, bindId, status,operator)) {
             log.info("操作成功");
             // 操作成功，返回激活状态
             returnData.put("data", memberBindRecordService.getById(bindId).getActiveStatus());
@@ -262,6 +267,7 @@ public class CardController {
         Map<String, Object> returnData = new HashMap<>();
         // 根据会员ID查询卡信息
         List<CardInfoVo> cardInfoVoList = memberCardService.getCardsInfoByMemberId(memberId);
+        cardInfoVoList.removeIf(cardInfoVo -> cardInfoVo.getActiveStatus() == 0);
         // 将查询结果放入返回数据容器
         returnData.put("value", cardInfoVoList);
         // 返回响应实体，包含查询结果和HTTP状态码OK
@@ -279,13 +285,48 @@ public class CardController {
     }
 
 
-    //todo 充值会员卡
     @PostMapping("/rechargeOpt.do")
-    public ResponseEntity<Map<String, Object>> rechargeOpt(){
-        log.info("rechargeOpt.do");
-        Map<String, Object> returnData = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> rechargeOpt(@Valid RechargeOptVo rechargeOptVo, BindingResult bindingResult) {
 
-        return null;
+        log.info("rechargeOpt.do");
+        if (rechargeOptVo.getOperator().isEmpty() || rechargeOptVo.getMemberBindId() == null || rechargeOptVo.getMemberId() == null) {
+            log.warn("充值三个ID参数为空");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Map<String, Object> returnData = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            log.info("Bean验证错误");
+            returnData.put("code", 400);
+            returnData.put("errorMap", BeanError.getErrorDataMap(bindingResult));
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+        if (memberLogService.rechargeOpt(rechargeOptVo)) {
+            returnData.put("code", 0);
+            returnData.put("msg", "充值成功");
+        } else {
+            returnData.put("msg", "充值失败");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
+
+    @PostMapping("consumeOpt.do")
+    public ResponseEntity<Map<String, Object>> consumeOpt(@Valid ConsumeOptVo consumeOptVo, BindingResult bindingResult) {
+        log.info("会员卡扣费");
+        if (consumeOptVo.getScheduleId() == null || consumeOptVo.getMemberId() == null || consumeOptVo.getOperator().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Map<String, Object> returnData = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            returnData.put("msg", BeanError.getErrorData(bindingResult));
+            return new ResponseEntity<>(returnData, HttpStatus.OK);
+        }
+        if (memberLogService.consumeOpt(consumeOptVo)) {
+            returnData.put("code", 0);
+            returnData.put("msg", "扣费成功");
+        } else {
+            returnData.put("msg", "扣费失败");
+        }
+        return new ResponseEntity<>(returnData, HttpStatus.OK);
+    }
 }

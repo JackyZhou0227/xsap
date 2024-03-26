@@ -37,6 +37,39 @@
                  join t_schedule_record sr on sr.id = rr.schedule_id
                  join t_course c on c.id = sr.course_id
     </select>
+    <select id="getReservationRecordEntityByMemberScheduleCardId"
+            resultType="com.kclm.xsap.model.entity.ReservationRecordEntity">
+        SELECT *
+        FROM t_reservation_record
+        WHERE member_id = #{memberId}
+          AND schedule_id = #{scheduleId}
+          AND card_id = #{cardId}
+    </select>
+
+    <select id="getReservationByTeacherId" resultType="com.kclm.xsap.model.entity.ReservationRecordEntity">
+        SELECT rr.member_id
+        FROM t_reservation_record rr
+                 JOIN t_schedule_record sr on sr.id = rr.schedule_id
+        WHERE sr.teacher_id = #{teacherId}
+          AND rr.status = 0
+          AND sr.start_date + INTERVAL sr.class_time SECOND > NOW();
+    </select>
+
+    <select id="getOverdueReservationByScheduleId" resultType="com.kclm.xsap.model.entity.ReservationRecordEntity">
+        SELECT *
+        FROM t_reservation_record rr
+                 JOIN t_schedule_record sr on sr.id = rr.schedule_id
+        WHERE sr.id = #{scheduleId}
+          AND rr.status = 0
+          AND NOW() > sr.start_date + INTERVAL sr.class_time SECOND;
+    </select>
+
+    <select id="getReserveId" resultType="java.lang.Long">
+        SELECT id
+        FROM t_reservation_record
+        WHERE member_id = #{memberId}
+          AND schedule_id = #{scheduleId}
+    </select>
 
 
 </mapper>

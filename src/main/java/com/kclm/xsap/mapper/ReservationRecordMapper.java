@@ -13,4 +13,12 @@ public interface ReservationRecordMapper extends BaseMapper<ReservationRecordEnt
     List<ScheduleDetailReservedVo> getAllScheduleDetailReservedVoByScheduleId(Long scheduleId);
 
     List<ReserveInfoVo> getReserveInfoVoListByMemberId(Long memberId);
+
+    ReservationRecordEntity getReservationRecordEntityByMemberScheduleCardId(Long memberId, Long scheduleId, Long cardId);
+
+    List<ReservationRecordEntity> getReservationByTeacherId(Long teacherId);
+
+    List<ReservationRecordEntity> getOverdueReservationByScheduleId(Long scheduleId);
+
+    Long getReserveId(Long memberId, Long scheduleId);
 }

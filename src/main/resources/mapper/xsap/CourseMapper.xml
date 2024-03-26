@@ -30,4 +30,11 @@
         WHERE `name` LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
+    <select id="getCountByScheduleId" resultType="java.lang.Integer">
+        SELECT c.times_cost
+        FROM t_course c
+                 JOIN t_schedule_record sr ON sr.course_id = c.id
+        WHERE sr.id = #{scheduleId}
+    </select>
+
 </mapper>

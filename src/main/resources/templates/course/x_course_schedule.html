@@ -382,19 +382,19 @@
                 swal("清除缓存失败", "请联系管理员", "info")
             }
         })*/
-        swal("刷新成功!","","success");
+
         $('#calendar').fullCalendar('updateEvent',{
             //自定义视图
             events: {
                 url: '/schedule/scheduleList.do',
                 type: 'post',
                 error: function () {
-                    alert('there was an error while fetching events!');
+                    swal("刷新失败!","","error");
                 },
                 textColor: 'white'
             }
         });
-
+        swal("刷新成功!","","success");
     }
 
     /* ---------排课详情-------- */
@@ -506,7 +506,8 @@
                             $("<span class='text-danger'>" + errors[key] + "</span>").appendTo($("[tip=" + key + "]"));
                         }
                     } else {
-                        swal("添加失败！", data.msg, "info");
+                        alert(data.msg);
+                        // swal("添加失败！", data.msg, "info");
                     }
                 });
 

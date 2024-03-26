@@ -105,4 +105,5 @@ public class ScheduleRecordEntity implements Serializable {
 	@ToString.Exclude
 	private EmployeeEntity employeeEntity;
 
+	private Integer isDeleted;
 }

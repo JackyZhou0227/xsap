@@ -2,13 +2,11 @@ package com.kclm.xsap.web.controller;
 
 import com.kclm.xsap.model.dto.CourseDTO;
 import com.kclm.xsap.model.entity.CourseEntity;
-import com.kclm.xsap.model.entity.MemberEntity;
 import com.kclm.xsap.service.CourseCardService;
 import com.kclm.xsap.service.CourseService;
 import com.kclm.xsap.service.MemberCardService;
 import com.kclm.xsap.utils.BeanError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,10 +22,11 @@ import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/course")
 public class CourseController {
-    private static final Logger log = LoggerFactory.getLogger(CourseController.class);
+
     @Resource
     private CourseService courseService;
     @Resource
@@ -66,7 +65,7 @@ public class CourseController {
     /**
      * 添加课程信息
      *
-     * @param courseDTO 包含课程信息的数据传输对象，必须是有效的课程信息
+     * @param courseDTO     包含课程信息的数据传输对象，必须是有效的课程信息
      * @param bindingResult 对courseDTO进行验证后的结果，包含验证错误信息
      * @return 返回一个实体响应，包含操作结果代码、错误信息等
      */
@@ -96,6 +95,7 @@ public class CourseController {
         if (courseDTO.getLimitAgeRadio() == 0) {
             courseDTO.setLimitAge(0);
         }
+
         if (courseDTO.getLimitCountsRadio() == 0) {
             courseDTO.setLimitCounts(0);
         }
@@ -134,7 +134,7 @@ public class CourseController {
     /**
      * 编辑课程信息
      *
-     * @param courseDTO 包含课程编辑信息的数据传输对象，包括课程ID、名称等
+     * @param courseDTO     包含课程编辑信息的数据传输对象，包括课程ID、名称等
      * @param bindingResult 对courseDTO进行验证后的结果，包含验证错误信息
      * @return ResponseEntity 包含编辑结果的响应实体，包括成功与否的消息和状态码
      */

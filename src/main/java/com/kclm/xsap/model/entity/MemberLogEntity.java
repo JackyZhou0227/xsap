@@ -9,6 +9,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kclm.xsap.consts.OperateType;
+import com.kclm.xsap.model.vo.ConsumeOptVo;
+import com.kclm.xsap.model.vo.RechargeOptVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -88,4 +91,46 @@ public class MemberLogEntity implements Serializable {
 	@ToString.Exclude
 	private MemberBindRecordEntity memberBindRecordEntity;
 
+	public MemberLogEntity() {
+	}
+	
+	public MemberLogEntity(RechargeOptVo rechargeOptVo){
+
+		this.setCreateTime(LocalDateTime.now());
+		this.setType(OperateType.RECHARGE_OPERATION.getMsg());
+		this.setOperator(rechargeOptVo.getOperator());
+		this.setMemberBindId(rechargeOptVo.getMemberBindId());
+		this.setCardCountChange(rechargeOptVo.getAddCount());
+		this.setCardDayChange(rechargeOptVo.getAddDay());
+		this.setInvolveMoney(rechargeOptVo.getReceivedMoney());
+		this.setNote(rechargeOptVo.getNote());
+
+	}
+
+	public MemberLogEntity(ConsumeOptVo consumeOptVo) {
+		this.setCreateTime(LocalDateTime.now());
+		this.setType(OperateType.CLASS_DEDUCTION_OPERATION.getMsg());
+		this.setOperator(consumeOptVo.getOperator());
+		this.setMemberBindId(consumeOptVo.getCardBindId());
+		this.setCardCountChange(consumeOptVo.getCardCountChange());
+		this.setInvolveMoney(consumeOptVo.getAmountOfConsumption());
+		this.setNote(consumeOptVo.getNote());
+	}
+
+    public MemberLogEntity(MemberBindRecordEntity memberBindRecordEntity) {
+		this.createTime = LocalDateTime.now();
+		this.type = OperateType.BINDING_CARD_OPERATION.getMsg();
+		this.memberBindId = memberBindRecordEntity.getId();
+		this.cardCountChange = memberBindRecordEntity.getValidCount();
+		this.cardDayChange = memberBindRecordEntity.getValidDay();
+		this.cardActiveStatus = memberBindRecordEntity.getActiveStatus();
+		this.involveMoney = memberBindRecordEntity.getReceivedMoney();
+		this.note = memberBindRecordEntity.getNote();
+    }
+
+    public MemberLogEntity(ClassRecordEntity classRecordEntity) {
+		this.createTime = LocalDateTime.now();
+		this.type = OperateType.CLASS_DEDUCTION_OPERATION.getMsg();
+		this.memberBindId = classRecordEntity.getBindCardId();
+    }
 }

@@ -28,7 +28,7 @@
         SELECT mbc.id                                                   bindId,
                mc.`name`,
                mc.type,
-               mc.total_count                                           totalCount,
+               mbc.valid_count                                          totalCount,
                mbc.valid_day                                            validDay,
                DATE_ADD(mbc.create_time, INTERVAL mbc.valid_day DAY) AS dueTime,
                mbc.active_status                                        activeStatus,
@@ -36,7 +36,7 @@
                mbc.last_modify_time                                     lastModifyTime
         FROM t_member_card mc
                  JOIN t_member_bind_record mbc ON mc.id = mbc.card_id
-        WHERE mbc.member_id = #{memberId};
+        WHERE mbc.member_id = #{memberId}
     </select>
 
 

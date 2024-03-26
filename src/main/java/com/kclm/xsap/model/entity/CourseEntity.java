@@ -104,6 +104,7 @@ public class CourseEntity implements Serializable {
 
 	public CourseEntity() {
 	}
+
 	public CourseEntity(CourseDTO courseDTO) {
 		this.name = courseDTO.getName();
 		this.duration = courseDTO.getDuration();

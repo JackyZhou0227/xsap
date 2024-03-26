@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kclm.xsap.model.vo.RechargeOptVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -93,4 +94,17 @@ public class RechargeRecordEntity implements Serializable {
 	private Long logId;
 
 
+	public RechargeRecordEntity() {
+	}
+
+	public RechargeRecordEntity(RechargeOptVo rechargeOptVo) {
+		this.createTime = LocalDateTime.now();
+		this.addCount = rechargeOptVo.getAddCount();
+		this.addDay = rechargeOptVo.getAddDay();
+		this.receivedMoney = rechargeOptVo.getReceivedMoney();
+		this.payMode = rechargeOptVo.getPayMode();
+		this.note = rechargeOptVo.getNote();
+		this.operator = rechargeOptVo.getOperator();
+		this.memberBindId = rechargeOptVo.getMemberBindId();
+	}
 }

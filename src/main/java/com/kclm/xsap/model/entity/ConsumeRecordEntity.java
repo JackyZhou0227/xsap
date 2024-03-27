@@ -112,12 +112,13 @@ public class ConsumeRecordEntity implements Serializable {
 
     public ConsumeRecordEntity(ConsumeOptVo consumeOptVo) {
         this.createTime = LocalDateTime.now();
-        this.setOperateType(OperateType.CLASS_DEDUCTION_OPERATION.getMsg());
+        this.operateType = OperateType.CLASS_DEDUCTION_OPERATION.getMsg();
         this.operator = consumeOptVo.getOperator();
         this.memberBindId = consumeOptVo.getCardBindId();
         this.cardCountChange = consumeOptVo.getCardCountChange();
         this.moneyCost = consumeOptVo.getAmountOfConsumption();
         this.note = consumeOptVo.getNote();
+        this.scheduleId = consumeOptVo.getScheduleId();
     }
 
     public ConsumeRecordEntity(MemberBindRecordEntity memberBindRecordEntity) {
@@ -132,7 +133,8 @@ public class ConsumeRecordEntity implements Serializable {
 
     public ConsumeRecordEntity(ClassRecordEntity classRecordEntity) {
         this.createTime = LocalDateTime.now();
-        this.setOperateType(OperateType.CLASS_DEDUCTION_OPERATION.getMsg());
+        this.operateType = OperateType.CLASS_DEDUCTION_OPERATION.getMsg();
         this.memberBindId = classRecordEntity.getBindCardId();
+        this.scheduleId = classRecordEntity.getScheduleId();
     }
 }

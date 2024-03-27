@@ -36,6 +36,7 @@
         FROM t_reservation_record rr
                  join t_schedule_record sr on sr.id = rr.schedule_id
                  join t_course c on c.id = sr.course_id
+        WHERE rr.member_id = #{memberId}
     </select>
     <select id="getReservationRecordEntityByMemberScheduleCardId"
             resultType="com.kclm.xsap.model.entity.ReservationRecordEntity">

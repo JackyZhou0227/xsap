@@ -130,6 +130,7 @@ public class MemberController {
         log.info("查找会员，keyword =" + keyword);
         Map<String, Object> returnData = new HashMap<>();
         List<MemberEntity> memberList = memberService.searchMembersByNameOrPhone(keyword);
+        memberList.removeIf(memberEntity -> memberEntity.getIsDeleted() == 1);
         returnData.put("value", memberList);
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }

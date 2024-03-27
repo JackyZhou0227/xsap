@@ -51,28 +51,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Resource
     private EmployeeService employeeService;
 
-    @Resource
-    private CourseMapper courseMapper;
-
-    @Resource
-    private MapCacheService mapCacheService;
-
     @Override
     public MemberCardStatisticsWithTotalDataInfoVo getCardInfoStatistics() {
-//        //首先从mapCacheService获取缓存的Map
-//        HashMap<KeyNameOfCache, Object> CACHE_MEMBER_CARD_INFO_MAP = mapCacheService.getCacheInfo();
-//        //从Map中根据CACHE_OF_MEMBER_CARD_INFO这个键获取对应的值。
-//        Object cacheValueOfMapForMemberCardInfo = CACHE_MEMBER_CARD_INFO_MAP.get(KeyNameOfCache.CACHE_OF_MEMBER_CARD_INFO);
-//        //定义一个变量
-//        MemberCardStatisticsWithTotalDataInfoVo cacheMemberCardInfo = new MemberCardStatisticsWithTotalDataInfoVo();
-//        //如果获取到的值是MemberCardStatisticsWithTotalDataInfoVo类型的实例，就将这个值赋给cacheMemberCardInfo变量。
-//        if (cacheValueOfMapForMemberCardInfo instanceof MemberCardStatisticsWithTotalDataInfoVo) {
-//            cacheMemberCardInfo = (MemberCardStatisticsWithTotalDataInfoVo) cacheValueOfMapForMemberCardInfo;
-//        }
-//        //如果cacheMemberCardInfo不为null，就直接返回这个缓存的值
-//        if (cacheMemberCardInfo != null) {
-//            return cacheMemberCardInfo;
-//        }
 
         List<MemberCardStatisticsVo> memberCardStatisticsVoList = memberMapper.getMemberCardStatistics();
 
@@ -113,8 +93,6 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .setUsedMoneyAll(usedMoneyAll)
                 .setRemainMoneyAll(remainMoneyAll);
 
-        //添加本地缓存
-//        CACHE_MEMBER_CARD_INFO_MAP.put(KeyNameOfCache.CACHE_OF_MEMBER_CARD_INFO, memberCardStatisticsWithTotalDataInfoVo);
         return memberCardStatisticsWithTotalDataInfoVo;
     }
 
@@ -201,6 +179,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
 
+    //课消统计
     @Override
     public ClassCostVo getclassCostVo(StatisticsOfCardCostVo statisticsOfCardCostVo) {
         Integer unit = statisticsOfCardCostVo.getUnit();
@@ -209,6 +188,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         Integer endYear = statisticsOfCardCostVo.getEndYear();
         ClassCostVo classCostVo = new ClassCostVo();
         LocalDate today = LocalDate.now();
+
         //获取所有今天之前的排课记录
         List<ScheduleRecordEntity> allScheduleBeforeToday = scheduleRecordMapper.selectList(new QueryWrapper<ScheduleRecordEntity>()
                 .select("id", "course_id", "teacher_id", "order_nums", "start_date")
@@ -245,6 +225,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         log.info("id和钱" + idTimeMoney);
         int flag = 0;
         int i = 1;
+
+        List<ConsumeRecordEntity> consumeRecordEntities = consumeRecordMapper.selectList(new QueryWrapper<ConsumeRecordEntity>().select());
+        //移除scheduleId为null的记录
+        consumeRecordEntities.removeIf(consumeRecordEntity -> consumeRecordEntity.getScheduleId() == null);
         if (unit == 1) {
             title = "老师课时月消费统计";
             for (Long id : teacherIdList) {
@@ -254,17 +238,24 @@ public class StatisticsServiceImpl implements StatisticsService {
                 HashMap<Integer, Float> timeAndMoney = new HashMap<>();
                 for (ScheduleRecordEntity scheduleRecordEntity : scheduleByYear) {
                     if (scheduleRecordEntity.getTeacherId().equals(id)) {
-                        float moneyCount = 0F;
+                        BigDecimal moneyCount = new BigDecimal(0);
                         int totalcount = 0;
-                        CourseEntity courseEntity = courseMapper.selectById(scheduleRecordEntity.getCourseId());
-                        //moneyCount = scheduleRecordEntity.getOrderNums() * courseEntity.getMoney().intValue();
-                        totalcount = scheduleRecordEntity.getOrderNums() * courseEntity.getTimesCost();
+                        if (!consumeRecordEntities.isEmpty()) {
+                            for (ConsumeRecordEntity consumeRecordEntity : consumeRecordEntities) {
+                                if (consumeRecordEntity.getScheduleId().equals(scheduleRecordEntity.getId())) {
+                                    moneyCount = moneyCount.add(consumeRecordEntity.getMoneyCost());
+                                    totalcount = totalcount + consumeRecordEntity.getCardCountChange();
+                                }
+
+                            }
+                        }
+
                         //获取该排课上课日期的月份
                         int monthValue = scheduleRecordEntity.getStartDate().getMonthValue();
                         //老师在同一个月份里的次数和
                         timeAndCount.put(monthValue, timeAndCount.getOrDefault(monthValue, 0) + totalcount);
                         //老师在同一月里的金额和
-                        timeAndMoney.put(monthValue, timeAndMoney.getOrDefault(monthValue, 0F) + moneyCount);
+                        timeAndMoney.put(monthValue, timeAndMoney.getOrDefault(monthValue, 0F) + moneyCount.floatValue());
                     }
                 }
                 idTimeCount.put(id, timeAndCount);
@@ -295,18 +286,25 @@ public class StatisticsServiceImpl implements StatisticsService {
                 HashMap<Integer, Float> quarterAndMoney = new HashMap<>();
                 for (ScheduleRecordEntity scheduleRecordEntity : scheduleByYear) {
                     if (scheduleRecordEntity.getTeacherId().equals(id)) {
-                        float moneyCount = 0;
+                        BigDecimal moneyCount = new BigDecimal(0);
                         int totalcount = 0;
-                        CourseEntity courseEntity = courseMapper.selectById(scheduleRecordEntity.getCourseId());
-                        // moneyCount = scheduleRecordEntity.getOrderNums() * courseEntity.getMoney().intValue();
-                        totalcount = scheduleRecordEntity.getOrderNums() * courseEntity.getTimesCost();
+                        if (!consumeRecordEntities.isEmpty()) {
+                            for (ConsumeRecordEntity consumeRecordEntity : consumeRecordEntities) {
+                                if (consumeRecordEntity.getScheduleId().equals(scheduleRecordEntity.getId())) {
+                                    moneyCount = moneyCount.add(consumeRecordEntity.getMoneyCost());
+                                    totalcount = totalcount + consumeRecordEntity.getCardCountChange();
+                                }
+
+                            }
+                        }
+
                         //获取该排课上课日期的月份
                         int monthValue = scheduleRecordEntity.getStartDate().getMonthValue();
                         int quarter = (monthValue - 1) / 3 + 1;
                         //老师在同一个季度里的次数和
                         quarterAndCount.put(quarter, quarterAndCount.getOrDefault(quarter, 0) + totalcount);
                         //老师在同一个季度里的金额和
-                        quarterAndMoney.put(quarter, quarterAndMoney.getOrDefault(quarter, 0F) + moneyCount);
+                        quarterAndMoney.put(quarter, quarterAndMoney.getOrDefault(quarter, 0F) + moneyCount.floatValue());
                     }
                 }
                 idTimeCount.put(id, quarterAndCount);
@@ -341,17 +339,23 @@ public class StatisticsServiceImpl implements StatisticsService {
                 HashMap<Integer, Float> yearAndMoney = new HashMap<>();
                 for (ScheduleRecordEntity recordEntity : scheduleBystartAndEnd) {
                     if (recordEntity.getTeacherId().equals(id)) {
-                        float moneyCount = 0;
+                        BigDecimal moneyCount = new BigDecimal(0);
                         int totalcount = 0;
-                        CourseEntity courseEntity = courseMapper.selectById(recordEntity.getCourseId());
-                        //moneyCount = recordEntity.getOrderNums() * courseEntity.getMoney().intValue();
-                        totalcount = recordEntity.getOrderNums() * courseEntity.getTimesCost();
+                        if (!consumeRecordEntities.isEmpty()) {
+                            for (ConsumeRecordEntity consumeRecordEntity : consumeRecordEntities) {
+                                if (consumeRecordEntity.getScheduleId().equals(recordEntity.getId())) {
+                                    moneyCount = moneyCount.add(consumeRecordEntity.getMoneyCost());
+                                    totalcount = totalcount + consumeRecordEntity.getCardCountChange();
+                                }
+
+                            }
+                        }
                         //获取该排课上课日期的月份
                         int yearValue = recordEntity.getStartDate().getYear();
                         //老师在同一个季度里的次数和
                         yearAndCount.put(yearValue, yearAndCount.getOrDefault(yearValue, 0) + totalcount);
                         //老师在同一个季度里的金额和
-                        yearAndMoney.put(yearValue, yearAndMoney.getOrDefault(yearValue, 0F) + moneyCount);
+                        yearAndMoney.put(yearValue, yearAndMoney.getOrDefault(yearValue, 0F) + moneyCount.floatValue());
                     }
                 }
                 idTimeCount.put(id, yearAndCount);

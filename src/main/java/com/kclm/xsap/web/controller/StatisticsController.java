@@ -7,7 +7,6 @@ import com.kclm.xsap.model.vo.statistics.CardCostVo;
 import com.kclm.xsap.model.vo.statistics.ClassCostVo;
 import com.kclm.xsap.model.vo.statistics.StatisticsOfCardCostVo;
 import com.kclm.xsap.service.ConsumeRecordService;
-import com.kclm.xsap.service.MapCacheService;
 import com.kclm.xsap.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,9 +34,6 @@ public class StatisticsController {
 
     @Resource
     private ConsumeRecordService consumeRecordService;
-
-    @Resource
-    private MapCacheService mapCacheService;
 
     @GetMapping("/x_card_list_stat.do")
     public String toCardListStat() {
@@ -208,13 +204,3 @@ public class StatisticsController {
 
     }
 }
-
-
-//    HashMap<KeyNameOfCache, Object> CACHE_MEMBER_CARD_INFO_MAP = mapCacheService.getCacheInfo();
-//        CACHE_MEMBER_CARD_INFO_MAP.remove(KeyNameOfCache.CACHE_OF_MEMBER_CARD_INFO);
-//                if (CACHE_MEMBER_CARD_INFO_MAP.containsKey(KeyNameOfCache.CACHE_OF_MEMBER_CARD_INFO)) {
-//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        } else {
-//        returnData.put("code", 0);
-//        return new ResponseEntity<>(returnData, HttpStatus.OK);
-//        }
